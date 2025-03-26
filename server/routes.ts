@@ -12,7 +12,8 @@ import {
   insertRatingSchema,
   insertReviewSchema,
   insertSocialShareSchema,
-  User
+  User,
+  Content
 } from "@shared/schema";
 
 // Extended Request interface with user property
@@ -1551,7 +1552,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const paymentData = payfast.createPaymentData({
         amount,
         item_name: `Madifa ${plan === 'annual' ? 'Annual' : 'Monthly'} Premium Subscription`,
-        name_first: user.name || user.username,
+        name_first: user.fullName || user.username,
         email_address: user.email,
         m_payment_id: paymentId,
         
