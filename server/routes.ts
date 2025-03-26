@@ -26,6 +26,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import payfast from "./payfast";
 import { VimeoService } from "./vimeo";
+import { VimeoSync } from "./vimeo-sync";
 
 // Constants
 const JWT_SECRET = process.env.JWT_SECRET || "madifa-secret-key";
@@ -854,6 +855,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Get watch progress for a specific content
+  // Vimeo Sync Management Routes
+  app.post("/api/admin/vimeo-sync", authenticateAdmin, async (req, res) => {
+    try {
+      // Only admins can sync Vimeo videos
+      const syncResults = await VimeoSync.syncAllVideos();
+      res.json(syncResults);
+    } catch (error) {
+      console.error("Error syncing Vimeo videos:", error);
+      res.status(500).json({ message: "Error syncing Vimeo videos" });
+    }
+  });
+  
+  // Get status of last Vimeo sync
+  app.get("/api/admin/vimeo-sync-status", authenticateAdmin, async (req, res) => {
+    try {
+      // Get count of videos
+      const dbVideos = await storage.getAllContents();
+      
+      // Get current Vimeo videos
+      const vimeoResponse = await VimeoService.getAllVideos(1, 50);
+      
+      const status = {
+        databaseContentCount: dbVideos.length,
+        vimeoContentCount: vimeoResponse.videos.length,
+        lastSyncTime: null, // This would need to be tracked in a separate table
+        syncNeeded: dbVideos.length < vimeoResponse.videos.length
+      };
+      
+      res.json(status);
+    } catch (error) {
+      console.error("Error getting Vimeo sync status:", error);
+      res.status(500).json({ message: "Error getting Vimeo sync status" });
+    }
+  });
+  
   app.get("/api/history/:contentId", authenticate, async (req, res) => {
     try {
       const user = (req as AuthRequest).user;
