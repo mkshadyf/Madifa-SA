@@ -378,7 +378,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             contentType: isTrailer ? 'trailer' : 'movie',
             vimeoId: video.id,
             categoryId: 1, // Default category
-            displayPriority: index
+            displayPriority: index,
+            createdAt: new Date(),
+            rating: null,
+            metadata: null,
+            averageRating: null,
+            reviewCount: 0
           };
         });
         
@@ -428,7 +433,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
               contentType: 'movie',
               vimeoId: video.id,
               categoryId: 1, // Default category
-              displayPriority: index
+              displayPriority: index,
+              createdAt: new Date(),
+              rating: null,
+              metadata: null,
+              averageRating: null,
+              reviewCount: 0
             };
           });
         
@@ -477,7 +487,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
               contentType: 'trailer',
               vimeoId: video.id,
               categoryId: 1, // Default category
-              displayPriority: index
+              displayPriority: index,
+              createdAt: new Date(),
+              rating: null,
+              metadata: null,
+              averageRating: null,
+              reviewCount: 0
             };
           });
         
@@ -565,7 +580,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
               contentType: 'trailer',
               vimeoId: video.id,
               categoryId: 1,
-              displayPriority: index
+              displayPriority: index,
+              createdAt: new Date(),
+              rating: null,
+              metadata: null,
+              averageRating: null,
+              reviewCount: 0
             }));
         } else if (contentType === 'movie') {
           // For movies - filter out trailers
