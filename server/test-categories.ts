@@ -279,8 +279,9 @@ async function testSyncDefaultCategories() {
     
     console.log('Ensuring default categories exist');
     
-    // Call the VimeoSync method to create default categories
-    await VimeoSync.ensureDefaultCategories();
+    // Use the syncAllVideos method which internally calls ensureDefaultCategories
+    // This avoids accessing the private method directly
+    await VimeoSync.syncAllVideos();
     
     // Get all categories to verify
     const categoriesResponse = await axios.get(`${BASE_URL}/api/categories`);
@@ -292,7 +293,7 @@ async function testSyncDefaultCategories() {
       // Check if the default categories exist
       const defaultCategories = ['Movies', 'Trailers', 'Music Videos', 'Short Films'];
       const missingCategories = defaultCategories.filter(defaultCat => 
-        !categoriesResponse.data.some(cat => cat.name === defaultCat)
+        !categoriesResponse.data.some((cat: { name: string }) => cat.name === defaultCat)
       );
       
       if (missingCategories.length === 0) {
