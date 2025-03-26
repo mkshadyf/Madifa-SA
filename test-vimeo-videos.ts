@@ -1,0 +1,1 @@
+import { VimeoService } from './server/vimeo'; async function testVideos() { try { const videos = await VimeoService.getAllVideos(1, 5); console.log('Videos:', JSON.stringify(videos, null, 2)); } catch (error) { console.error('Error:', error); } } testVideos();

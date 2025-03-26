@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.madifa.app",
+    "sha256_cert_fingerprints": [
+      "1A:61:6B:EF:9A:43:59:F7:B7:EE:10:FB:34:1E:25:42:20:0C:51:B3:A2:C1:B1:D5:18:FC:ED:9B:24:01:5E:3A"
+    ]
+  }
+}]

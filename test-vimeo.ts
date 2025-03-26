@@ -1,0 +1,1 @@
+import { VimeoService } from './server/vimeo'; async function testVimeo() { try { const authStatus = await VimeoService.checkAuthentication(); console.log('Authentication status:', authStatus); } catch (error) { console.error('Error:', error); } } testVimeo();

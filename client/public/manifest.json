@@ -1,0 +1,76 @@
+{
+  "name": "Madifa - South African Original Content",
+  "short_name": "Madifa",
+  "description": "South African original content streaming platform featuring local stories and talent",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#9333ea",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Homescreen of Madifa"
+    },
+    {
+      "src": "/screenshots/movie.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Movie details page"
+    },
+    {
+      "src": "/screenshots/mobile-home.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Homescreen of Madifa on mobile"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.madifa.app",
+      "id": "com.madifa.app"
+    }
+  ],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Browse Movies",
+      "short_name": "Browse",
+      "description": "Browse all available movies",
+      "url": "/browse",
+      "icons": [{ "src": "/icons/browse.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "My List",
+      "short_name": "List",
+      "description": "View your saved watchlist",
+      "url": "/my-list",
+      "icons": [{ "src": "/icons/watchlist.png", "sizes": "96x96" }]
+    }
+  ]
+}

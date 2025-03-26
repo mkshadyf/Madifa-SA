@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+  
+  .content-carousel {
+    scrollbar-width: none;
+  }
+
+  .content-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Default hover effects - disabled in lightweight mode */
+  .movie-card:hover .card-overlay {
+    opacity: 1;
+  }
+
+  .movie-card:hover img {
+    transform: scale(1.05);
+  }
+  
+  /* Lightweight mode overrides */
+  .lightweight-mode * {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+  
+  .lightweight-mode .movie-card:hover img {
+    transform: none !important;
+  }
+  
+  .lightweight-mode .bg-gradient-to-t,
+  .lightweight-mode .bg-gradient-to-r,
+  .lightweight-mode .bg-gradient-to-b,
+  .lightweight-mode .bg-gradient-to-l {
+    background: rgba(0, 0, 0, 0.7) !important;
+  }
+  
+  .lightweight-mode .animate-in,
+  .lightweight-mode .animate-out {
+    animation: none !important;
+  }
+  
+  .lightweight-mode .transition {
+    transition: none !important;
+  }
+  
+  .lightweight-mode .shadow-lg,
+  .lightweight-mode .shadow-md,
+  .lightweight-mode .shadow-sm {
+    box-shadow: none !important;
+  }
+}
+
+@layer components {
+  .hero-gradient-overlay-top {
+    @apply absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent;
+  }
+  
+  .hero-gradient-overlay-right {
+    @apply absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent;
+  }
+  
+  .card-overlay {
+    @apply opacity-0 absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent transition duration-300 flex flex-col justify-end p-4;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Performance optimization indicators */
+  .performance-indicator {
+    @apply inline-flex items-center px-2 py-1 rounded-full text-xs;
+  }
+  
+  .performance-indicator-good {
+    @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100;
+  }
+  
+  .performance-indicator-medium {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100;
+  }
+  
+  .performance-indicator-poor {
+    @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100;
+  }
+  
+  /* Optimized loading states for mobile */
+  .mobile-skeleton {
+    @apply animate-pulse bg-muted/50 rounded;
+  }
+  
+  /* Reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition-duration: 0ms !important;
+      animation-duration: 0ms !important;
+    }
+  }
+}

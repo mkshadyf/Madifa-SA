@@ -1,0 +1,69 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist
+build
+out
+server/public
+vite.config.ts.*
+*.tar.gz
+
+# Deployment
+.vercel
+.firebase/
+firebase-debug.log*
+firebase-debug.*.log*
+.netlify
+
+# Private keys and configs
+*.env
+.env*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+config/firebase-service-account.json
+attached_assets/*-firebase-adminsdk-*.json
+server/test-token.txt
+**/service-account*.json
+**/*-firebase-adminsdk-*.json
+**/*.pem
+**/*.key
+**/secrets.*
+secrets/
+**/*.pwd
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+.history/
+.project
+.classpath
+.settings/
+
+# Logs
+logs
+*.log
+
+# Temp
+.tmp/
+temp/
+tmp/
+.cache/
+
+# Testing
+coverage/
+.nyc_output/

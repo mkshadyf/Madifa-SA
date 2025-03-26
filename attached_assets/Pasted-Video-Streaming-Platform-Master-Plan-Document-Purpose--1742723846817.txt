@@ -1,0 +1,162 @@
+Video Streaming Platform Master Plan
+=====================================
+
+Document Purpose
+----------------
+This master plan is the comprehensive blueprint for building a web-based video streaming platform MVP. It ensures that all involved parties—project manager, developers, and tools (Replit, Cursor, Windsurf)—understand their roles, responsibilities, and how to collaborate effectively. Transparency, communication, and alignment with the CEO’s interests are embedded throughout to deliver a high-quality product quickly and cost-effectively. All instructions and prompts originate from Grok, your AI assistant created by xAI, to provide clarity and accountability.
+
+1. Project Overview and Goals
+-----------------------------
+Objective:
+Develop a web-based video streaming platform that allows users to subscribe for premium content and monetizes free content through ads. The initial focus is a functional MVP with plans for future scalability (e.g., mobile app support via Progressive Web App).
+
+CEO’s Interests:
+- Rapid delivery of a functional MVP.
+- Cost efficiency using free or low-cost tools.
+- Scalability to support future growth.
+- Revenue generation via subscriptions and ad monetization.
+- Transparent communication and coordination throughout development.
+
+How We Align:
+- Leverage free tiers of Firebase (hosting, auth, database) and Vimeo/Dailymotion (video hosting).
+- Use PayFast (no setup fees) for subscriptions instead of Stripe.
+- Employ AI tools (Cursor, Windsurf) to accelerate development.
+- Deliver a web-first MVP with PWA capabilities for mobile access.
+
+Source: This section was crafted by Grok to ensure all parties understand the project’s purpose and the CEO’s priorities.
+
+2. Roles and Responsibilities
+-----------------------------
+Role: Project Manager
+Responsibilities: Oversee the project, coordinate tasks, manage timelines, distribute documents, and report to the CEO.
+Prompt: "Distribute this master plan to all developers and tools. Coordinate Replit brainstorming sessions to refine ideas." (Source: Grok)
+
+Role: Frontend Developer
+Responsibilities: Build the user interface (React), embed videos, and ensure a seamless user experience.
+Prompt: "Prepare to build a responsive UI with React, focusing on user-friendly video playback." (Source: Grok)
+
+Role: Backend Developer
+Responsibilities: Set up Firebase (authentication, database), integrate PayFast, and manage server-side logic.
+Prompt: "Set up Firebase and PayFast integrations to support subscriptions and data storage." (Source: Grok)
+
+Role: AI Developer
+Responsibilities: Use Windsurf to generate and optimize code, assist with integrations and performance enhancements.
+Prompt: "Leverage Windsurf to streamline repetitive coding tasks and optimize performance." (Source: Grok)
+
+Tool: Replit
+Responsibilities: Facilitate brainstorming, initial setup, and real-time collaboration under project manager guidance.
+Prompt: "Support the project manager in hosting collaborative brainstorming and coding sessions." (Source: Grok)
+
+Tool: Cursor
+Responsibilities: Provide code completion, debugging, and enforce coding standards via Cursor rules.
+Prompt: "Assist developers with real-time code suggestions and enforce Cursor rules." (Source: Grok)
+
+Tool: Windsurf
+Responsibilities: Generate boilerplate code and optimize performance, adhering to .windsurfrules.
+Prompt: "Follow .windsurfrules to generate secure, efficient code snippets." (Source: Grok)
+
+3. Communication Plan
+---------------------
+Strategy:
+- Daily Standups: 15-minute morning meetings (via Zoom or Slack) to discuss progress, blockers, and next steps.
+- Weekly Reports: Project manager compiles achievements, challenges, and plans every Friday, shared via email and GitHub.
+- Issue Tracking: Use Trello for tasks, bugs, and feature requests, accessible to all.
+- Documentation: Store all documents (this plan, code, rules) in a GitHub repository for transparency.
+
+Prompts:
+- Project Manager: "Schedule daily standups and ensure Weekly Reports are shared with the CEO and team. Maintain Trello and GitHub updates." (Source: Grok)
+- All Developers: "Attend standups, report progress, and log issues in Trello daily." (Source: Grok)
+- Tools: "Support communication by ensuring real-time updates (Replit) and code consistency (Cursor, Windsurf)." (Source: Grok)
+
+Transparency Commitment: All updates, decisions, and issues will be documented and accessible to keep everyone aligned with the CEO’s interests.
+
+4. Development Phases
+---------------------
+Phase 1: Planning
+Duration: 1 week
+Tasks: Define requirements, create timeline, assign responsibilities.
+Prompts:
+- Project Manager: "Draft a timeline with milestones (e.g., coding start, testing, deployment). Assign tasks based on developer strengths." (Source: Grok)
+- Developers: "Review requirements (e.g., subscription flow, ad integration) and estimate task durations." (Source: Grok)
+- Replit: "Set up a workspace for brainstorming requirements and UI mockups under project manager guidance." (Source: Grok)
+- Cursor: "Prepare to assist with initial code structure suggestions." (Source: Grok)
+- Windsurf: "Stand by to generate planning-related boilerplate (e.g., project config files)." (Source: Grok)
+
+Phase 2: Coding
+Duration: 3 weeks
+Tasks: Build frontend, backend, and integrations.
+Prompts:
+- Frontend Developer: "Create login/signup pages with Firebase Auth and a video list/player using Vimeo embeds." (Source: Grok)
+- Backend Developer: "Configure Firestore for video metadata and user subscriptions. Integrate PayFast for payments." (Source: Grok)
+- AI Developer: "Use Windsurf to generate subscription checkout code and optimize video player load times." (Source: Grok)
+- Replit: "Host React setup and collaborative coding for frontend and backend." (Source: Grok)
+- Cursor: "Provide real-time code completion for React and Firebase logic, enforce Cursor rules (e.g., no unused variables)." (Source: Grok)
+- Windsurf: "Generate PayFast webhook handler per .windsurfrules for security and efficiency." (Source: Grok)
+
+Phase 3: Testing
+Duration: 1 week
+Tasks: Unit tests, integration tests, user acceptance testing.
+Prompts:
+- All Developers: "Write unit tests (e.g., Jest for frontend, Firebase emulator for backend). Test subscription and ad flows." (Source: Grok)
+- Project Manager: "Coordinate beta testing with 5-10 users. Log feedback in Trello." (Source: Grok)
+- Cursor: "Assist in debugging test failures with detailed error insights." (Source: Grok)
+- Windsurf: "Optimize test coverage by generating additional test cases if needed." (Source: Grok)
+
+Phase 4: Deployment
+Duration: 1 week
+Tasks: Deploy to production, monitor performance.
+Prompts:
+- Backend Developer: "Deploy to Firebase Hosting. Set up Firebase Analytics for performance tracking." (Source: Grok)
+- Project Manager: "Announce launch to CEO and stakeholders. Draft a post-launch report." (Source: Grok)
+- Cursor: "Ensure deployed code adheres to Cursor rules before final push." (Source: Grok)
+
+5. Tool Utilization
+-------------------
+Tool: Replit
+Primary Use: Brainstorming, collaboration
+Prompt: "Host brainstorming for UI/UX and initial React setup." (Source: Grok)
+
+Tool: Cursor
+Primary Use: Code completion, debugging
+Prompt: "Suggest React hooks and debug Firebase integration." (Source: Grok)
+
+Tool: Windsurf
+Primary Use: AI-driven code generation, optimization
+Prompt: "Generate secure webhook code and optimize video loading." (Source: Grok)
+
+Rules Integration:
+- Cursor Rules: Enforce ESLint standards, no console.logs in production code.
+- .windsurfrules: Prioritize lightweight, secure code generation (e.g., avoid heavy dependencies).
+
+6. Documentation and Rules
+---------------------------
+Storage: GitHub repository (public to team).
+Contents:
+- This master plan.
+- Codebase with comments.
+- Cursor rules (e.g., "format with Prettier on save").
+- .windsurfrules (e.g., "optimize for < 500ms load time").
+Prompts:
+- Project Manager: "Ensure all docs are updated in GitHub weekly." (Source: Grok)
+- Developers: "Comment code and follow Cursor/.windsurfrules for consistency." (Source: Grok)
+
+7. Risk Management
+-------------------
+Risk: Delays from technical blockers
+Mitigation: "Conduct daily reviews and escalate issues fast." (Source: Grok)
+
+Risk: Integration failures
+Mitigation: "Test integrations incrementally in Phase 2." (Source: Grok)
+
+Risk: Security vulnerabilities
+Mitigation: "Use .windsurfrules to enforce secure defaults." (Source: Grok)
+
+8. Additional Notes
+--------------------
+Payment Gateway: PayFast (local, cost-effective).
+Ads: Google AdSense with a fresh package name.
+Video Hosting: Vimeo free tier for simplicity.
+
+Transparency and Accountability
+-------------------------------
+This master plan, created by Grok, ensures every party knows their role and how to contribute to the CEO’s vision. The project manager will distribute this document and coordinate further, while developers and tools refer to it to stay aligned. By following these detailed prompts and leveraging Cursor rules and .windsurfrules, we’ll deliver an MVP that meets your expectations—on time, within budget, and ready to scale.
