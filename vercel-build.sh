@@ -28,7 +28,12 @@ mkdir -p .vercel/output/static
 
 # Move client build to static directory
 echo "Copying static files..."
-cp -r dist/public/* .vercel/output/static/
+if [ -d "dist/public" ]; then
+  cp -r dist/public/* .vercel/output/static/
+else
+  # Vite puts its build output directly in the dist directory
+  cp -r dist/* .vercel/output/static/
+fi
 
 # Create a tsconfig for the server function
 cat > .vercel/output/functions/api.func/tsconfig.json << 'EOL'
@@ -48,7 +53,8 @@ cat > .vercel/output/functions/api.func/index.js << 'EOL'
 // ESM Entry point for Vercel serverless function
 import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
+import * as fs from 'fs';
 import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -64,21 +70,60 @@ process.env.NODE_ENV = 'production';
 // Configure module aliases
 process.env.MODULE_ALIAS_SHARED = join(__dirname, 'shared');
 
+// Find server entry point file
+async function findServerEntry() {
+  const possiblePaths = [
+    join(__dirname, 'server', 'index.js'),
+    join(__dirname, 'index.js')
+  ];
+  
+  for (const path of possiblePaths) {
+    if (fs.existsSync(path)) {
+      console.log(`Found server entry at ${path}`);
+      return path;
+    }
+  }
+  
+  throw new Error('Could not find server entry point');
+}
+
+// Write 404 page to static directory in case client routing is needed
+function ensureClientRouting() {
+  try {
+    const staticDir = resolve(__dirname, '..', '..', 'static');
+    if (fs.existsSync(join(staticDir, 'index.html'))) {
+      fs.copyFileSync(
+        join(staticDir, 'index.html'), 
+        join(staticDir, '404.html')
+      );
+      console.log('Created 404.html from index.html for client-side routing');
+    }
+  } catch (err) {
+    console.warn('Could not create 404.html page:', err);
+  }
+}
+
+// Ensure client-side routing works
+ensureClientRouting();
+
 // Handle possible import errors with more detailed logging
 try {
-  const server = await import('./server/index.js');
+  // List available files
+  console.log('Server directory contents:');
+  if (fs.existsSync(join(__dirname, 'server'))) {
+    console.log(fs.readdirSync(join(__dirname, 'server')));
+  } else {
+    console.log('Server directory not found, listing root:');
+    console.log(fs.readdirSync(__dirname));
+  }
+  
+  // Try to find and import server
+  const serverEntryPath = await findServerEntry();
+  const serverEntryUrl = new URL(`file://${serverEntryPath}`).href;
+  const server = await import(serverEntryUrl);
   console.log('Server loaded successfully');
 } catch (err) {
   console.error('Failed to load server:', err);
-  if (err.code === 'ERR_MODULE_NOT_FOUND') {
-    console.error('Module not found. Available files in server directory:');
-    const fs = require('fs');
-    try {
-      console.log(fs.readdirSync(join(__dirname, 'server')));
-    } catch (e) {
-      console.error('Could not read server directory:', e);
-    }
-  }
   process.exit(1);
 }
 EOL
@@ -86,12 +131,34 @@ EOL
 # Copy server build files
 echo "Copying server files..."
 mkdir -p .vercel/output/functions/api.func/server
-cp -r dist/server/* .vercel/output/functions/api.func/server/
+if [ -d "dist/server" ]; then
+  cp -r dist/server/* .vercel/output/functions/api.func/server/
+else
+  # Handle case where server files might be in the root dist directory
+  echo "Server directory not found, looking for server files in dist..."
+  for file in dist/*.js; do
+    if [[ $file == *"/index.js" ]]; then
+      cp $file .vercel/output/functions/api.func/server/
+      echo "Copied $file to server directory"
+    fi
+  done
+fi
 
-# Copy shared files
+# Copy shared files 
 echo "Copying shared files..."
 mkdir -p .vercel/output/functions/api.func/shared
-cp -r dist/shared/* .vercel/output/functions/api.func/shared/ 2>/dev/null || echo "No shared directory to copy"
+if [ -d "dist/shared" ]; then
+  cp -r dist/shared/* .vercel/output/functions/api.func/shared/
+else
+  # Handle case where shared files might be in the root dist directory
+  echo "Shared directory not found, looking for schema file in dist..."
+  for file in dist/*.js; do
+    if [[ $file == *"/schema.js" ]]; then
+      cp $file .vercel/output/functions/api.func/shared/
+      echo "Copied $file to shared directory"
+    fi
+  done
+fi
 
 # Create a module resolver helper
 cat > .vercel/output/functions/api.func/resolver.js << 'EOL'
