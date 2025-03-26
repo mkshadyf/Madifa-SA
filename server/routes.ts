@@ -545,7 +545,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const vimeoResponse = await VimeoService.getAllVideos(1, 25);
         
         // Filter and transform Vimeo videos based on content type
-        let transformedContent = [];
+        let transformedContent: Content[] = [];
         
         if (contentType === 'trailer') {
           // For trailers - filter by title containing "trailer"

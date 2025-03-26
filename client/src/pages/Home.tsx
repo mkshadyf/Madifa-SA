@@ -102,23 +102,35 @@ const Home = () => {
         contentsRes,
         categoriesRes,
         premiumRes,
-        freeRes
+        freeRes,
+        movieRes,
+        seriesRes,
+        trailerRes,
+        musicVideoRes
       ] = await Promise.all([
         fetch("/api/contents"),
         fetch("/api/categories"),
         fetch("/api/contents/premium"),
-        fetch("/api/contents/free")
+        fetch("/api/contents/free"),
+        fetch("/api/contents/type/movie"),
+        fetch("/api/contents/type/series"),
+        fetch("/api/contents/type/trailer"),
+        fetch("/api/contents/type/music_video")
       ]);
       
       if (!contentsRes.ok || !categoriesRes.ok || !premiumRes.ok || !freeRes.ok) {
         throw new Error("Failed to fetch data");
       }
       
-      const [contents, categories, premium, free] = await Promise.all([
+      const [contents, categories, premium, free, movies, series, trailers, musicVideos] = await Promise.all([
         contentsRes.json(),
         categoriesRes.json(),
         premiumRes.json(),
-        freeRes.json()
+        freeRes.json(),
+        movieRes.json(),
+        seriesRes.json(),
+        trailerRes.json(),
+        musicVideoRes.json()
       ]);
       
       // Set featured content
@@ -134,11 +146,11 @@ const Home = () => {
       setFreeContent(free);
       setCategories(categories);
       
-      // Organize content by type
-      setMovieContent(contents.filter((c: ContentItem) => !c.contentType || c.contentType === 'movie').slice(0, 10));
-      setSeriesContent(contents.filter((c: ContentItem) => c.contentType === 'series').slice(0, 10));
-      setTrailerContent(contents.filter((c: ContentItem) => c.contentType === 'trailer').slice(0, 10));
-      setMusicVideoContent(contents.filter((c: ContentItem) => c.contentType === 'music_video').slice(0, 10));
+      // Set content by type using dedicated endpoints
+      setMovieContent(movies.slice(0, 10));
+      setSeriesContent(series.slice(0, 10));
+      setTrailerContent(trailers.slice(0, 10));
+      setMusicVideoContent(musicVideos.slice(0, 10));
       
       // Fetch watch history if user is logged in
       if (user) {
