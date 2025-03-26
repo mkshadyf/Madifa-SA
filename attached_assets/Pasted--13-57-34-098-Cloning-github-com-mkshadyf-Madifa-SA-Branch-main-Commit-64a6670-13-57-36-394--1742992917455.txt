@@ -1,0 +1,94 @@
+[13:57:34.098] Cloning github.com/mkshadyf/Madifa-SA (Branch: main, Commit: 64a6670)
+[13:57:36.394] Cloning completed: 2.295s
+[13:57:38.151] Restored build cache from previous deployment (91ovWbneqMxJRqy9eArzAEjf6yUp)
+[13:57:38.245] Running build in Washington, D.C., USA (East) – iad1
+[13:57:39.064] Running "vercel build"
+[13:57:39.429] Vercel CLI 41.4.1
+[13:57:40.144] Installing dependencies...
+[13:57:42.859] 
+[13:57:42.859] up to date in 2s
+[13:57:42.860] 
+[13:57:42.860] 150 packages are looking for funding
+[13:57:42.861]   run `npm fund` for details
+[13:57:42.902] Starting Vercel build process...
+[13:57:42.902] Building client...
+[13:57:43.011] 
+[13:57:43.012] > rest-express@1.0.0 build
+[13:57:43.012] > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+[13:57:43.013] 
+[13:57:43.409] [36mvite v5.4.15 [32mbuilding for production...[36m[39m
+[13:57:43.733] transforming...
+[13:57:49.366] [32m✓[39m 1884 modules transformed.
+[13:57:49.647] rendering chunks...
+[13:57:49.934] computing gzip size...
+[13:57:49.958] [2m../dist/public/[22m[32mindex.html                  [39m[1m[2m  6.44 kB[22m[1m[22m[2m │ gzip:   1.93 kB[22m
+[13:57:49.958] [2m../dist/public/[22m[2massets/[22m[35mindex-DYa8zjbi.css   [39m[1m[2m 76.91 kB[22m[1m[22m[2m │ gzip:  13.13 kB[22m
+[13:57:49.959] [2m../dist/public/[22m[2massets/[22m[36mbrowser-CRvrdu5P.js  [39m[1m[2m  0.30 kB[22m[1m[22m[2m │ gzip:   0.25 kB[22m
+[13:57:49.959] [2m../dist/public/[22m[2massets/[22m[36mindex-DL1fkRn-.js    [39m[1m[33m849.43 kB[39m[22m[2m │ gzip: 241.83 kB[22m
+[13:57:49.959] [32m✓ built in 6.27s[39m
+[13:57:49.960] [33m
+[13:57:49.960] (!) Some chunks are larger than 500 kB after minification. Consider:
+[13:57:49.960] - Using dynamic import() to code-split the application
+[13:57:49.960] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[13:57:49.960] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[13:57:50.026] 
+[13:57:50.026]   dist/index.js  86.6kb
+[13:57:50.026] 
+[13:57:50.026] ⚡ Done in 15ms
+[13:57:50.032] Building server...
+[13:57:50.139] 
+[13:57:50.139] > rest-express@1.0.0 build
+[13:57:50.140] > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+[13:57:50.140] 
+[13:57:50.453] [36mvite v5.4.15 [32mbuilding for production...[36m[39m
+[13:57:50.516] transforming...
+[13:57:56.047] [32m✓[39m 1884 modules transformed.
+[13:57:56.345] rendering chunks...
+[13:57:56.621] computing gzip size...
+[13:57:56.644] [2m../dist/public/[22m[32mindex.html                  [39m[1m[2m  6.44 kB[22m[1m[22m[2m │ gzip:   1.93 kB[22m
+[13:57:56.645] [2m../dist/public/[22m[2massets/[22m[35mindex-DYa8zjbi.css   [39m[1m[2m 76.91 kB[22m[1m[22m[2m │ gzip:  13.13 kB[22m
+[13:57:56.652] [2m../dist/public/[22m[2massets/[22m[36mbrowser-CRvrdu5P.js  [39m[1m[2m  0.30 kB[22m[1m[22m[2m │ gzip:   0.25 kB[22m
+[13:57:56.652] [2m../dist/public/[22m[2massets/[22m[36mindex-DL1fkRn-.js    [39m[1m[33m849.43 kB[39m[22m[2m │ gzip: 241.83 kB[22m
+[13:57:56.652] [32m✓ built in 6.17s[39m
+[13:57:56.652] [33m
+[13:57:56.652] (!) Some chunks are larger than 500 kB after minification. Consider:
+[13:57:56.652] - Using dynamic import() to code-split the application
+[13:57:56.652] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[13:57:56.652] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[13:57:56.692] 
+[13:57:56.692]   dist/index.js  86.6kb
+[13:57:56.693] 
+[13:57:56.693] ⚡ Done in 11ms
+[13:57:56.702] Checking build output:
+[13:57:56.705] total 88
+[13:57:56.705] drwxr-xr-x 3 root root    36 Mar 26 11:57 .
+[13:57:56.705] drwx------ 1 root root    97 Mar 26 11:57 ..
+[13:57:56.705] -rw-r--r-- 1 root root 88648 Mar 26 11:57 index.js
+[13:57:56.705] drwxr-xr-x 6 root root   157 Mar 26 11:57 public
+[13:57:56.707] total 28
+[13:57:56.707] drwxr-xr-x 6 root root  157 Mar 26 11:57 .
+[13:57:56.707] drwxr-xr-x 3 root root   36 Mar 26 11:57 ..
+[13:57:56.708] drwxr-xr-x 2 root root   29 Mar 26 11:57 .well-known
+[13:57:56.708] -rw-r--r-- 1 root root   58 Mar 26 11:57 app-ads.txt
+[13:57:56.708] drwxr-xr-x 2 root root   84 Mar 26 11:57 assets
+[13:57:56.713] drwxr-xr-x 2 root root   51 Mar 26 11:57 icons
+[13:57:56.714] drwxr-xr-x 2 root root   29 Mar 26 11:57 images
+[13:57:56.714] -rw-r--r-- 1 root root 6444 Mar 26 11:57 index.html
+[13:57:56.714] -rw-r--r-- 1 root root 1918 Mar 26 11:57 manifest.json
+[13:57:56.714] -rw-r--r-- 1 root root 2601 Mar 26 11:57 offline.html
+[13:57:56.715] -rw-r--r-- 1 root root 4718 Mar 26 11:57 sw.js
+[13:57:56.717] No server directory found
+[13:57:56.717] Copying static files...
+[13:57:56.717] ls: cannot access 'dist/server/': No such file or directory
+[13:57:56.720] Copying server files...
+[13:57:56.721] Server directory not found, looking for server files in dist...
+[13:57:56.723] Copied dist/index.js to server directory
+[13:57:56.724] Copying shared files...
+[13:57:56.726] Shared directory not found, looking for schema file in dist...
+[13:57:56.730] No .env file to copy
+[13:57:56.731] Vercel build completed successfully
+[13:57:56.789] Build Completed in /vercel/output [17s]
+[13:57:56.897] Deploying outputs...
+[13:57:56.900] Error: The following Serverless Functions contain an invalid "runtime":
+[13:57:56.900]   - api (nodejs18.x). Learn More: https://vercel.com/guides/serverless-function-contains-invalid-runtime-error
+[13:57:57.360] 

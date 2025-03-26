@@ -1,0 +1,7 @@
+{
+  "runtime": "nodejs20.x",
+  "handler": "index.js",
+  "environment": {
+    "NODE_OPTIONS": "--experimental-specifier-resolution=node"
+  }
+}
