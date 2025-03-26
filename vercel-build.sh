@@ -117,11 +117,33 @@ try {
     console.log(fs.readdirSync(__dirname));
   }
   
-  // Try to find and import server
-  const serverEntryPath = await findServerEntry();
-  const serverEntryUrl = new URL(`file://${serverEntryPath}`).href;
-  const server = await import(serverEntryUrl);
-  console.log('Server loaded successfully');
+  // Try to find and import server with better error handling
+  try {
+    const serverEntryPath = await findServerEntry();
+    console.log(`Attempting to load server from: ${serverEntryPath}`);
+    
+    // Try file:// URL format first (more reliable)
+    try {
+      const serverEntryUrl = new URL(`file://${serverEntryPath}`).href;
+      const server = await import(serverEntryUrl);
+      console.log('Server loaded successfully with file:// URL');
+    } catch (fileErr) {
+      console.log('Failed to load with file:// URL, trying relative import...');
+      
+      // Fallback to relative import
+      if (serverEntryPath.includes('server/index.js')) {
+        const server = await import('./server/index.js');
+        console.log('Server loaded successfully with relative import');
+      } else {
+        // Try to load from current directory
+        const server = await import('./index.js');
+        console.log('Server loaded successfully from current directory');
+      }
+    }
+  } catch (err) {
+    console.error('All import attempts failed:', err);
+    throw err;
+  }
 } catch (err) {
   console.error('Failed to load server:', err);
   process.exit(1);
@@ -131,34 +153,44 @@ EOL
 # Copy server build files
 echo "Copying server files..."
 mkdir -p .vercel/output/functions/api.func/server
+
+# Copy the root index.js file (contains the actual server)
+if [ -f "dist/index.js" ]; then
+  cp dist/index.js .vercel/output/functions/api.func/server/
+  echo "Copied dist/index.js to server directory"
+fi
+
+# Copy any server directory files if they exist
 if [ -d "dist/server" ]; then
   cp -r dist/server/* .vercel/output/functions/api.func/server/
-else
-  # Handle case where server files might be in the root dist directory
-  echo "Server directory not found, looking for server files in dist..."
-  for file in dist/*.js; do
-    if [[ $file == *"/index.js" ]]; then
-      cp $file .vercel/output/functions/api.func/server/
-      echo "Copied $file to server directory"
-    fi
-  done
+  echo "Copied dist/server/* to server directory"
 fi
 
 # Copy shared files 
 echo "Copying shared files..."
 mkdir -p .vercel/output/functions/api.func/shared
+
+# Create an empty schema.js file if one doesn't exist to avoid import errors
+cat > .vercel/output/functions/api.func/shared/schema.js << 'EOL'
+// Default schema in case the real one isn't found
+export const users = {};
+export const User = {};
+export const InsertUser = {};
+EOL
+
+# Copy any shared directory files if they exist
 if [ -d "dist/shared" ]; then
   cp -r dist/shared/* .vercel/output/functions/api.func/shared/
-else
-  # Handle case where shared files might be in the root dist directory
-  echo "Shared directory not found, looking for schema file in dist..."
-  for file in dist/*.js; do
-    if [[ $file == *"/schema.js" ]]; then
-      cp $file .vercel/output/functions/api.func/shared/
-      echo "Copied $file to shared directory"
-    fi
-  done
+  echo "Copied dist/shared/* to shared directory"
 fi
+
+# Look for schema.js specifically
+for file in dist/*.js; do
+  if [[ $file == *"schema.js" ]]; then
+    cp "$file" .vercel/output/functions/api.func/shared/
+    echo "Copied $file to shared directory"
+  fi
+done
 
 # Create a module resolver helper
 cat > .vercel/output/functions/api.func/resolver.js << 'EOL'
@@ -177,9 +209,8 @@ EOL
 # Create function config
 cat > .vercel/output/functions/api.func/.vc-config.json << 'EOL'
 {
-  "runtime": "nodejs18.x",
+  "runtime": "nodejs20.x",
   "handler": "index.js",
-  "launcherType": "Nodejs",
   "environment": {
     "NODE_OPTIONS": "--experimental-specifier-resolution=node"
   }
