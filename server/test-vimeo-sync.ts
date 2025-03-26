@@ -12,8 +12,8 @@ async function adminLogin() {
     console.log('\n--- Admin Login for Testing ---');
     
     const loginData = {
-      email: 'admin@madifa.com',
-      password: '$2b$10$XMJHqKhyfv6ZV4ut/tpTL.EhWw2tGL9PYaQh3IFp7XK4zBY26t2aW'
+      email: 'testadmin@madifa.com',
+      password: 'Admin@123' // Use plaintext password
     };
     
     console.log(`Attempting to login as admin with email: ${loginData.email}`);
