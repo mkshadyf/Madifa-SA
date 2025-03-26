@@ -605,7 +605,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
               contentType: 'movie',
               vimeoId: video.id,
               categoryId: 1,
-              displayPriority: index
+              displayPriority: index,
+              createdAt: new Date(),
+              rating: null,
+              metadata: null,
+              averageRating: null,
+              reviewCount: 0
             }));
         } else if (contentType === 'music_video') {
           // For music videos - currently we don't have a reliable way to identify them
@@ -671,7 +676,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
               contentType: isTrailer ? 'trailer' : 'movie',
               vimeoId: vimeoVideo.id,
               categoryId: 1, // Default category
-              displayPriority: 0
+              displayPriority: 0,
+              createdAt: new Date(),
+              rating: null,
+              metadata: null,
+              averageRating: null,
+              reviewCount: 0
             };
             
             return res.json(transformedContent);
