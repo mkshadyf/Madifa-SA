@@ -13,7 +13,7 @@ async function adminLogin() {
     
     const loginData = {
       email: 'admin@madifa.com',
-      password: 'Admin@123'
+      password: '$2b$10$XMJHqKhyfv6ZV4ut/tpTL.EhWw2tGL9PYaQh3IFp7XK4zBY26t2aW'
     };
     
     console.log(`Attempting to login as admin with email: ${loginData.email}`);
@@ -284,7 +284,8 @@ async function runAllTests() {
 }
 
 // Run tests when this file is executed directly
-if (require.main === module) {
+// Using import.meta.url to check if this is the main module
+if (import.meta.url.endsWith('/test-vimeo-sync.ts')) {
   runAllTests().catch(console.error);
 }
 
