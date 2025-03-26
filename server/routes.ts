@@ -345,9 +345,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Content Routes
   app.get("/api/contents", async (req, res) => {
     try {
+      // First try to get content from our database
       const contents = await storage.getAllContents();
-      res.json(contents);
+      
+      // If we have contents in the database, return them
+      if (contents && contents.length > 0) {
+        return res.json(contents);
+      }
+      
+      // If no contents in database, fetch from Vimeo
+      try {
+        console.log("No content in database, fetching from Vimeo...");
+        const vimeoResponse = await VimeoService.getAllVideos(1, 25);
+        
+        // Convert Vimeo videos to our content format
+        // We're using category ID 1 by default and marking all as free content initially
+        const transformedContent = vimeoResponse.videos.map((video, index) => {
+          // Determine if it's a trailer based on title
+          const isTrailer = video.title.toLowerCase().includes('trailer');
+          
+          return {
+            id: index + 1, // Since we don't have real IDs yet
+            title: video.title,
+            description: video.description || `Video ${index + 1}`,
+            thumbnailUrl: video.thumbnailUrl,
+            videoUrl: video.streamingUrl,
+            trailerUrl: isTrailer ? video.streamingUrl : '',
+            releaseYear: new Date().getFullYear(),
+            duration: video.duration,
+            isPremium: !isTrailer, // Trailers are free, others are premium
+            contentType: isTrailer ? 'trailer' : 'movie',
+            vimeoId: video.id,
+            categoryId: 1, // Default category
+            displayPriority: index
+          };
+        });
+        
+        return res.json(transformedContent);
+      } catch (vimeoError) {
+        console.error("Failed to fetch from Vimeo:", vimeoError);
+        // Return empty array if both database and Vimeo fail
+        return res.json([]);
+      }
     } catch (error) {
+      console.error("Error fetching contents:", error);
       res.status(500).json({ message: "Server error" });
     }
   });
@@ -355,18 +396,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Important: More specific routes must come BEFORE parametrized routes
   app.get("/api/contents/premium", async (req, res) => {
     try {
+      // First try to get premium content from our database
       const contents = await storage.getPremiumContents();
-      res.json(contents);
+      
+      // If we have contents in the database, return them
+      if (contents && contents.length > 0) {
+        return res.json(contents);
+      }
+      
+      // If no premium contents in database, fetch from Vimeo
+      try {
+        console.log("No premium content in database, fetching from Vimeo...");
+        const vimeoResponse = await VimeoService.getAllVideos(1, 25);
+        
+        // Convert Vimeo videos to our content format
+        // Filter for premium content (not trailers)
+        const transformedContent = vimeoResponse.videos
+          .filter(video => !video.title.toLowerCase().includes('trailer'))
+          .map((video, index) => {
+            return {
+              id: index + 100, // Using a different range for premium content
+              title: video.title,
+              description: video.description || `Video ${index + 1}`,
+              thumbnailUrl: video.thumbnailUrl,
+              videoUrl: video.streamingUrl,
+              trailerUrl: '',
+              releaseYear: new Date().getFullYear(),
+              duration: video.duration,
+              isPremium: true,
+              contentType: 'movie',
+              vimeoId: video.id,
+              categoryId: 1, // Default category
+              displayPriority: index
+            };
+          });
+        
+        return res.json(transformedContent);
+      } catch (vimeoError) {
+        console.error("Failed to fetch premium content from Vimeo:", vimeoError);
+        // Return empty array if both database and Vimeo fail
+        return res.json([]);
+      }
     } catch (error) {
+      console.error("Error fetching premium contents:", error);
       res.status(500).json({ message: "Server error" });
     }
   });
 
   app.get("/api/contents/free", async (req, res) => {
     try {
+      // First try to get free content from our database
       const contents = await storage.getFreeContents();
-      res.json(contents);
+      
+      // If we have contents in the database, return them
+      if (contents && contents.length > 0) {
+        return res.json(contents);
+      }
+      
+      // If no free contents in database, fetch from Vimeo
+      try {
+        console.log("No free content in database, fetching from Vimeo...");
+        const vimeoResponse = await VimeoService.getAllVideos(1, 25);
+        
+        // Convert Vimeo videos to our content format
+        // Filter for free content (trailers only)
+        const transformedContent = vimeoResponse.videos
+          .filter(video => video.title.toLowerCase().includes('trailer'))
+          .map((video, index) => {
+            return {
+              id: index + 200, // Using a different range for free content
+              title: video.title,
+              description: video.description || `Trailer ${index + 1}`,
+              thumbnailUrl: video.thumbnailUrl,
+              videoUrl: video.streamingUrl,
+              trailerUrl: video.streamingUrl,
+              releaseYear: new Date().getFullYear(),
+              duration: video.duration,
+              isPremium: false,
+              contentType: 'trailer',
+              vimeoId: video.id,
+              categoryId: 1, // Default category
+              displayPriority: index
+            };
+          });
+        
+        return res.json(transformedContent);
+      } catch (vimeoError) {
+        console.error("Failed to fetch free content from Vimeo:", vimeoError);
+        // Return empty array if both database and Vimeo fail
+        return res.json([]);
+      }
     } catch (error) {
+      console.error("Error fetching free contents:", error);
       res.status(500).json({ message: "Server error" });
     }
   });
@@ -379,8 +500,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const contents = await storage.getContentsByCategory(categoryId);
-      res.json(contents);
+      
+      // If we have data in the database, return it
+      if (contents && contents.length > 0) {
+        return res.json(contents);
+      }
+      
+      // If no contents in database, we would need to add Vimeo fetch logic here
+      // But since we don't have category information in the Vimeo videos yet,
+      // we'll return an empty array
+      return res.json([]);
     } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+  
+  // Route to get contents by type
+  app.get("/api/contents/type/:contentType", async (req, res) => {
+    try {
+      const { contentType } = req.params;
+      
+      // Validate content type
+      if (!['movie', 'series', 'trailer', 'music_video'].includes(contentType)) {
+        return res.status(400).json({ message: "Invalid content type. Must be movie, series, trailer, or music_video" });
+      }
+      
+      // Try to get from database first (This endpoint doesn't exist yet in our storage interface)
+      // Since we don't have a specific method for this, we'll get all contents and filter
+      const allContents = await storage.getAllContents();
+      
+      // Filter by content type if we have data
+      if (allContents && allContents.length > 0) {
+        const filteredContents = allContents.filter(content => 
+          (contentType === 'movie' && (!content.contentType || content.contentType === 'movie')) ||
+          (content.contentType === contentType)
+        );
+        
+        return res.json(filteredContents);
+      }
+      
+      // If no content in database, fetch from Vimeo
+      try {
+        console.log(`No ${contentType} content in database, fetching from Vimeo...`);
+        const vimeoResponse = await VimeoService.getAllVideos(1, 25);
+        
+        // Filter and transform Vimeo videos based on content type
+        let transformedContent = [];
+        
+        if (contentType === 'trailer') {
+          // For trailers - filter by title containing "trailer"
+          transformedContent = vimeoResponse.videos
+            .filter(video => video.title.toLowerCase().includes('trailer'))
+            .map((video, index) => ({
+              id: index + 300, // Using a different ID range
+              title: video.title,
+              description: video.description || `Trailer ${index + 1}`,
+              thumbnailUrl: video.thumbnailUrl,
+              videoUrl: video.streamingUrl,
+              trailerUrl: video.streamingUrl,
+              releaseYear: new Date().getFullYear(),
+              duration: video.duration,
+              isPremium: false, // Trailers are always free
+              contentType: 'trailer',
+              vimeoId: video.id,
+              categoryId: 1,
+              displayPriority: index
+            }));
+        } else if (contentType === 'movie') {
+          // For movies - filter out trailers
+          transformedContent = vimeoResponse.videos
+            .filter(video => !video.title.toLowerCase().includes('trailer'))
+            .map((video, index) => ({
+              id: index + 400, // Using a different ID range
+              title: video.title,
+              description: video.description || `Movie ${index + 1}`,
+              thumbnailUrl: video.thumbnailUrl,
+              videoUrl: video.streamingUrl,
+              trailerUrl: '',
+              releaseYear: new Date().getFullYear(),
+              duration: video.duration,
+              isPremium: true, // Movies are premium
+              contentType: 'movie',
+              vimeoId: video.id,
+              categoryId: 1,
+              displayPriority: index
+            }));
+        } else if (contentType === 'music_video') {
+          // For music videos - currently we don't have a reliable way to identify them
+          // In a real app, we'd have proper metadata or naming conventions
+          // For now, we'll return an empty array
+          transformedContent = [];
+        } else if (contentType === 'series') {
+          // For series - currently we don't have a reliable way to identify them
+          // In a real app, we'd have proper metadata or naming conventions
+          // For now, we'll return an empty array
+          transformedContent = [];
+        }
+        
+        return res.json(transformedContent);
+      } catch (vimeoError) {
+        console.error(`Failed to fetch ${contentType} content from Vimeo:`, vimeoError);
+        return res.json([]);
+      }
+    } catch (error) {
+      console.error("Error fetching content by type:", error);
       res.status(500).json({ message: "Server error" });
     }
   });
@@ -392,13 +615,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid content ID" });
       }
       
+      // Try to get from database first
       const content = await storage.getContent(contentId);
-      if (!content) {
-        return res.status(404).json({ message: "Content not found" });
+      
+      // If found in database, return it
+      if (content) {
+        return res.json(content);
       }
       
-      res.json(content);
+      // If not found in database but has a vimeoId format (looking for direct Vimeo ID)
+      if (req.params.id.match(/^\d+$/)) {
+        try {
+          console.log(`Content ID ${contentId} not found in database, trying Vimeo ID ${req.params.id}...`);
+          // Try to get directly from Vimeo
+          const vimeoId = req.params.id;
+          const vimeoVideo = await VimeoService.getVideoDetails(vimeoId);
+          
+          if (vimeoVideo) {
+            // Determine if it's a trailer based on title
+            const isTrailer = vimeoVideo.title.toLowerCase().includes('trailer');
+            
+            // Create a content object
+            const transformedContent = {
+              id: contentId,
+              title: vimeoVideo.title,
+              description: vimeoVideo.description || `Video ${contentId}`,
+              thumbnailUrl: vimeoVideo.thumbnailUrl,
+              videoUrl: vimeoVideo.streamingUrl,
+              trailerUrl: isTrailer ? vimeoVideo.streamingUrl : '',
+              releaseYear: new Date().getFullYear(),
+              duration: vimeoVideo.duration,
+              isPremium: !isTrailer, // Trailers are free, others are premium
+              contentType: isTrailer ? 'trailer' : 'movie',
+              vimeoId: vimeoVideo.id,
+              categoryId: 1, // Default category
+              displayPriority: 0
+            };
+            
+            return res.json(transformedContent);
+          }
+        } catch (vimeoError) {
+          console.error(`Failed to fetch Vimeo video with ID ${req.params.id}:`, vimeoError);
+          // Continue to 404 response
+        }
+      }
+      
+      // If we get here, content was not found in database or Vimeo
+      return res.status(404).json({ message: "Content not found" });
     } catch (error) {
+      console.error("Error fetching content:", error);
       res.status(500).json({ message: "Server error" });
     }
   });
