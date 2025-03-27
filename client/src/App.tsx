@@ -6,6 +6,9 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { DataSourceProvider } from "./contexts/DataSourceContext";
 import { PerformanceProvider } from "./contexts/PerformanceContext";
 
+// Auth components
+import { ProtectedRoute, AdminRoute } from "@/components/auth/ProtectedRoute";
+
 // PWA components
 import { InstallPrompt } from "@/components/app/InstallPrompt";
 import { OfflineIndicator } from "@/components/app/OfflineIndicator";
@@ -33,38 +36,56 @@ import NotFound from "@/pages/not-found";
 import AdminDashboard from "@/pages/admin/Dashboard";
 import VimeoManagement from "@/pages/admin/VimeoManagement";
 
-// Admin route wrapper component
-const AdminRoute = ({ component: Component, ...rest }: any) => {
-  return (
-    <AdminLayout>
-      <Component {...rest} />
-    </AdminLayout>
-  );
-};
-
 // Extract Router into a separate component for better organization
+
 function Router() {
   return (
     <Switch>
-      {/* Main Routes */}
+      {/* Public Routes - Accessible to all users */}
       <Route path="/" component={Home} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/movie/:id" component={MovieDetails} />
       <Route path="/browse" component={Browse} />
       <Route path="/category/:id" component={Browse} />
-      <Route path="/my-list" component={MyList} />
-      <Route path="/profile" component={Profile} />
-      <Route path="/subscription" component={Subscription} />
-      <Route path="/downloads" component={Downloads} />
       <Route path="/accessible-player/:id" component={AccessiblePlayerDemo} />
       
-      {/* Admin Routes */}
+      {/* Protected Routes - Require Authentication */}
+      <Route path="/my-list">
+        <ProtectedRoute>
+          <MyList />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/profile">
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/subscription">
+        <ProtectedRoute>
+          <Subscription />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/downloads">
+        <ProtectedRoute>
+          <Downloads />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Admin Routes - Require Admin Authentication */}
       <Route path="/admin">
-        {(params) => <AdminRoute component={AdminDashboard} {...params} />}
+        <AdminRoute>
+          <AdminLayout>
+            <AdminDashboard />
+          </AdminLayout>
+        </AdminRoute>
       </Route>
       <Route path="/admin/vimeo">
-        {(params) => <AdminRoute component={VimeoManagement} {...params} />}
+        <AdminRoute>
+          <AdminLayout>
+            <VimeoManagement />
+          </AdminLayout>
+        </AdminRoute>
       </Route>
       
       {/* 404 Route */}
