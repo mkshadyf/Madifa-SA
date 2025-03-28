@@ -865,6 +865,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Get watch progress for a specific content
+
+  // Admin Account Management Routes
+  app.post("/api/admin/create-admin", authenticateAdmin, async (req, res) => {
+    try {
+      const validatedData = insertUserSchema.parse(req.body);
+      
+      // Check if email already exists
+      const existingUserByEmail = await storage.getUserByEmail(validatedData.email);
+      if (existingUserByEmail) {
+        return res.status(400).json({ message: "Email already in use" });
+      }
+      
+      // Check if username already exists
+      const existingUserByUsername = await storage.getUserByUsername(validatedData.username);
+      if (existingUserByUsername) {
+        return res.status(400).json({ message: "Username already taken" });
+      }
+      
+      // Hash password
+      const hashedPassword = await bcrypt.hash(validatedData.password, SALT_ROUNDS);
+      
+      // Create user with admin privileges
+      const user = await storage.createUser({
+        ...validatedData,
+        password: hashedPassword,
+        isAdmin: true
+      });
+      
+      // Return user info without password
+      const { password, ...userWithoutPassword } = user;
+      res.status(201).json({ user: userWithoutPassword });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid data", errors: error.errors });
+      }
+      console.error("Error creating admin account:", error);
+      res.status(500).json({ message: "Failed to create admin account" });
+    }
+  });
+  
   // Vimeo Sync Management Routes
   app.post("/api/admin/vimeo-sync", authenticateAdmin, async (req, res) => {
     try {
@@ -1205,7 +1245,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Server error" });
     }
   });
-
+  
+  // Get single user details (admin only)
+  app.get("/api/admin/users/:id", authenticateAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Remove password from response
+      const { password, ...userWithoutPassword } = user;
+      
+      res.json(userWithoutPassword);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+  
+  // Update user details (admin only)
   app.put("/api/admin/users/:id", authenticateAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
@@ -1218,9 +1281,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      // Update the user with the provided data
-      // Note: Do not allow updating password through this endpoint
-      const { password, ...updateData } = req.body;
+      const updateData: Partial<User> = { ...req.body };
+      
+      // If password is being updated, hash it
+      if (updateData.password) {
+        updateData.password = await bcrypt.hash(updateData.password, SALT_ROUNDS);
+      }
       
       const updatedUser = await storage.updateUser(userId, updateData);
       if (!updatedUser) {
@@ -1228,7 +1294,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Remove password from response
-      const { password: _, ...userWithoutPassword } = updatedUser;
+      const { password, ...userWithoutPassword } = updatedUser;
+      
       res.json(userWithoutPassword);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -1237,6 +1304,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Server error" });
     }
   });
+
+
 
   // Admin Dashboard Stats
   app.get("/api/admin/stats", authenticateAdmin, async (req, res) => {

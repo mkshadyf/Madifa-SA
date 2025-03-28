@@ -36,6 +36,7 @@ import NotFound from "@/pages/not-found";
 import AdminDashboard from "@/pages/admin/Dashboard";
 import VimeoManagement from "@/pages/admin/VimeoManagement";
 import Categories from "@/pages/admin/Categories";
+import Users from "@/pages/admin/Users";
 
 // Extract Router into a separate component for better organization
 
@@ -92,6 +93,14 @@ function Router() {
         <AdminRoute>
           <AdminLayout>
             <Categories />
+          </AdminLayout>
+        </AdminRoute>
+      </Route>
+      
+      <Route path="/admin/users">
+        <AdminRoute>
+          <AdminLayout>
+            <Users />
           </AdminLayout>
         </AdminRoute>
       </Route>
