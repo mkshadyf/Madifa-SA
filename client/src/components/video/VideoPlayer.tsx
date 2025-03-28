@@ -59,6 +59,125 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [adShowing, setAdShowing] = useState(false);
   
+  // Define player control methods to work with both HTML5 video and Vimeo
+  const playerControls = {
+    play: () => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.play().catch(error => {
+          console.error("Vimeo play failed:", error);
+        });
+      } else if (video) {
+        video.play().catch(error => {
+          console.error("Play failed:", error);
+        });
+      }
+    },
+    
+    pause: () => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.pause().catch(error => {
+          console.error("Vimeo pause failed:", error);
+        });
+      } else if (video) {
+        video.pause();
+      }
+    },
+    
+    seek: (seekToTime: number) => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.setCurrentTime(seekToTime).catch(error => {
+          console.error("Vimeo seek failed:", error);
+        });
+      } else if (video) {
+        video.currentTime = seekToTime;
+      }
+      
+      setCurrentTime(seekToTime);
+    },
+    
+    setVolume: (newVolume: number) => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.setVolume(newVolume).catch(error => {
+          console.error("Vimeo volume change failed:", error);
+        });
+      } else if (video) {
+        video.volume = newVolume;
+      }
+      
+      setVolume(newVolume);
+      
+      if (newVolume === 0) {
+        setIsMuted(true);
+        if (video) video.muted = true;
+        if (vimeoPlayer) vimeoPlayer.setMuted(true).catch(e => console.error(e));
+      } else if (isMuted) {
+        setIsMuted(false);
+        if (video) video.muted = false;
+        if (vimeoPlayer) vimeoPlayer.setMuted(false).catch(e => console.error(e));
+      }
+    },
+    
+    mute: () => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.setMuted(true).catch(error => {
+          console.error("Vimeo mute failed:", error);
+        });
+      } else if (video) {
+        video.muted = true;
+      }
+      
+      setIsMuted(true);
+    },
+    
+    unmute: () => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.setMuted(false).catch(error => {
+          console.error("Vimeo unmute failed:", error);
+        });
+      } else if (video) {
+        video.muted = false;
+      }
+      
+      setIsMuted(false);
+    },
+    
+    skipForward: (seconds = 10) => {
+      const newTime = Math.min(currentTime + seconds, duration);
+      if (videoRef.current) videoRef.current.currentTime = newTime;
+      if (vimeoPlayerRef.current) {
+        vimeoPlayerRef.current.setCurrentTime(newTime).catch(e => console.error(e));
+      }
+      setCurrentTime(newTime);
+    },
+    
+    skipBackward: (seconds = 10) => {
+      const newTime = Math.max(currentTime - seconds, 0);
+      if (videoRef.current) videoRef.current.currentTime = newTime;
+      if (vimeoPlayerRef.current) {
+        vimeoPlayerRef.current.setCurrentTime(newTime).catch(e => console.error(e));
+      }
+      setCurrentTime(newTime);
+    }
+  };
+  
   // Load saved watch progress when component mounts
   useEffect(() => {
     if (!content || !content.id || !user) return;
@@ -352,7 +471,7 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isPlaying, isMuted, volume, playerControls, currentTime, duration]);
+  }, [isPlaying, isMuted, volume, currentTime, duration]);
   
   // Set up Vimeo player API
   useEffect(() => {
@@ -420,113 +539,6 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
       }
     };
   }, [videoUrl]);
-
-  // Override player control methods to work with both HTML5 video and Vimeo
-  const playerControls = {
-    play: () => {
-      const video = videoRef.current;
-      const vimeoPlayer = vimeoPlayerRef.current;
-      
-      if (vimeoPlayer) {
-        vimeoPlayer.play().catch(error => {
-          console.error("Vimeo play failed:", error);
-        });
-      } else if (video) {
-        video.play().catch(error => {
-          console.error("Play failed:", error);
-        });
-      }
-    },
-    
-    pause: () => {
-      const video = videoRef.current;
-      const vimeoPlayer = vimeoPlayerRef.current;
-      
-      if (vimeoPlayer) {
-        vimeoPlayer.pause().catch(error => {
-          console.error("Vimeo pause failed:", error);
-        });
-      } else if (video) {
-        video.pause();
-      }
-    },
-    
-    seek: (seekToTime: number) => {
-      const video = videoRef.current;
-      const vimeoPlayer = vimeoPlayerRef.current;
-      
-      if (vimeoPlayer) {
-        vimeoPlayer.setCurrentTime(seekToTime).catch(error => {
-          console.error("Vimeo seek failed:", error);
-        });
-      } else if (video) {
-        video.currentTime = seekToTime;
-      }
-      
-      setCurrentTime(seekToTime);
-    },
-    
-    setVolume: (newVolume: number) => {
-      const video = videoRef.current;
-      const vimeoPlayer = vimeoPlayerRef.current;
-      
-      if (vimeoPlayer) {
-        vimeoPlayer.setVolume(newVolume).catch(error => {
-          console.error("Vimeo volume change failed:", error);
-        });
-      } else if (video) {
-        video.volume = newVolume;
-      }
-      
-      setVolume(newVolume);
-      
-      if (newVolume === 0) {
-        playerControls.mute();
-      } else if (isMuted) {
-        playerControls.unmute();
-      }
-    },
-    
-    mute: () => {
-      const video = videoRef.current;
-      const vimeoPlayer = vimeoPlayerRef.current;
-      
-      if (vimeoPlayer) {
-        vimeoPlayer.setMuted(true).catch(error => {
-          console.error("Vimeo mute failed:", error);
-        });
-      } else if (video) {
-        video.muted = true;
-      }
-      
-      setIsMuted(true);
-    },
-    
-    unmute: () => {
-      const video = videoRef.current;
-      const vimeoPlayer = vimeoPlayerRef.current;
-      
-      if (vimeoPlayer) {
-        vimeoPlayer.setMuted(false).catch(error => {
-          console.error("Vimeo unmute failed:", error);
-        });
-      } else if (video) {
-        video.muted = false;
-      }
-      
-      setIsMuted(false);
-    },
-    
-    skipForward: (seconds = 10) => {
-      const newTime = Math.min(currentTime + seconds, duration);
-      playerControls.seek(newTime);
-    },
-    
-    skipBackward: (seconds = 10) => {
-      const newTime = Math.max(currentTime - seconds, 0);
-      playerControls.seek(newTime);
-    }
-  };
   
   // Parse video URL to determine how to embed
   const embedVideo = () => {
