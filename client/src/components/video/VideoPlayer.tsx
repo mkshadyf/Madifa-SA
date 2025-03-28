@@ -10,6 +10,7 @@ import { useSync } from "@/hooks/useSync";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePerformanceContext } from "@/contexts/PerformanceContext";
 import { formatDuration, parseVideoUrl } from "@/lib/utils";
+import { isAppInstalled } from "@/lib/serviceWorkerRegistration";
 import { 
   Play, Pause, Volume2, VolumeX, Maximize, Minimize, 
   SkipForward, SkipBack, Settings, Loader, Subtitles 
@@ -130,23 +131,34 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
     
     // If user is not premium and content is premium, show trailer only
     if (content.isPremium && (!user || !user.isPremium)) {
-      setVideoUrl(content.trailerUrl);
+      setVideoUrl(content.trailerUrl || '');
       
       toast({
         title: "Premium Content",
         description: "You're watching the trailer. Subscribe to watch the full content.",
         duration: 5000,
       });
+      
+      // Add a slight delay before showing the subscription modal
+      const timer = setTimeout(() => {
+        setShowAuthModal(true);
+      }, 8000);
+      
+      return () => clearTimeout(timer);
     } else {
-      setVideoUrl(content.videoUrl);
+      setVideoUrl(content.videoUrl || '');
       
       // Show ads for free content if user is not premium
       if (!content.isPremium && (!user || !user.isPremium)) {
-        // We'll use a simple ad implementation
-        showPrerollAd();
+        // Check if we're in a mobile app context with potentially stricter ad policies
+        const isInMobileApp = isAppInstalled();
+        if (!isInMobileApp) {
+          // Only show ads in browser context, not when installed as PWA
+          showPrerollAd();
+        }
       }
     }
-  }, [content, user]);
+  }, [content, user, toast]);
   
   useEffect(() => {
     const video = videoRef.current;

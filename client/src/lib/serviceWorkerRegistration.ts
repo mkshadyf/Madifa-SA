@@ -12,6 +12,27 @@ type Config = {
   onUpdate?: (registration: ServiceWorkerRegistration) => void;
 };
 
+// Define the BeforeInstallPromptEvent for PWA install prompt
+export interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
+
+// Define SyncManager for background sync
+interface SyncManager {
+  register(tag: string): Promise<void>;
+}
+
+// Extended ServiceWorkerRegistration with sync property
+interface ExtendedServiceWorkerRegistration extends ServiceWorkerRegistration {
+  sync?: SyncManager;
+}
+
+// Register service worker
 export function register(config?: Config): void {
   if ('serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
@@ -131,13 +152,18 @@ export function unregister(): void {
   }
 }
 
-// Define the extended ServiceWorkerRegistration type with sync property
-interface SyncManager {
-  register(tag: string): Promise<void>;
-}
+// Listen for install prompt
+export function listenForInstallPrompt(callback: (e: BeforeInstallPromptEvent) => void): void {
+  // Event handler to save the install prompt
+  const handleBeforeInstallPrompt = (e: Event) => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    // Save the event for later
+    callback(e as BeforeInstallPromptEvent);
+  };
 
-interface ExtendedServiceWorkerRegistration extends ServiceWorkerRegistration {
-  sync?: SyncManager;
+  // Add the event listener
+  window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 }
 
 // Handle background sync - usable from components
@@ -173,26 +199,4 @@ export function isAppInstalled(): boolean {
          window.matchMedia('(display-mode: minimal-ui)').matches ||
          // @ts-ignore - iOS Safari specific property
          window.navigator.standalone === true;
-}
-
-// Event listener for installation
-export function listenForInstallPrompt(
-  callback: (event: BeforeInstallPromptEvent) => void
-): void {
-  window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevent the mini-infobar from appearing on mobile
-    e.preventDefault();
-    // Stash the event so it can be triggered later
-    callback(e as BeforeInstallPromptEvent);
-  });
-}
-
-// Custom type for the BeforeInstallPromptEvent
-export interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed';
-    platform: string;
-  }>;
-  prompt(): Promise<void>;
 }
