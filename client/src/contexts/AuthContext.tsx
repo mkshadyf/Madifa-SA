@@ -157,7 +157,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (supabaseError) {
         // Fallback to our custom auth
-        const res = await apiRequest("POST", "/api/auth/login", { email, password });
+        const res = await apiRequest("/api/auth/login", "POST", { email, password });
         const data = await res.json();
         
         // Store token and set user
@@ -234,7 +234,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (supabaseError) {
         // Fallback to our custom auth
-        const res = await apiRequest("POST", "/api/auth/register", userData);
+        const res = await apiRequest("/api/auth/register", "POST", userData);
         const data = await res.json();
         
         // Store token and set user
