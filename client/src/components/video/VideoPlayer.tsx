@@ -15,6 +15,7 @@ import {
   Play, Pause, Volume2, VolumeX, Maximize, Minimize, 
   SkipForward, SkipBack, Settings, Loader, Subtitles 
 } from "lucide-react";
+import Player from "@vimeo/player";
 import AuthModal from "../auth/AuthModal";
 import CaptionTrackSelector from "./CaptionTrackSelector";
 import MobileVideoPlayer from "./MobileVideoPlayer";
@@ -34,6 +35,8 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
   const { dataSource } = useDataSource();
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const vimeoPlayerRef = useRef<Player | null>(null);
+  const vimeoIframeRef = useRef<HTMLIFrameElement>(null);
   const controlsTimerRef = useRef<NodeJS.Timeout>();
   const syncTimerRef = useRef<NodeJS.Timeout>();
   const lastProgressUpdateRef = useRef<number>(0);
@@ -246,9 +249,6 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
   };
   
   const togglePlay = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    
     if (content.isPremium && (!user || !user.isPremium)) {
       // If trying to watch premium content as a free user
       setShowAuthModal(true);
@@ -256,48 +256,28 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
     }
     
     if (isPlaying) {
-      video.pause();
+      playerControls.pause();
     } else {
-      video.play().catch(error => {
-        console.error("Play failed:", error);
-      });
+      playerControls.play();
     }
-    
-    setIsPlaying(!isPlaying);
   };
   
   const toggleMute = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    
-    setIsMuted(!isMuted);
-    video.muted = !isMuted;
-  };
-  
-  const handleVolumeChange = (value: number[]) => {
-    const video = videoRef.current;
-    if (!video) return;
-    
-    const newVolume = value[0];
-    setVolume(newVolume);
-    video.volume = newVolume;
-    
-    if (newVolume === 0) {
-      setIsMuted(true);
-      video.muted = true;
-    } else if (isMuted) {
-      setIsMuted(false);
-      video.muted = false;
+    if (isMuted) {
+      playerControls.unmute();
+    } else {
+      playerControls.mute();
     }
   };
   
+  const handleVolumeChange = (value: number[]) => {
+    const newVolume = value[0];
+    playerControls.setVolume(newVolume);
+  };
+  
   const handleSeek = (value: number[]) => {
-    const video = videoRef.current;
-    if (!video) return;
-    
     const seekTime = (value[0] / 100) * duration;
-    video.currentTime = seekTime;
-    setCurrentTime(seekTime);
+    playerControls.seek(seekTime);
   };
   
   const toggleFullScreen = () => {
@@ -350,11 +330,11 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
           break;
         case 'arrowright':
           e.preventDefault();
-          videoRef.current.currentTime += 10;
+          playerControls.skipForward(10);
           break;
         case 'arrowleft':
           e.preventDefault();
-          videoRef.current.currentTime -= 10;
+          playerControls.skipBackward(10);
           break;
         case 'arrowup':
           e.preventDefault();
@@ -372,7 +352,181 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isPlaying, isMuted, volume]);
+  }, [isPlaying, isMuted, volume, playerControls, currentTime, duration]);
+  
+  // Set up Vimeo player API
+  useEffect(() => {
+    if (!videoUrl) return;
+
+    const parsedVideo = parseVideoUrl(videoUrl);
+    if (!parsedVideo || parsedVideo.provider !== 'vimeo' || !vimeoIframeRef.current) return;
+
+    // Create Vimeo player instance
+    const player = new Player(vimeoIframeRef.current);
+    vimeoPlayerRef.current = player;
+
+    // Player event listeners
+    player.on('play', () => {
+      setIsPlaying(true);
+      setIsLoading(false);
+    });
+
+    player.on('pause', () => {
+      setIsPlaying(false);
+    });
+
+    player.on('loaded', () => {
+      setIsLoading(false);
+      
+      // Get video duration
+      player.getDuration().then(videoDuration => {
+        setDuration(videoDuration);
+      });
+      
+      // Check if muted and set initial volume
+      player.getMuted().then(muted => {
+        setIsMuted(muted);
+      });
+      
+      player.getVolume().then(vol => {
+        setVolume(vol);
+      });
+    });
+
+    player.on('timeupdate', (data: { seconds: number, percent: number, duration: number }) => {
+      setCurrentTime(data.seconds);
+      
+      if (onProgressUpdate && !adShowing) {
+        onProgressUpdate(Math.floor(data.seconds));
+      }
+    });
+
+    player.on('ended', () => {
+      setIsPlaying(false);
+      if (onVideoComplete) {
+        onVideoComplete();
+      }
+    });
+
+    return () => {
+      // Clean up event listeners
+      if (vimeoPlayerRef.current) {
+        vimeoPlayerRef.current.off('play');
+        vimeoPlayerRef.current.off('pause');
+        vimeoPlayerRef.current.off('loaded');
+        vimeoPlayerRef.current.off('timeupdate');
+        vimeoPlayerRef.current.off('ended');
+        vimeoPlayerRef.current = null;
+      }
+    };
+  }, [videoUrl]);
+
+  // Override player control methods to work with both HTML5 video and Vimeo
+  const playerControls = {
+    play: () => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.play().catch(error => {
+          console.error("Vimeo play failed:", error);
+        });
+      } else if (video) {
+        video.play().catch(error => {
+          console.error("Play failed:", error);
+        });
+      }
+    },
+    
+    pause: () => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.pause().catch(error => {
+          console.error("Vimeo pause failed:", error);
+        });
+      } else if (video) {
+        video.pause();
+      }
+    },
+    
+    seek: (seekToTime: number) => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.setCurrentTime(seekToTime).catch(error => {
+          console.error("Vimeo seek failed:", error);
+        });
+      } else if (video) {
+        video.currentTime = seekToTime;
+      }
+      
+      setCurrentTime(seekToTime);
+    },
+    
+    setVolume: (newVolume: number) => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.setVolume(newVolume).catch(error => {
+          console.error("Vimeo volume change failed:", error);
+        });
+      } else if (video) {
+        video.volume = newVolume;
+      }
+      
+      setVolume(newVolume);
+      
+      if (newVolume === 0) {
+        playerControls.mute();
+      } else if (isMuted) {
+        playerControls.unmute();
+      }
+    },
+    
+    mute: () => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.setMuted(true).catch(error => {
+          console.error("Vimeo mute failed:", error);
+        });
+      } else if (video) {
+        video.muted = true;
+      }
+      
+      setIsMuted(true);
+    },
+    
+    unmute: () => {
+      const video = videoRef.current;
+      const vimeoPlayer = vimeoPlayerRef.current;
+      
+      if (vimeoPlayer) {
+        vimeoPlayer.setMuted(false).catch(error => {
+          console.error("Vimeo unmute failed:", error);
+        });
+      } else if (video) {
+        video.muted = false;
+      }
+      
+      setIsMuted(false);
+    },
+    
+    skipForward: (seconds = 10) => {
+      const newTime = Math.min(currentTime + seconds, duration);
+      playerControls.seek(newTime);
+    },
+    
+    skipBackward: (seconds = 10) => {
+      const newTime = Math.max(currentTime - seconds, 0);
+      playerControls.seek(newTime);
+    }
+  };
   
   // Parse video URL to determine how to embed
   const embedVideo = () => {
@@ -425,8 +579,9 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
       case 'vimeo':
         return (
           <iframe
+            ref={vimeoIframeRef}
             className="w-full h-full"
-            src={`https://player.vimeo.com/video/${parsedVideo.id}?autoplay=${autoPlay ? 1 : 0}&controls=0&transparent=1&background=1&title=0&byline=0&portrait=0`}
+            src={`https://player.vimeo.com/video/${parsedVideo.id}?autoplay=${autoPlay ? 1 : 0}&controls=0&transparent=1&background=1&title=0&byline=0&portrait=0&api=1`}
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
@@ -562,15 +717,11 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
                     {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
                   </Button>
                   
-                  <Button variant="ghost" size="icon" onClick={() => {
-                    if (videoRef.current) videoRef.current.currentTime -= 10;
-                  }} className="text-white hover:bg-white/20">
+                  <Button variant="ghost" size="icon" onClick={() => playerControls.skipBackward(10)} className="text-white hover:bg-white/20">
                     <SkipBack className="h-5 w-5" />
                   </Button>
                   
-                  <Button variant="ghost" size="icon" onClick={() => {
-                    if (videoRef.current) videoRef.current.currentTime += 10;
-                  }} className="text-white hover:bg-white/20">
+                  <Button variant="ghost" size="icon" onClick={() => playerControls.skipForward(10)} className="text-white hover:bg-white/20">
                     <SkipForward className="h-5 w-5" />
                   </Button>
                   

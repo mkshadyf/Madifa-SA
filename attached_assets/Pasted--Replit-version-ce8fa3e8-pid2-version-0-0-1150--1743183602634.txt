@@ -1,0 +1,408 @@
+ Replit version ce8fa3e8, pid2 version 0.0.1150
+ 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+ [LaunchDarkly] LaunchDarkly client initialized
+6747e1e9-c8e72b8034d1bd0d.js:1 Uncaught (in promise) 
+/~:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+null:1  Failed to load resource: the server responded with a status of 404 ()
+ If you do not provide children, you must specify an aria-label for accessibility
+overrideMethod @ installHook.js:1
+ If you do not provide children, you must specify an aria-label for accessibility
+overrideMethod @ installHook.js:1
+ If you do not provide children, you must specify an aria-label for accessibility
+overrideMethod @ installHook.js:1
+ If you do not provide children, you must specify an aria-label for accessibility
+overrideMethod @ installHook.js:1
+ If you do not provide children, you must specify an aria-label for accessibility
+overrideMethod @ installHook.js:1
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+ Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'battery'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'layout-animations'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'navigation-override'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'oversized-images'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'publickey-credentials'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'speaker-selection'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'unoptimized-images'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'unsized-media'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Unrecognized feature: 'pointer-lock'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-0a3bc5d69217f712.js:1
+ Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ installHook.js:1
+hook.js:608 task queue exceeded allotted deadline by 46ms
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 task queue exceeded allotted deadline by 39ms
+overrideMethod @ hook.js:608
+hook.js:608 task queue exceeded allotted deadline by 34ms
+overrideMethod @ hook.js:608
+hook.js:608 task queue exceeded allotted deadline by 41ms
+overrideMethod @ hook.js:608
+hook.js:608 task queue exceeded allotted deadline by 48ms
+overrideMethod @ hook.js:608
+MadifaStreams:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MadifaStreams:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MadifaStreams:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MadifaStreams:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MadifaStreams:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MadifaStreams:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MadifaStreams:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//browse' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 WARN: A component changed from uncontrolled to controlled.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//admin/users' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//login' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+ Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-0a3bc5d69217f712.js:1
+ Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-0a3bc5d69217f712.js:1
+ Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-0a3bc5d69217f712.js:1
+ Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-0a3bc5d69217f712.js:1
+ Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-0a3bc5d69217f712.js:1
+ Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ installHook.js:1
+ Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ installHook.js:1
+hook.js:608 task queue exceeded allotted deadline by 88ms
+overrideMethod @ hook.js:608
+ stallwart: failed ping 1
+ stallwart: failed ping 1
+Error handling response: SecurityError: Failed to read a named property 'origin' from 'Location': Blocked a frame with origin "<URL>" from accessing a cross-origin frame.
+    at <URL>
+Error handling response: SecurityError: Failed to read a named property 'origin' from 'Location': Blocked a frame with origin "<URL>" from accessing a cross-origin frame.
+    at <URL>
+Error handling response: SecurityError: Failed to read a named property 'origin' from 'Location': Blocked a frame with origin "<URL>" from accessing a cross-origin frame.
+    at <URL>
+Error handling response: SecurityError: Failed to read a named property 'origin' from 'Location': Blocked a frame with origin "<URL>" from accessing a cross-origin frame.
+    at <URL>
+Error handling response: SecurityError: Failed to read a named property 'origin' from 'Location': Blocked a frame with origin "<URL>" from accessing a cross-origin frame.
+    at <URL>
+Error handling response: SecurityError: Failed to read a named property 'origin' from 'Location': Blocked a frame with origin "<URL>" from accessing a cross-origin frame.
+    at <URL>
+Error handling response: SecurityError: Failed to read a named property 'origin' from 'Location': Blocked a frame with origin "<URL>" from accessing a cross-origin frame.
+    at <URL>
+Error handling response: SecurityError: Failed to read a named property 'origin' from 'Location': Blocked a frame with origin "<URL>" from accessing a cross-origin frame.
+    at <URL>
+Error handling response: SecurityError: Failed to read a named property 'origin' from 'Location': Blocked a frame with origin "<URL>" from accessing a cross-origin frame.
+    at <URL>
+Error handling response: SecurityError: Failed to read a named property 'origin' from 'Location': Blocked a frame with origin "<URL>" from accessing a cross-origin frame.
+    at <URL>
+attached_assets/image_1743181943557.png:1  Failed to load resource: the server responded with a status of 404 ()
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//admin/vimeo' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+attached_assets/image_1743181943557.png:1  Failed to load resource: the server responded with a status of 404 ()
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+ Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ installHook.js:1
+ Invalid href 'https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ installHook.js:1
+ Failed to sync watch history: 
+syncWatchHistory @ syncManager.ts:50
+ Failed to get continue watching: 
+getContinueWatching @ syncManager.ts:86
+ Failed to get continue watching: 
+getContinueWatching @ syncManager.ts:86
+ Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
+    at a
+    at a
+    at https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=fe92e585:337:18
+    at div
+    at div
+    at ContentCarousel (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/components/home/ContentCarousel.tsx:25:3)
+    at div
+    at main
+    at div
+    at Home (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/pages/Home.tsx:41:20)
+    at Route (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=fe92e585:323:16)
+    at Switch (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=fe92e585:379:17)
+    at Router
+    at PerformanceProvider (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/contexts/PerformanceContext.tsx:30:39)
+    at DataSourceProvider (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/contexts/DataSourceContext.tsx:29:38)
+    at AuthProvider (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/contexts/AuthContext.tsx:32:32)
+    at QueryClientProvider (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=fe92e585:2805:3)
+    at App (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/App.tsx?v=XOorFb8NrnygqBd8rxXuy:218:65)
+printWarning @ chunk-UPELNCPK.js:521
+ Failed to sync watch history: 
+syncWatchHistory @ syncManager.ts:50
+ Failed to get continue watching: 
+getContinueWatching @ syncManager.ts:86
+ Failed to get continue watching: 
+getContinueWatching @ syncManager.ts:86
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/watchlist:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/watchlist:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+ Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
+    at a
+    at a
+    at https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=fe92e585:337:18
+    at div
+    at div
+    at ContentCarousel (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/components/home/ContentCarousel.tsx:25:3)
+    at div
+    at main
+    at div
+    at Home (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/pages/Home.tsx:41:20)
+    at Route (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=fe92e585:323:16)
+    at Switch (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=fe92e585:379:17)
+    at Router
+    at PerformanceProvider (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/contexts/PerformanceContext.tsx:30:39)
+    at DataSourceProvider (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/contexts/DataSourceContext.tsx:29:38)
+    at AuthProvider (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/contexts/AuthContext.tsx:32:32)
+    at QueryClientProvider (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=fe92e585:2805:3)
+    at App (https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/src/App.tsx?v=i4XwrzRgBCXrQmw1ZY_Ly:218:65)
+printWarning @ chunk-UPELNCPK.js:521
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/watchlist:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/watchlist:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+ This web app is being served cache-first by a service worker. To learn more, visit https://cra.link/PWA
+ This web app is being served cache-first by a service worker. To learn more, visit https://cra.link/PWA
+ Failed to sync watch history: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/sync' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:19:21)
+    at syncWatchHistory (syncManager.ts:46:28)
+    at useSync.ts:41:29
+    at useSync.ts:89:7
+    at commitHookEffectListMount (chunk-UPELNCPK.js:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js:19490:11)
+syncWatchHistory @ 2ad23c07-d734-4dc1-8…b/syncManager.ts:50
+ Failed to get continue watching: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/continue-watching' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:19:21)
+    at getContinueWatching (syncManager.ts:81:28)
+    at useSync.ts:61:29
+    at useSync.ts:90:7
+    at commitHookEffectListMount (chunk-UPELNCPK.js:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js:19490:11)
+getContinueWatching @ 2ad23c07-d734-4dc1-8…b/syncManager.ts:86
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/watchlist:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/watchlist:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+ Ad loading error: TagError: adsbygoogle.push() error: All 'ins' elements in the DOM with class=adsbygoogle already have ads in them.
+    at ir (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:235:255)
+    at $q (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:231:446)
+    at Vq.e.client (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:225:43)
+    at hk.g (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:92:729)
+    at ok (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:93:682)
+    at Vq (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:225:31)
+    at Object.push (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:241:142)
+    at insertAdsByGoogle (helpers.ts:60:55)
+    at showPrerollAd (VideoPlayer.tsx:195:5)
+    at VideoPlayer.tsx:137:11
+insertAdsByGoogle @ 2ad23c07-d734-4dc1-8…c/lib/helpers.ts:62
+ Failed to sync watch history: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/sync' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:19:21)
+    at syncWatchHistory (syncManager.ts:46:28)
+    at useSync.ts:41:29
+    at useSync.ts:89:7
+    at commitHookEffectListMount (chunk-UPELNCPK.js:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js:19490:11)
+syncWatchHistory @ 2ad23c07-d734-4dc1-8…b/syncManager.ts:50
+ Failed to get continue watching: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/continue-watching' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:19:21)
+    at getContinueWatching (syncManager.ts:81:28)
+    at useSync.ts:61:29
+    at useSync.ts:90:7
+    at commitHookEffectListMount (chunk-UPELNCPK.js:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js:19490:11)
+getContinueWatching @ 2ad23c07-d734-4dc1-8…b/syncManager.ts:86
+ Failed to get watch progress: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/19' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:19:21)
+    at getWatchProgress (syncManager.ts:56:28)
+    at useSync.ts:79:20
+    at loadSavedProgress (VideoPlayer.tsx:74:37)
+    at VideoPlayer.tsx:96:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js:18109:11)
+getWatchProgress @ 2ad23c07-d734-4dc1-8…b/syncManager.ts:61
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/ratings/19/user:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/ratings/19/user:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+ No user rating found
+ Error fetching average rating: TypeError: response.json is not a function
+    at fetchAverageRating (ContentRating.tsx:43:37)
+fetchAverageRating @ 2ad23c07-d734-4dc1-8…ontentRating.tsx:46
+ Error fetching ratings: TypeError: response.json is not a function
+    at fetchRatings (ContentRating.tsx:52:37)
+fetchRatings @ 2ad23c07-d734-4dc1-8…ontentRating.tsx:55
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/reviews/19/user:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/reviews/19/user:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+ No user review found
+ Failed to fetch reviews
+fetchReviews @ 2ad23c07-d734-4dc1-8…ntentReviews.tsx:52
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/ratings/19/user:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/api/ratings/19/user:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+ No user rating found
+ Error fetching average rating: TypeError: response.json is not a function
+    at fetchAverageRating (ContentRating.tsx:43:37)
+fetchAverageRating @ 2ad23c07-d734-4dc1-8…ontentRating.tsx:46
+ Error fetching ratings: TypeError: response.json is not a function
+    at fetchRatings (ContentRating.tsx:52:37)
+fetchRatings @ 2ad23c07-d734-4dc1-8…ontentRating.tsx:55
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.
+stallwart.build.js:1 stallwart: failed ping 1
+The deferred DOM Node could not be resolved to a valid node.
