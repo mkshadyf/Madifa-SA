@@ -18,11 +18,15 @@ const CategorySection = ({ categories }: CategorySectionProps) => {
         {categories.map((category) => (
           <Link key={category.id} href={`/category/${category.id}`}>
             <a className="block relative group overflow-hidden rounded-lg h-32">
-              <img 
-                src={category.thumbnailUrl} 
-                alt={category.name} 
-                className="w-full h-full object-cover transition group-hover:scale-110 duration-300"
-              />
+              {category.thumbnailUrl ? (
+                <img 
+                  src={category.thumbnailUrl} 
+                  alt={category.name} 
+                  className="w-full h-full object-cover transition group-hover:scale-110 duration-300"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-primary/50 to-secondary/50 transition group-hover:scale-110 duration-300" />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
                 <h3 className="text-white font-medium text-lg">{category.name}</h3>
               </div>

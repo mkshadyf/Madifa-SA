@@ -44,7 +44,7 @@ const Home = () => {
   const [musicVideoContent, setMusicVideoContent] = useState<ContentItem[]>([]);
   
   // Memoize data fetch functions to prevent unnecessary re-renders
-  const fetchMockData = useCallback(() => {
+  const fetchMockData = useCallback(async () => {
     setIsLoading(true);
     
     try {
@@ -79,8 +79,25 @@ const Home = () => {
       setTrailerContent(allContents.filter((c: ContentItem) => c.contentType === 'trailer').slice(0, 10));
       setMusicVideoContent(allContents.filter((c: ContentItem) => c.contentType === 'music_video').slice(0, 10));
       
-      // Get categories
-      setCategories(getMockCategories());
+      // Get real categories from API instead of mock data
+      try {
+        const categoriesRes = await fetch("/api/categories");
+        if (categoriesRes.ok) {
+          const categoriesData = await categoriesRes.json();
+          // Filter out test categories
+          const realCategories = categoriesData.filter((category: CategoryItem) => 
+            !category.name.includes('Test Category')
+          );
+          setCategories(realCategories);
+        } else {
+          // Fallback to mock categories only if API fails
+          setCategories(getMockCategories());
+        }
+      } catch (categoryError) {
+        console.error("Error fetching categories:", categoryError);
+        // Fallback to mock categories
+        setCategories(getMockCategories());
+      }
     } catch (error) {
       console.error("Error fetching mock data:", error);
       toast({
@@ -144,7 +161,11 @@ const Home = () => {
       
       setPremiumContent(premium);
       setFreeContent(free);
-      setCategories(categories);
+      // Filter out test categories
+      const realCategories = categories.filter((category: CategoryItem) => 
+        !category.name.includes('Test Category')
+      );
+      setCategories(realCategories);
       
       // Set content by type using dedicated endpoints
       setMovieContent(movies.slice(0, 10));

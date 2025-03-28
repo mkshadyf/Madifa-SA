@@ -156,13 +156,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       
       if (supabaseError) {
+        console.log("Supabase login failed, trying custom auth:", supabaseError.message);
         // Fallback to our custom auth
         try {
-          const data = await apiRequest({
-            url: "/api/auth/login", 
-            method: "POST", 
-            data: { email, password }
-          });
+          const data = await apiRequest("POST", "/api/auth/login", { email, password });
+          
+          if (!data || !data.token || !data.user) {
+            throw new Error("Invalid response from authentication server");
+          }
           
           // Store token and set user
           localStorage.setItem("auth_token", data.token);
@@ -171,7 +172,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return data;
         } catch (error) {
           console.error("Custom auth login failed:", error);
-          throw error;
+          if (error instanceof Error) {
+            throw new Error(`Login failed: ${error.message}`);
+          } else {
+            throw new Error("Login failed: Invalid credentials or server error");
+          }
         }
       }
       
@@ -241,13 +246,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       
       if (supabaseError) {
+        console.log("Supabase registration failed, trying custom auth:", supabaseError.message);
         // Fallback to our custom auth
         try {
-          const data = await apiRequest({
-            url: "/api/auth/register", 
-            method: "POST", 
-            data: userData
-          });
+          const data = await apiRequest("POST", "/api/auth/register", userData);
+          
+          if (!data || !data.token || !data.user) {
+            throw new Error("Invalid response from authentication server");
+          }
           
           // Store token and set user
           localStorage.setItem("auth_token", data.token);
@@ -256,7 +262,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return data;
         } catch (error) {
           console.error("Custom auth registration failed:", error);
-          throw error;
+          if (error instanceof Error) {
+            throw new Error(`Registration failed: ${error.message}`);
+          } else {
+            throw new Error("Registration failed: Invalid data or server error");
+          }
         }
       }
       
