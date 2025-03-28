@@ -354,7 +354,16 @@ const MovieDetails = () => {
                   <div className="flex flex-wrap gap-3 mb-8">
                     <Button 
                       className="bg-orange-600 hover:bg-orange-700 text-white" 
-                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                      onClick={() => {
+                        // Check if this is premium content and user is not premium
+                        if (content.isPremium && (!user || !user.isPremium)) {
+                          // Show upgrade/auth modal
+                          setShowAuthModal(true);
+                        } else {
+                          // Otherwise, just scroll to the player
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                      }}
                     >
                       <Play className="h-5 w-5 mr-2" />
                       Watch Now
@@ -535,7 +544,7 @@ const MovieDetails = () => {
       <AuthModal 
         isOpen={showAuthModal} 
         onClose={() => setShowAuthModal(false)}
-        initialView={user ? "login" : "register"}
+        initialView={user ? "upgrade" : "register"}
       />
     </div>
   );

@@ -15,13 +15,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useAuth } from "@/contexts/AuthContext";
-import { X } from "lucide-react";
+import { X, CheckIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialView?: "login" | "register";
+  initialView?: "login" | "register" | "upgrade";
 }
 
 const loginSchema = z.object({
@@ -109,7 +109,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
       <DialogContent className="bg-background border-gray-700 sm:max-w-md">
         <DialogHeader className="flex justify-between items-center">
           <DialogTitle className="text-2xl font-bold">
-            {activeTab === "login" ? "Sign In" : "Create Account"}
+            {activeTab === "login" ? "Sign In" : activeTab === "register" ? "Create Account" : "Upgrade to Premium"}
           </DialogTitle>
           <Button variant="ghost" size="icon" onClick={onClose} className="absolute right-4 top-4">
             <X className="h-4 w-4" />
@@ -117,10 +117,15 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
         </DialogHeader>
         
         <Tabs defaultValue={initialView} value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="login">Sign In</TabsTrigger>
-            <TabsTrigger value="register">Sign Up</TabsTrigger>
-          </TabsList>
+          {initialView === "upgrade" ? (
+            // No tabs for upgrade view - this is only shown for authenticated users
+            <div></div>
+          ) : (
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="login">Sign In</TabsTrigger>
+              <TabsTrigger value="register">Sign Up</TabsTrigger>
+            </TabsList>
+          )}
           
           <TabsContent value="login">
             <Form {...loginForm}>
@@ -303,6 +308,62 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
               <Button variant="outline" className="border-gray-700">
                 Facebook
               </Button>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="upgrade">
+            <div className="space-y-6">
+              <div className="text-center">
+                <h3 className="text-xl font-bold mb-2">Unlock Premium Content</h3>
+                <p className="text-muted-foreground mb-6">
+                  Upgrade to Premium to access all content, download videos, and enjoy an ad-free experience.
+                </p>
+              </div>
+              
+              <div className="bg-card rounded-lg p-6 border border-primary">
+                <div className="flex justify-between items-center mb-4">
+                  <h4 className="text-lg font-bold">Premium Subscription</h4>
+                  <span className="bg-primary text-white text-xs px-2 py-1 rounded-md">R59/month</span>
+                </div>
+                
+                <ul className="space-y-3 mb-6">
+                  <li className="flex items-start">
+                    <CheckIcon className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                    <span>Access to all premium movies and series</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckIcon className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                    <span>Download videos for offline viewing</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckIcon className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                    <span>Ad-free viewing experience</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckIcon className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                    <span>HD video quality on all devices</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckIcon className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                    <span>Cancel anytime</span>
+                  </li>
+                </ul>
+                
+                <Button 
+                  onClick={() => {
+                    // Navigate to subscription page
+                    window.location.href = "/subscription";
+                    onClose();
+                  }}
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                  Start Premium Subscription
+                </Button>
+              </div>
+              
+              <p className="text-center text-sm text-muted-foreground">
+                Need more information? Visit our <a href="/pricing" className="text-primary">pricing page</a>.
+              </p>
             </div>
           </TabsContent>
         </Tabs>
