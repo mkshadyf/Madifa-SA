@@ -1,0 +1,61 @@
+madifa-streams-mikeforbeat.replit.app/:1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+madifa-streams-mikeforbeat.replit.app/:1 Error while trying to use the following icon from the Manifest: https://madifa-streams-mikeforbeat.replit.app/logo192.png (Download error or resource isn't a valid image)
+[Report Only] Refused to frame 'https://www.google.com/' because an ancestor violates the following Content Security Policy directive: "frame-ancestors 'self'".
+
+hook.js:608 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+overrideMethod @ hook.js:608
+hook.js:608 Ad loading error: TagError: adsbygoogle.push() error: All 'ins' elements in the DOM with class=adsbygoogle already have ads in them.
+    at ir (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:235:255)
+    at $q (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:231:446)
+    at Vq.e.client (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:225:43)
+    at hk.g (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:92:729)
+    at ok (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:93:682)
+    at Vq (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:225:31)
+    at Object.push (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:241:142)
+    at Cg (index-Baa8W6wu.js:523:35323)
+    at Ee (index-Baa8W6wu.js:525:4060)
+    at index-Baa8W6wu.js:525:3353
+overrideMethod @ hook.js:608
+index-Baa8W6wu.js:33 Allow attribute will take precedence over 'allowfullscreen'.
+sv @ index-Baa8W6wu.js:33
+hook.js:608 Error fetching average rating: TypeError: (intermediate value).json is not a function
+    at S (index-Baa8W6wu.js:525:10509)
+overrideMethod @ hook.js:608
+hook.js:608 Error fetching ratings: TypeError: (intermediate value).json is not a function
+    at _ (index-Baa8W6wu.js:525:10651)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to fetch reviews
+overrideMethod @ hook.js:608
+hook.js:608 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+overrideMethod @ hook.js:608
+madifa-streams-mikeforbeat.replit.app/:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+madifa-streams-mikeforbeat.replit.app/:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+madifa-streams-mikeforbeat.replit.app/:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+madifa-streams-mikeforbeat.replit.app/:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+madifa-streams-mikeforbeat.replit.app/:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dzsnjrnzmhxpfnoyajiw.supabase.co/auth/v1/token?grant_type=password:1 
+            
+            
+           Failed to load resource: the server responded with a status of 400 ()
+hook.js:608 Login failed: TypeError: Failed to execute 'fetch' on 'Window': '/api/auth/login' is not a valid HTTP method.
+    at je (index-Baa8W6wu.js:48:40574)
+    at a (index-Baa8W6wu.js:53:75815)
+    at async d (index-Baa8W6wu.js:523:183549)
+    at async index-Baa8W6wu.js:523:117474
+overrideMethod @ hook.js:608
+dzsnjrnzmhxpfnoyajiw.supabase.co/auth/v1/token?grant_type=password:1 
+            
+            
+           Failed to load resource: the server responded with a status of 400 ()
+hook.js:608 Login failed: TypeError: Failed to execute 'fetch' on 'Window': '/api/auth/login' is not a valid HTTP method.
+    at je (index-Baa8W6wu.js:48:40574)
+    at a (index-Baa8W6wu.js:53:75815)
+    at async d (index-Baa8W6wu.js:523:183549)
+    at async index-Baa8W6wu.js:523:117474
+overrideMethod @ hook.js:608
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.

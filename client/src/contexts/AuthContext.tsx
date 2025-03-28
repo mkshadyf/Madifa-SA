@@ -157,14 +157,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (supabaseError) {
         // Fallback to our custom auth
-        const res = await apiRequest("/api/auth/login", "POST", { email, password });
-        const data = await res.json();
-        
-        // Store token and set user
-        localStorage.setItem("auth_token", data.token);
-        setUser(data.user);
-        
-        return data;
+        try {
+          const data = await apiRequest({
+            url: "/api/auth/login", 
+            method: "POST", 
+            data: { email, password }
+          });
+          
+          // Store token and set user
+          localStorage.setItem("auth_token", data.token);
+          setUser(data.user);
+          
+          return data;
+        } catch (error) {
+          console.error("Custom auth login failed:", error);
+          throw error;
+        }
       }
       
       // Supabase login successful - get user from our backend
@@ -234,14 +242,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (supabaseError) {
         // Fallback to our custom auth
-        const res = await apiRequest("/api/auth/register", "POST", userData);
-        const data = await res.json();
-        
-        // Store token and set user
-        localStorage.setItem("auth_token", data.token);
-        setUser(data.user);
-        
-        return data;
+        try {
+          const data = await apiRequest({
+            url: "/api/auth/register", 
+            method: "POST", 
+            data: userData
+          });
+          
+          // Store token and set user
+          localStorage.setItem("auth_token", data.token);
+          setUser(data.user);
+          
+          return data;
+        } catch (error) {
+          console.error("Custom auth registration failed:", error);
+          throw error;
+        }
       }
       
       // Supabase registration successful - create user in our backend
