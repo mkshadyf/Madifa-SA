@@ -15,9 +15,9 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Upload, Trash2, Edit, Play, Pause, Film, FileText, Download, RefreshCw, CheckCircle2, XCircle, Eye, AlertCircle, Languages, Check, X, FolderPlus, Folder } from 'lucide-react';
+import { Upload, Trash2, Edit, Play, Pause, Film, FileText, Download, RefreshCw, CheckCircle2, XCircle, Eye, AlertCircle, Languages, Check, X } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { formatDuration } from '@/lib/utils';
 
@@ -57,8 +57,6 @@ interface VideosResponse {
 interface Category {
   id: number;
   name: string;
-  description?: string | null;
-  thumbnailUrl?: string | null;
 }
 
 interface VideoCaptions {
@@ -105,10 +103,6 @@ export default function VimeoManagement() {
   const [showThumbnailDialog, setShowThumbnailDialog] = useState(false);
   const [videoCaptions, setVideoCaptions] = useState<VideoCaptions[]>([]);
   const [isCaptionsLoading, setIsCaptionsLoading] = useState(false);
-  const [newCategory, setNewCategory] = useState({ name: '', description: '', thumbnailUrl: '' });
-  const [isAddingCategory, setIsAddingCategory] = useState(false);
-  const [showCategoryDialog, setShowCategoryDialog] = useState(false);
-  const [isCategoryLoading, setIsCategoryLoading] = useState(false);
 
   // Check Vimeo authentication status
   useEffect(() => {
@@ -339,87 +333,6 @@ export default function VimeoManagement() {
     setActiveThumbnailUrl(url);
     setShowThumbnailDialog(true);
   };
-  
-  // Handle adding a new category
-  const handleAddCategory = async () => {
-    if (!newCategory.name) {
-      toast({
-        title: 'Missing name',
-        description: 'Please provide a name for the category.',
-        variant: 'destructive',
-      });
-      return;
-    }
-    
-    setIsAddingCategory(true);
-    
-    try {
-      const response = await apiRequest('POST', '/api/categories', {
-        name: newCategory.name,
-        description: newCategory.description,
-        thumbnailUrl: newCategory.thumbnailUrl
-      });
-      
-      if (response.ok) {
-        const newCategoryData = await response.json();
-        
-        // Add to local state
-        setCategories(prev => [...prev, newCategoryData]);
-        
-        // Reset form
-        setNewCategory({ name: '', description: '', thumbnailUrl: '' });
-        setShowCategoryDialog(false);
-        
-        toast({
-          title: 'Category Added',
-          description: `Category "${newCategoryData.name}" was successfully created.`,
-        });
-      } else {
-        const error = await response.text();
-        throw new Error(error);
-      }
-    } catch (error) {
-      console.error('Failed to add category:', error);
-      toast({
-        title: 'Failed to Add Category',
-        description: 'An error occurred while creating the category.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsAddingCategory(false);
-    }
-  };
-  
-  // Handle deleting a category
-  const handleDeleteCategory = async (categoryId: number) => {
-    setIsCategoryLoading(true);
-    
-    try {
-      const response = await apiRequest('DELETE', `/api/categories/${categoryId}`);
-      
-      if (response.ok) {
-        // Remove from local state
-        setCategories(prev => prev.filter(category => category.id !== categoryId));
-        
-        toast({
-          title: 'Category Deleted',
-          description: 'Category was successfully deleted.',
-        });
-      } else {
-        const error = await response.text();
-        throw new Error(error);
-      }
-    } catch (error) {
-      console.error('Failed to delete category:', error);
-      toast({
-        title: 'Failed to Delete Category',
-        description: 'An error occurred while deleting the category.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsCategoryLoading(false);
-    }
-  };
 
   // If not authenticated or not an admin, show error
   if (!isAuthLoading && (!user || !user.isAdmin)) {
@@ -489,7 +402,6 @@ export default function VimeoManagement() {
         <TabsList className="mb-6">
           <TabsTrigger value="videos">Vimeo Videos</TabsTrigger>
           <TabsTrigger value="upload">Upload New Video</TabsTrigger>
-          <TabsTrigger value="categories">Categories</TabsTrigger>
           <TabsTrigger value="captions">Captions Management</TabsTrigger>
         </TabsList>
 
@@ -788,152 +700,6 @@ export default function VimeoManagement() {
               )}
             </CardContent>
           </Card>
-        </TabsContent>
-        
-        {/* Categories Management Tab */}
-        <TabsContent value="categories">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Content Categories</CardTitle>
-                <CardDescription>
-                  Manage categories for organizing your video content
-                </CardDescription>
-              </div>
-              <Button onClick={() => setShowCategoryDialog(true)}>
-                <FolderPlus className="h-4 w-4 mr-2" />
-                Add Category
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {categories.length === 0 ? (
-                <div className="text-center py-8">
-                  <Folder className="mx-auto h-12 w-12 text-muted-foreground" />
-                  <h3 className="mt-2 text-lg font-semibold">No categories found</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Create categories to organize your content
-                  </p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {categories.map((category) => (
-                        <TableRow key={category.id}>
-                          <TableCell className="font-medium">{category.name}</TableCell>
-                          <TableCell className="max-w-xs truncate">{category.description || 'No description'}</TableCell>
-                          <TableCell>
-                            <div className="flex space-x-2">
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button variant="destructive" size="sm">
-                                    <Trash2 className="h-4 w-4 mr-1" /> Delete
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      This will permanently delete the category "{category.name}" and any 
-                                      associated content will be uncategorized. This action cannot be undone.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() => !isCategoryLoading && handleDeleteCategory(category.id)}
-                                      className="bg-red-600 hover:bg-red-700"
-                                    >
-                                      {isCategoryLoading ? (
-                                        <>
-                                          <span className="animate-spin mr-2">
-                                            <RefreshCw size={16} />
-                                          </span>
-                                          Deleting...
-                                        </>
-                                      ) : (
-                                        'Delete'
-                                      )}
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-          
-          {/* Add Category Dialog */}
-          <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add New Category</DialogTitle>
-              </DialogHeader>
-              <div className="py-4">
-                <form className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="categoryName">Category Name *</Label>
-                    <Input
-                      id="categoryName"
-                      value={newCategory.name}
-                      onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-                      placeholder="Enter category name"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="categoryDescription">Description</Label>
-                    <Textarea
-                      id="categoryDescription"
-                      value={newCategory.description}
-                      onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
-                      placeholder="Enter category description"
-                      rows={3}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="categoryThumbnail">Thumbnail URL (optional)</Label>
-                    <Input
-                      id="categoryThumbnail"
-                      value={newCategory.thumbnailUrl}
-                      onChange={(e) => setNewCategory({ ...newCategory, thumbnailUrl: e.target.value })}
-                      placeholder="Enter thumbnail URL"
-                    />
-                  </div>
-                </form>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setShowCategoryDialog(false)}>Cancel</Button>
-                <Button 
-                  onClick={() => !isAddingCategory && handleAddCategory()}
-                  disabled={isAddingCategory}
-                >
-                  {isAddingCategory ? (
-                    <>
-                      <span className="animate-spin mr-2">
-                        <RefreshCw size={16} />
-                      </span>
-                      Adding...
-                    </>
-                  ) : (
-                    'Add Category'
-                  )}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
         </TabsContent>
 
         {/* Upload New Video Tab */}

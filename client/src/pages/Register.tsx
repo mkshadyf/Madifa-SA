@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { signInWithGoogle } from "@/lib/firebase";
 import { 
   Form, 
   FormControl, 
@@ -71,54 +70,6 @@ const Register = () => {
       });
     } finally {
       setIsLoading(false);
-    }
-  };
-  
-  const handleGoogleSignIn = async () => {
-    try {
-      // Sign in with Google using Firebase
-      const googleUser = await signInWithGoogle();
-      
-      if (!googleUser) {
-        throw new Error("Google authentication failed");
-      }
-      
-      // Generate a username from email or display name
-      const username = googleUser.displayName?.replace(/\s+/g, '_').toLowerCase() || 
-                        googleUser.email?.split('@')[0] || 
-                        `user_${Date.now()}`;
-      
-      // Sync with our backend
-      const response = await fetch("/api/auth/sync-google-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firebaseUid: googleUser.uid,
-          email: googleUser.email,
-          username,
-          fullName: googleUser.displayName,
-          photoURL: googleUser.photoURL,
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error("Failed to sync Google account with Madifa");
-      }
-      
-      const userData = await response.json();
-      
-      // Show success message
-      toast({
-        title: "Registration successful",
-        description: "Welcome to Madifa!",
-      });
-      
-      return userData;
-    } catch (error) {
-      console.error("Google sign-in error:", error);
-      throw error;
     }
   };
 
@@ -251,32 +202,12 @@ const Register = () => {
               <div className="flex-grow border-t border-gray-700"></div>
             </div>
             
-            <div className="flex justify-center">
-              <Button 
-                variant="outline" 
-                className="border-gray-700 flex items-center gap-2 w-full"
-                onClick={async () => {
-                  try {
-                    setIsLoading(true);
-                    await handleGoogleSignIn();
-                    navigate("/");
-                  } catch (error) {
-                    console.error("Google registration error:", error);
-                    toast({
-                      title: "Registration failed",
-                      description: error instanceof Error ? error.message : "Failed to register with Google. Please try again.",
-                      variant: "destructive",
-                    });
-                  } finally {
-                    setIsLoading(false);
-                  }
-                }}
-                disabled={isLoading}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
-                  <path d="M12.0002 2C17.5242 2 22.0002 6.476 22.0002 12C22.0002 17.524 17.5242 22 12.0002 22C6.47724 22 2.00024 17.524 2.00024 12C2.00024 6.476 6.47724 2 12.0002 2ZM13.7142 11.2857V9.14286H10.2858C10.2858 9.14286 10.2858 10.2857 10.2858 11.4286C10.2858 12.5714 10.9887 13.4286 12.0002 13.4286C13.0115 13.4286 13.7142 12.5714 13.7142 11.2857ZM14.5713 11.2857C14.5713 13 13.3926 14.2857 12.0002 14.2857C10.6076 14.2857 9.42899 13 9.42899 11.2857V8.28571H14.5713V11.2857ZM8.28585 6.28571H15.7145V7.42857H8.28585V6.28571Z" fill="currentColor"></path>
-                </svg>
-                {isLoading ? 'Processing...' : 'Continue with Google'}
+            <div className="grid grid-cols-2 gap-4">
+              <Button variant="outline" className="border-gray-700">
+                Google
+              </Button>
+              <Button variant="outline" className="border-gray-700">
+                Facebook
               </Button>
             </div>
           </CardContent>
