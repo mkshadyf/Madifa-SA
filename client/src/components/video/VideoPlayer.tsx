@@ -426,7 +426,7 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
         return (
           <iframe
             className="w-full h-full"
-            src={`https://player.vimeo.com/video/${parsedVideo.id}?autoplay=${autoPlay ? 1 : 0}`}
+            src={`https://player.vimeo.com/video/${parsedVideo.id}?autoplay=${autoPlay ? 1 : 0}&controls=0&transparent=1&background=1&title=0&byline=0&portrait=0`}
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
