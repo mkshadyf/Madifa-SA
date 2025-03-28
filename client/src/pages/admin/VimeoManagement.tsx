@@ -448,16 +448,16 @@ export default function VimeoManagement() {
                           <TableRow key={video.id}>
                             <TableCell>
                               <button
-                                className="relative h-16 w-28 overflow-hidden rounded-md border"
+                                className="relative h-16 w-28 overflow-hidden rounded-md border group"
                                 onClick={() => handleThumbnailPreview(video.thumbnailUrl)}
                               >
                                 <img
                                   src={video.thumbnailUrl}
                                   alt={`Thumbnail for ${video.title}`}
-                                  className="h-full w-full object-cover"
+                                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
                                 />
-                                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 flex items-center justify-center">
-                                  <Eye className="text-white opacity-0 hover:opacity-100" size={20} />
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center transition-all duration-200">
+                                  <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" size={20} />
                                 </div>
                               </button>
                             </TableCell>
@@ -1204,17 +1204,57 @@ export default function VimeoManagement() {
 
       {/* Thumbnail Preview Dialog */}
       <Dialog open={showThumbnailDialog} onOpenChange={setShowThumbnailDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-xl">
           <DialogHeader>
             <DialogTitle>Thumbnail Preview</DialogTitle>
+            <DialogDescription>
+              Preview how this thumbnail will appear on the platform.
+            </DialogDescription>
           </DialogHeader>
           {activeThumbnailUrl && (
-            <div className="flex justify-center">
-              <img 
-                src={activeThumbnailUrl} 
-                alt="Video thumbnail" 
-                className="max-w-full max-h-[70vh] object-contain rounded-md"
-              />
+            <div className="space-y-4">
+              <div className="flex justify-center border rounded-md p-4 bg-muted/20">
+                <img 
+                  src={activeThumbnailUrl} 
+                  alt="Video thumbnail" 
+                  className="max-w-full max-h-[70vh] object-contain rounded-md shadow-md"
+                />
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="border p-2 rounded-md">
+                  <p className="text-xs font-semibold mb-1 text-muted-foreground">Mobile View</p>
+                  <div className="aspect-video h-24 overflow-hidden rounded-sm">
+                    <img 
+                      src={activeThumbnailUrl} 
+                      alt="Mobile preview" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                <div className="border p-2 rounded-md">
+                  <p className="text-xs font-semibold mb-1 text-muted-foreground">Carousel View</p>
+                  <div className="aspect-[16/9] h-24 overflow-hidden rounded-sm">
+                    <img 
+                      src={activeThumbnailUrl} 
+                      alt="Carousel preview" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                <div className="border p-2 rounded-md">
+                  <p className="text-xs font-semibold mb-1 text-muted-foreground">Grid View</p>
+                  <div className="aspect-[4/3] h-24 overflow-hidden rounded-sm">
+                    <img 
+                      src={activeThumbnailUrl} 
+                      alt="Grid preview" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground px-2">
+                <p>Thumbnail URL: <span className="font-mono text-xs break-all">{activeThumbnailUrl}</span></p>
+              </div>
             </div>
           )}
         </DialogContent>
