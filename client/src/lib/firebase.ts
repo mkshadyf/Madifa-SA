@@ -5,15 +5,15 @@ import { getAuth, GoogleAuthProvider, signInWithPopup,
 import { getStorage } from 'firebase/storage';
 import { getFirestore } from 'firebase/firestore';
 
-// Firebase configuration - using environment variables
+// Firebase configuration - hardcoded for now since env variables not loading properly
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "",
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || ""
+  apiKey: "AIzaSyAAG7aaKs9Z0-z9f3tCrObrhR3bWXX8qiM",
+  authDomain: "madifa-7d087.firebaseapp.com",
+  projectId: "madifa-7d087",
+  storageBucket: "madifa-7d087.appspot.com",
+  messagingSenderId: "1038456771704",
+  appId: "1:1038456771704:web:3eaa63a7aa9cce05fd35c7",
+  measurementId: "G-VPG2YDCXKT"
 };
 
 // Initialize Firebase

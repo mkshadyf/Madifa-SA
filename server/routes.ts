@@ -213,6 +213,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Supabase User Sync Route - Used when users sign in via Supabase
+  app.post("/api/auth/sync-google-user", async (req, res) => {
+    try {
+      // Get Firebase UID and email from request
+      const { firebaseUid, email, username, fullName, photoURL } = req.body;
+      
+      if (!firebaseUid || !email) {
+        return res.status(400).json({ message: "Firebase UID and email are required" });
+      }
+      
+      // Check if user already exists by email
+      const existingUserByEmail = await storage.getUserByEmail(email);
+      
+      if (existingUserByEmail) {
+        // Generate token for existing user
+        const token = jwt.sign(
+          { id: existingUserByEmail.id, username: existingUserByEmail.username, email: existingUserByEmail.email },
+          process.env.JWT_SECRET || "your-secret-key",
+          { expiresIn: "7d" }
+        );
+        
+        return res.json({ user: existingUserByEmail, token });
+      }
+      
+      // Create a unique username if not provided
+      const actualUsername = username || `user_${Date.now()}`;
+      
+      // Create new user
+      const newUser = await storage.createUser({
+        username: actualUsername,
+        email,
+        fullName: fullName || "",
+        password: await bcrypt.hash(crypto.randomBytes(16).toString("hex"), 10), // Create secure random password
+        avatarUrl: photoURL || "",
+        isPremium: false,
+        isAdmin: false
+      });
+      
+      // Generate a JWT token for automatic authentication
+      const token = jwt.sign(
+        { id: newUser.id, username: newUser.username, email: newUser.email },
+        process.env.JWT_SECRET || "your-secret-key",
+        { expiresIn: "7d" }
+      );
+      
+      return res.status(201).json({ user: newUser, token });
+    } catch (error) {
+      console.error("Error syncing Google user:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   app.post("/api/auth/sync-supabase-user", async (req, res) => {
     try {
       // Get Supabase ID and email from request
@@ -723,6 +774,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json(category);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+  
+  // Category Management (accessible by admin and non-admin routes)
+  app.post("/api/categories", authenticateAdmin, async (req, res) => {
+    try {
+      const validatedData = insertCategorySchema.parse(req.body);
+      
+      const category = await storage.createCategory(validatedData);
+      res.status(201).json(category);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+  
+  app.delete("/api/categories/:id", authenticateAdmin, async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      if (isNaN(categoryId)) {
+        return res.status(400).json({ message: "Invalid category ID" });
+      }
+      
+      const category = await storage.getCategory(categoryId);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      
+      // Delete the category
+      await storage.deleteCategory(categoryId);
+      res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Server error" });
     }
