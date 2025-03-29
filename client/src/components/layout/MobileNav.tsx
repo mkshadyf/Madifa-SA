@@ -37,24 +37,24 @@ export function MobileNav({ onOpenPerformanceSettings }: MobileNavProps) {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-gray-800 z-50 safe-area-bottom">
+    <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-800 z-50 safe-area-bottom">
       <nav className="flex justify-around items-center h-16">
-        <Link href="/" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}>
+        <Link href="/" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/" ? "text-primary" : "text-gray-600 dark:text-gray-400"} active:bg-gray-100 dark:active:bg-gray-800 transition-colors`}>
           <Home size={20} />
           <span className="text-xs mt-1 font-medium">Home</span>
         </Link>
         
-        <Link href="/browse" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/browse" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}>
+        <Link href="/browse" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/browse" ? "text-primary" : "text-gray-600 dark:text-gray-400"} active:bg-gray-100 dark:active:bg-gray-800 transition-colors`}>
           <Search size={20} />
           <span className="text-xs mt-1 font-medium">Browse</span>
         </Link>
         
-        <Link href="/my-list" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/my-list" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}>
+        <Link href="/my-list" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/my-list" ? "text-primary" : "text-gray-600 dark:text-gray-400"} active:bg-gray-100 dark:active:bg-gray-800 transition-colors`}>
           <Film size={20} />
           <span className="text-xs mt-1 font-medium">My List</span>
         </Link>
         
-        <Link href="/downloads" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/downloads" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}>
+        <Link href="/downloads" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/downloads" ? "text-primary" : "text-gray-600 dark:text-gray-400"} active:bg-gray-100 dark:active:bg-gray-800 transition-colors`}>
           <Download size={20} />
           <span className="text-xs mt-1 font-medium">Downloads</span>
         </Link>
@@ -62,7 +62,7 @@ export function MobileNav({ onOpenPerformanceSettings }: MobileNavProps) {
         {/* Performance Settings Button */}
         <button 
           onClick={handlePerformanceClick}
-          className={`flex flex-col items-center justify-center w-full h-full py-2 text-muted-foreground bg-transparent border-none active:bg-muted/30 transition-colors`}
+          className={`flex flex-col items-center justify-center w-full h-full py-2 text-gray-600 dark:text-gray-400 bg-transparent border-none active:bg-gray-100 dark:active:bg-gray-800 transition-colors`}
           aria-label="Performance Settings"
         >
           <div className="relative">
@@ -77,7 +77,7 @@ export function MobileNav({ onOpenPerformanceSettings }: MobileNavProps) {
         {user ? (
           <Link 
             href="/profile" 
-            className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/profile" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}
+            className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/profile" ? "text-primary" : "text-gray-600 dark:text-gray-400"} active:bg-gray-100 dark:active:bg-gray-800 transition-colors`}
           >
             <User size={20} />
             <span className="text-xs mt-1 font-medium">Profile</span>
@@ -85,7 +85,7 @@ export function MobileNav({ onOpenPerformanceSettings }: MobileNavProps) {
         ) : (
           <button
             onClick={handleSignInClick}
-            className={`flex flex-col items-center justify-center w-full h-full py-2 text-muted-foreground bg-transparent border-none active:bg-muted/30 transition-colors`}
+            className={`flex flex-col items-center justify-center w-full h-full py-2 text-gray-600 dark:text-gray-400 bg-transparent border-none active:bg-gray-100 dark:active:bg-gray-800 transition-colors`}
           >
             <User size={20} />
             <span className="text-xs mt-1 font-medium">Sign In</span>

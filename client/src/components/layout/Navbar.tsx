@@ -93,7 +93,7 @@ const Navbar = () => {
                   className={`${
                     location === link.path 
                       ? "text-primary" 
-                      : "text-muted-foreground hover:text-primary"
+                      : "text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
                   } transition`}
                 >
                   {link.name}
@@ -107,9 +107,9 @@ const Navbar = () => {
               <Input 
                 type="text" 
                 placeholder="Search..." 
-                className="bg-background/80 border-muted-foreground/30 rounded-full py-1 px-4 text-sm w-40 lg:w-64"
+                className="bg-white/80 dark:bg-gray-800/80 border-gray-300 dark:border-gray-700 rounded-full py-1 px-4 text-sm w-40 lg:w-64"
               />
-              <Search className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <Search className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400" />
             </div>
             
             {user ? (
@@ -185,7 +185,7 @@ const Navbar = () => {
                         className={`flex items-center space-x-3 p-2 rounded-md ${
                           location === link.path 
                             ? "bg-primary/10 text-primary" 
-                            : "text-muted-foreground hover:bg-muted hover:text-primary"
+                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary"
                         } transition`}
                       >
                         {link.icon}
@@ -196,7 +196,7 @@ const Navbar = () => {
                       <>
                         <Link 
                           href="/profile"
-                          className="flex items-center space-x-3 p-2 rounded-md text-muted-foreground hover:bg-muted hover:text-primary transition"
+                          className="flex items-center space-x-3 p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary transition"
                         >
                           <UserIcon className="h-5 w-5" />
                           <span>Profile</span>
@@ -204,7 +204,7 @@ const Navbar = () => {
                         {user.isAdmin && (
                           <Link 
                             href="/admin"
-                            className="flex items-center space-x-3 p-2 rounded-md text-muted-foreground hover:bg-muted hover:text-primary transition"
+                            className="flex items-center space-x-3 p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary transition"
                           >
                             <Shield className="h-5 w-5" />
                             <span>Admin Dashboard</span>
@@ -218,9 +218,9 @@ const Navbar = () => {
                   <Input 
                     type="text" 
                     placeholder="Search..." 
-                    className="bg-background/80 border-muted-foreground/30 rounded-full py-1 pl-4 pr-10 text-sm w-full"
+                    className="bg-white/80 dark:bg-gray-800/80 border-gray-300 dark:border-gray-700 rounded-full py-1 pl-4 pr-10 text-sm w-full"
                   />
-                  <Search className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                  <Search className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                 </div>
               </SheetContent>
             </Sheet>
