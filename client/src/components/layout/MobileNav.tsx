@@ -24,56 +24,49 @@ export function MobileNav({ onOpenPerformanceSettings }: MobileNavProps) {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-gray-800 z-50 safe-area-bottom">
       <nav className="flex justify-around items-center h-16">
-        <Link href="/">
-          <a className={`flex flex-col items-center w-full px-1 py-1 ${location === "/" ? "text-primary" : "text-gray-400"}`}>
-            <Home size={18} />
-            <span className="text-xs mt-1">Home</span>
-          </a>
+        <Link href="/" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}>
+          <Home size={20} />
+          <span className="text-xs mt-1 font-medium">Home</span>
         </Link>
         
-        <Link href="/browse">
-          <a className={`flex flex-col items-center w-full px-1 py-1 ${location === "/browse" ? "text-primary" : "text-gray-400"}`}>
-            <Search size={18} />
-            <span className="text-xs mt-1">Browse</span>
-          </a>
+        <Link href="/browse" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/browse" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}>
+          <Search size={20} />
+          <span className="text-xs mt-1 font-medium">Browse</span>
         </Link>
         
-        <Link href="/my-list">
-          <a className={`flex flex-col items-center w-full px-1 py-1 ${location === "/my-list" ? "text-primary" : "text-gray-400"}`}>
-            <Film size={18} />
-            <span className="text-xs mt-1">My List</span>
-          </a>
+        <Link href="/my-list" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/my-list" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}>
+          <Film size={20} />
+          <span className="text-xs mt-1 font-medium">My List</span>
         </Link>
         
-        <Link href="/downloads">
-          <a className={`flex flex-col items-center w-full px-1 py-1 ${location === "/downloads" ? "text-primary" : "text-gray-400"}`}>
-            <Download size={18} />
-            <span className="text-xs mt-1">Downloads</span>
-          </a>
+        <Link href="/downloads" className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/downloads" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}>
+          <Download size={20} />
+          <span className="text-xs mt-1 font-medium">Downloads</span>
         </Link>
         
         {/* Performance Settings Button */}
-        <a 
-          href="#" 
+        <button 
           onClick={handlePerformanceClick}
-          className="flex flex-col items-center w-full px-1 py-1 text-gray-400"
+          className={`flex flex-col items-center justify-center w-full h-full py-2 text-muted-foreground bg-transparent border-none active:bg-muted/30 transition-colors`}
+          aria-label="Performance Settings"
         >
           <div className="relative">
-            <Gauge size={18} />
+            <Gauge size={20} />
             {lightweight && (
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full"></div>
             )}
           </div>
-          <span className="text-xs mt-1">Speed</span>
-        </a>
+          <span className="text-xs mt-1 font-medium">Speed</span>
+        </button>
         
-        <Link href={user ? "/profile" : "/login"}>
-          <a className={`flex flex-col items-center w-full px-1 py-1 ${location === "/profile" || location === "/login" ? "text-primary" : "text-gray-400"}`}>
-            <User size={18} />
-            <span className="text-xs mt-1">{user ? "Profile" : "Sign In"}</span>
-          </a>
+        <Link 
+          href={user ? "/profile" : "/login"} 
+          className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/profile" || location === "/login" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}
+        >
+          <User size={20} />
+          <span className="text-xs mt-1 font-medium">{user ? "Profile" : "Sign In"}</span>
         </Link>
       </nav>
     </div>

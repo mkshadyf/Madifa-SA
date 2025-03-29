@@ -7,8 +7,25 @@
     @apply border-border;
   }
 
+  html, body {
+    @apply h-full w-full overflow-x-hidden;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  }
+
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased bg-background text-foreground overscroll-none;
+    text-rendering: optimizeSpeed;
+  }
+  
+  /* Fix 100vh issue on mobile browsers */
+  :root {
+    --app-height: 100%;
+  }
+  
+  @supports (-webkit-touch-callout: none) {
+    .h-screen {
+      height: var(--app-height);
+    }
   }
   
   .content-carousel {
@@ -110,6 +127,32 @@
     * {
       transition-duration: 0ms !important;
       animation-duration: 0ms !important;
+    }
+  }
+  
+  /* Mobile safe area utilities for notched devices */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+  
+  .safe-area-inset {
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+  }
+  
+  /* Improved touch targets for mobile */
+  @media (max-width: 768px) {
+    button, 
+    a[role="button"],
+    .interactive {
+      min-height: 44px;
+      min-width: 44px;
     }
   }
 }

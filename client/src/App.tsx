@@ -1,7 +1,8 @@
 import { Switch, Route } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
+import { setAppHeight } from "./lib/viewport";
 import { AuthProvider } from "./contexts/AuthContext";
 import { DataSourceProvider } from "./contexts/DataSourceContext";
 import { PerformanceProvider } from "./contexts/PerformanceContext";
@@ -114,6 +115,12 @@ function Router() {
 function App() {
   const [showPerformanceSettings, setShowPerformanceSettings] = useState(false);
   
+  // Fix for mobile viewport height issues
+  useEffect(() => {
+    const cleanup = setAppHeight();
+    return cleanup;
+  }, []);
+  
   // Make performance settings available to MobileNav
   const handleOpenPerformanceSettings = () => {
     setShowPerformanceSettings(true);
@@ -144,7 +151,7 @@ function App() {
             <MobileNav onOpenPerformanceSettings={handleOpenPerformanceSettings} />
             
             {/* Add padding bottom for mobile to avoid content being hidden behind the nav bar */}
-            <div className="md:hidden h-16"></div>
+            <div className="md:hidden h-16 safe-area-bottom"></div>
           </PerformanceProvider>
         </DataSourceProvider>
       </AuthProvider>
