@@ -281,17 +281,17 @@ export default function AdminDashboard() {
   return (
     <div className="container mx-auto py-4 px-2 md:px-4 lg:px-6">
       {/* Header with welcome message and notification bell */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Admin Dashboard</h1>
           <p className="text-muted-foreground">Welcome back, {user?.fullName || user?.username}!</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 self-end sm:self-auto">
           <div className="relative">
             <Button 
               variant="outline" 
               size="icon" 
-              className="relative"
+              className="relative h-9 w-9"
               onClick={() => setShowAllNotifications(!showAllNotifications)}
             >
               <Bell className="h-5 w-5" />
@@ -304,7 +304,7 @@ export default function AdminDashboard() {
             
             {/* Notifications dropdown */}
             {showAllNotifications && (
-              <Card className="absolute right-0 top-12 z-50 w-80 shadow-lg">
+              <Card className="absolute right-0 top-12 z-50 w-[280px] sm:w-80 shadow-lg">
                 <CardHeader className="py-3 px-4 flex flex-row items-center justify-between">
                   <CardTitle className="text-sm font-medium">Notifications</CardTitle>
                   {notifications.length > 0 && (
@@ -353,10 +353,10 @@ export default function AdminDashboard() {
               </Card>
             )}
           </div>
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" className="h-9">
             <Link to="/admin/settings">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
+              <Settings className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Settings</span>
             </Link>
           </Button>
         </div>
@@ -364,11 +364,35 @@ export default function AdminDashboard() {
 
       {/* Dashboard tabs */}
       <Tabs defaultValue="overview" className="mb-6" onValueChange={setActiveTab}>
-        <TabsList className="mb-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <TabsList className="mb-4 w-full overflow-x-auto flex-wrap justify-start sm:justify-start">
+          <TabsTrigger value="overview" className="flex-1 sm:flex-none min-w-fit">
+            <span className="hidden sm:inline">Overview</span>
+            <span className="sm:hidden flex flex-col items-center text-xs">
+              <Activity className="h-4 w-4 mb-1" />
+              Overview
+            </span>
+          </TabsTrigger>
+          <TabsTrigger value="users" className="flex-1 sm:flex-none min-w-fit">
+            <span className="hidden sm:inline">Users</span>
+            <span className="sm:hidden flex flex-col items-center text-xs">
+              <Users className="h-4 w-4 mb-1" />
+              Users
+            </span>
+          </TabsTrigger>
+          <TabsTrigger value="content" className="flex-1 sm:flex-none min-w-fit">
+            <span className="hidden sm:inline">Content</span>
+            <span className="sm:hidden flex flex-col items-center text-xs">
+              <Film className="h-4 w-4 mb-1" />
+              Content
+            </span>
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex-1 sm:flex-none min-w-fit">
+            <span className="hidden sm:inline">Analytics</span>
+            <span className="sm:hidden flex flex-col items-center text-xs">
+              <TrendingUp className="h-4 w-4 mb-1" />
+              Analytics
+            </span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">

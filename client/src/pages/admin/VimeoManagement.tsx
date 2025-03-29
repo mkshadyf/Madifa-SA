@@ -336,6 +336,30 @@ export default function VimeoManagement() {
     setActiveThumbnailUrl(url);
     setShowThumbnailDialog(true);
   };
+  
+  // Function to open import dialog and load captions
+  const openImportDialog = (video: VimeoVideoDetails) => {
+    setSelectedVideoId(video.id);
+    setIsCaptionsLoading(true);
+    setVideoCaptions([]);
+    
+    apiRequest('GET', `/api/vimeo/videos/${video.id}/captions`)
+      .then(response => response.json())
+      .then(data => {
+        setVideoCaptions(data);
+      })
+      .catch(error => {
+        console.error('Failed to fetch captions:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load video captions.',
+          variant: 'destructive',
+        });
+      })
+      .finally(() => {
+        setIsCaptionsLoading(false);
+      });
+  };
 
   // If not authenticated or not an admin, show error
   if (!isAuthLoading && (!user || !user.isAdmin)) {
@@ -402,10 +426,28 @@ export default function VimeoManagement() {
       </Card>
 
       <Tabs defaultValue="videos">
-        <TabsList className="mb-6">
-          <TabsTrigger value="videos">Vimeo Videos</TabsTrigger>
-          <TabsTrigger value="upload">Upload New Video</TabsTrigger>
-          <TabsTrigger value="captions">Captions Management</TabsTrigger>
+        <TabsList className="mb-6 w-full overflow-x-auto flex-wrap">
+          <TabsTrigger value="videos" className="flex-1 sm:flex-none min-w-fit">
+            <span className="hidden sm:inline">Vimeo Videos</span>
+            <span className="sm:hidden flex flex-col items-center text-xs">
+              <Film className="h-4 w-4 mb-1" />
+              Videos
+            </span>
+          </TabsTrigger>
+          <TabsTrigger value="upload" className="flex-1 sm:flex-none min-w-fit">
+            <span className="hidden sm:inline">Upload New Video</span>
+            <span className="sm:hidden flex flex-col items-center text-xs">
+              <Upload className="h-4 w-4 mb-1" />
+              Upload
+            </span>
+          </TabsTrigger>
+          <TabsTrigger value="captions" className="flex-1 sm:flex-none min-w-fit">
+            <span className="hidden sm:inline">Captions Management</span>
+            <span className="sm:hidden flex flex-col items-center text-xs">
+              <Languages className="h-4 w-4 mb-1" />
+              Captions
+            </span>
+          </TabsTrigger>
         </TabsList>
 
         {/* Videos List Tab */}
@@ -435,7 +477,176 @@ export default function VimeoManagement() {
                 </div>
               ) : (
                 <>
-                  <div className="overflow-x-auto">
+                  {/* Mobile Video List */}
+                  <div className="block md:hidden">
+                    <div className="space-y-4">
+                      {videos.map((video) => (
+                        <Card key={video.id} className="overflow-hidden">
+                          <div className="flex items-start">
+                            <button
+                              className="relative h-20 w-1/3 overflow-hidden group"
+                              onClick={() => handleThumbnailPreview(video.thumbnailUrl)}
+                            >
+                              <img
+                                src={video.thumbnailUrl}
+                                alt={`Thumbnail for ${video.title}`}
+                                className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
+                              />
+                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center transition-all duration-200">
+                                <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" size={20} />
+                              </div>
+                            </button>
+                            <div className="p-3 flex-1">
+                              <h4 className="font-medium text-sm line-clamp-1">{video.title}</h4>
+                              <p className="text-xs text-muted-foreground line-clamp-1 mt-1">
+                                {video.description || 'No description'}
+                              </p>
+                              <div className="flex items-center justify-between mt-2">
+                                <div className="flex items-center gap-2">
+                                  <Badge variant={video.privacySettings.view === 'anybody' ? 'default' : 'outline'} className="text-xs">
+                                    {video.privacySettings.view}
+                                  </Badge>
+                                  <span className="text-xs text-muted-foreground">{formatDuration(video.duration)}</span>
+                                </div>
+                              </div>
+                              <div className="flex gap-2 mt-3">
+                                <Dialog onOpenChange={(open) => {
+                                  if (open) {
+                                    openImportDialog(video);
+                                  }
+                                }}>
+                                  <DialogTrigger asChild>
+                                    <Button variant="outline" size="sm" className="h-8 px-2 text-xs">
+                                      <Film className="h-3 w-3 mr-1" /> Import
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>Import Video to Platform</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="py-4">
+                                      <form className="space-y-4">
+                                        <div className="space-y-2">
+                                          <Label htmlFor="contentType">Content Type</Label>
+                                          <Select
+                                            value={importFormData.contentType}
+                                            onValueChange={(value) =>
+                                              setImportFormData({ ...importFormData, contentType: value })
+                                            }
+                                          >
+                                            <SelectTrigger>
+                                              <SelectValue placeholder="Select content type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              <SelectItem value="movie">Movie</SelectItem>
+                                              <SelectItem value="trailer">Trailer</SelectItem>
+                                              <SelectItem value="music_video">Music Video</SelectItem>
+                                              <SelectItem value="short_film">Short Film</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                          <Label htmlFor="category">Category</Label>
+                                          <Select
+                                            value={importFormData.categoryId}
+                                            onValueChange={(value) =>
+                                              setImportFormData({ ...importFormData, categoryId: value })
+                                            }
+                                          >
+                                            <SelectTrigger>
+                                              <SelectValue placeholder="Select a category" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              {categories.map((category) => (
+                                                <SelectItem key={category.id} value={category.id.toString()}>
+                                                  {category.name}
+                                                </SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                          <Checkbox
+                                            id={`isPremium-mobile-${video.id}`}
+                                            checked={importFormData.isPremium}
+                                            onCheckedChange={(checked) =>
+                                              setImportFormData({
+                                                ...importFormData,
+                                                isPremium: checked === true,
+                                              })
+                                            }
+                                          />
+                                          <Label htmlFor={`isPremium-mobile-${video.id}`}>Premium content</Label>
+                                        </div>
+                                        <div className="mt-6">
+                                          <h3 className="text-sm font-medium mb-2">Captions</h3>
+                                          {isCaptionsLoading ? (
+                                            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                                              <RefreshCw size={14} className="animate-spin" />
+                                              <span>Loading...</span>
+                                            </div>
+                                          ) : videoCaptions.length > 0 ? (
+                                            <div className="text-sm text-green-600">
+                                              <CheckCircle2 className="h-4 w-4 inline mr-1" />
+                                              {videoCaptions.length} captions available
+                                            </div>
+                                          ) : (
+                                            <div className="text-sm text-yellow-600">
+                                              <AlertCircle className="h-4 w-4 inline mr-1" />
+                                              No captions available
+                                            </div>
+                                          )}
+                                        </div>
+                                      </form>
+                                    </div>
+                                    <DialogFooter>
+                                      <Button
+                                        onClick={() => !isImporting && handleImportVideo(video.id)}
+                                        disabled={isImporting && selectedVideoId === video.id}
+                                      >
+                                        {isImporting && selectedVideoId === video.id ? (
+                                          <>
+                                            <RefreshCw size={16} className="animate-spin mr-2" />
+                                            Importing...
+                                          </>
+                                        ) : (
+                                          'Import Video'
+                                        )}
+                                      </Button>
+                                    </DialogFooter>
+                                  </DialogContent>
+                                </Dialog>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="destructive" size="sm" className="h-8 px-2 text-xs">
+                                      <Trash2 className="h-3 w-3 mr-1" /> Delete
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Delete Video</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to delete this video? This action cannot be undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => handleDeleteVideo(video.id)}>
+                                        Delete
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Desktop Video Table */}
+                  <div className="hidden md:block overflow-x-auto">
                     <Table>
                       <TableHeader>
                         <TableRow>
