@@ -1603,7 +1603,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/vimeo/import/:videoId", authenticateAdmin, async (req, res) => {
     try {
       const videoId = req.params.videoId;
-      const { categoryId, isPremium } = req.body;
+      const { categoryId, isPremium, contentType } = req.body;
       
       if (!categoryId) {
         return res.status(400).json({ message: "Category ID is required" });
@@ -1613,7 +1613,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const videoDetails = await VimeoService.getVideoDetails(videoId);
       
       // Convert to our content format
-      const contentData = VimeoService.convertToContentItem(videoDetails, categoryId, isPremium);
+      const contentData = VimeoService.convertToContentItem(
+        videoDetails, 
+        categoryId, 
+        isPremium, 
+        contentType || 'movie'
+      );
       
       // Save to our database using the content insert schema
       const validatedData = insertContentSchema.parse(contentData);

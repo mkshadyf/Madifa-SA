@@ -19,7 +19,9 @@ import {
   Search, 
   Home, 
   Film, 
-  Tv2, 
+  Video, 
+  Music, 
+  Play, 
   Grid3X3, 
   Bookmark,
   Download, 
@@ -62,9 +64,10 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", path: "/", icon: <Home className="h-5 w-5" /> },
-    { name: "Movies", path: "/browse", icon: <Film className="h-5 w-5" /> },
-    { name: "Series", path: "/browse?type=series", icon: <Tv2 className="h-5 w-5" /> },
-    { name: "Categories", path: "/browse?view=categories", icon: <Grid3X3 className="h-5 w-5" /> },
+    { name: "Movies", path: "/browse?type=movie", icon: <Film className="h-5 w-5" /> },
+    { name: "Short Films", path: "/browse?type=short_film", icon: <Video className="h-5 w-5" /> },
+    { name: "Music Videos", path: "/browse?type=music_video", icon: <Music className="h-5 w-5" /> },
+    { name: "Trailers", path: "/browse?type=trailer", icon: <Play className="h-5 w-5" /> },
     { name: "My List", path: "/my-list", icon: <Bookmark className="h-5 w-5" /> },
     { name: "Downloads", path: "/downloads", icon: <Download className="h-5 w-5" />, requiresAuth: true },
   ];

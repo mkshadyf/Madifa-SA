@@ -74,7 +74,7 @@ export interface ContentItem {
   releaseYear: number;
   duration?: number;
   isPremium: boolean;
-  contentType?: 'movie' | 'series' | 'music_video' | 'trailer';
+  contentType?: 'movie' | 'series' | 'music_video' | 'trailer' | 'short_film';
   displayPriority?: number;
   vimeoId?: string;
   rating?: string;

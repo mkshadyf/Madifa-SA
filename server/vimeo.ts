@@ -234,7 +234,12 @@ export class VimeoService {
   /**
    * Convert a Vimeo video to ContentItem format
    */
-  static convertToContentItem(video: VimeoVideoDetails, categoryId: number = 1, isPremium: boolean = false): Partial<ContentItem> {
+  static convertToContentItem(
+    video: VimeoVideoDetails, 
+    categoryId: number = 1, 
+    isPremium: boolean = false, 
+    contentType: 'movie' | 'series' | 'music_video' | 'trailer' = 'movie'
+  ): Partial<ContentItem> {
     return {
       title: video.title,
       description: video.description,
@@ -244,7 +249,8 @@ export class VimeoService {
       releaseYear: new Date().getFullYear(),
       duration: Math.floor(video.duration),
       isPremium,
-      categoryId
+      categoryId,
+      contentType: contentType
     };
   }
 

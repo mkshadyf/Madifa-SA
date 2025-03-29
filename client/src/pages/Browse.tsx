@@ -200,11 +200,10 @@ const Browse = () => {
     }
     
     // Apply content type filter
-    if (contentType === "movies") {
-      // Implement based on your content structure
-      // For now, let's assume all content is movies
-    } else if (contentType === "series") {
-      // Implement based on your content structure
+    if (contentType !== "all") {
+      filtered = filtered.filter(item => 
+        item.contentType === contentType
+      );
     }
     
     // Apply rating filters
@@ -334,8 +333,10 @@ const Browse = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">All</SelectItem>
-                          <SelectItem value="movies">Movies</SelectItem>
-                          <SelectItem value="series">Series</SelectItem>
+                          <SelectItem value="movie">Movies</SelectItem>
+                          <SelectItem value="trailer">Trailers</SelectItem>
+                          <SelectItem value="music_video">Music Videos</SelectItem>
+                          <SelectItem value="short_film">Short Films</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

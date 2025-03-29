@@ -350,14 +350,7 @@ const Home = () => {
             />
           )}
           
-          {seriesContent.length > 0 && (
-            <ContentCarousel 
-              title="Series" 
-              viewAllLink="/browse?type=series" 
-              items={seriesContent}
-              onAddToWatchlist={handleAddToWatchlist}
-            />
-          )}
+          {/* Series section removed as requested */}
           
           {musicVideoContent.length > 0 && (
             <ContentCarousel 

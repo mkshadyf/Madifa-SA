@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Upload, Trash2, Edit, Play, Pause, Film, FileText, Download, RefreshCw, CheckCircle2, XCircle, Eye, AlertCircle, Languages, Check, X } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
@@ -83,6 +83,7 @@ export default function VimeoManagement() {
   const [importFormData, setImportFormData] = useState({
     categoryId: '',
     isPremium: false,
+    contentType: 'movie',
   });
   const [uploadFormData, setUploadFormData] = useState({
     fileUrl: '',
@@ -264,6 +265,7 @@ export default function VimeoManagement() {
       const response = await apiRequest('POST', `/api/vimeo/import/${videoId}`, {
         categoryId: parseInt(importFormData.categoryId),
         isPremium: importFormData.isPremium,
+        contentType: importFormData.contentType,
       });
 
       if (response.ok) {
@@ -277,6 +279,7 @@ export default function VimeoManagement() {
         setImportFormData({
           categoryId: '',
           isPremium: false,
+          contentType: 'movie',
         });
       } else {
         const errorData = await response.json();
@@ -514,6 +517,25 @@ export default function VimeoManagement() {
                                     </DialogHeader>
                                     <div className="py-4">
                                       <form className="space-y-4">
+                                        <div className="space-y-2">
+                                          <Label htmlFor="contentType">Content Type</Label>
+                                          <Select
+                                            value={importFormData.contentType}
+                                            onValueChange={(value) =>
+                                              setImportFormData({ ...importFormData, contentType: value })
+                                            }
+                                          >
+                                            <SelectTrigger>
+                                              <SelectValue placeholder="Select content type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              <SelectItem value="movie">Movie</SelectItem>
+                                              <SelectItem value="trailer">Trailer</SelectItem>
+                                              <SelectItem value="music_video">Music Video</SelectItem>
+                                              <SelectItem value="short_film">Short Film</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
                                         <div className="space-y-2">
                                           <Label htmlFor="category">Category</Label>
                                           <Select

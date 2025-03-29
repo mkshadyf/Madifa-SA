@@ -26,7 +26,7 @@ export const contents = pgTable("contents", {
   releaseYear: integer("release_year").notNull(),
   duration: integer("duration"),
   isPremium: boolean("is_premium").default(false),
-  contentType: text("content_type").default("movie").notNull(), // 'movie', 'series', 'music_video', 'trailer'
+  contentType: text("content_type").default("movie").notNull(), // 'movie', 'series', 'music_video', 'trailer', 'short_film'
   displayPriority: integer("display_priority").default(0), // Used for featuring content
   vimeoId: text("vimeo_id"), // Store the Vimeo ID for direct API access
   rating: text("rating"),
