@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
@@ -362,491 +361,328 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Dashboard tabs */}
-      <Tabs defaultValue="overview" className="mb-6" onValueChange={setActiveTab}>
-        <TabsList className="mb-4 w-full overflow-x-auto flex-wrap justify-start sm:justify-start">
-          <TabsTrigger value="overview" className="flex-1 sm:flex-none min-w-fit">
-            <span className="hidden sm:inline">Overview</span>
-            <span className="sm:hidden flex flex-col items-center text-xs">
-              <Activity className="h-4 w-4 mb-1" />
-              Overview
-            </span>
-          </TabsTrigger>
-          <TabsTrigger value="users" className="flex-1 sm:flex-none min-w-fit">
-            <span className="hidden sm:inline">Users</span>
-            <span className="sm:hidden flex flex-col items-center text-xs">
-              <Users className="h-4 w-4 mb-1" />
-              Users
-            </span>
-          </TabsTrigger>
-          <TabsTrigger value="content" className="flex-1 sm:flex-none min-w-fit">
-            <span className="hidden sm:inline">Content</span>
-            <span className="sm:hidden flex flex-col items-center text-xs">
-              <Film className="h-4 w-4 mb-1" />
-              Content
-            </span>
-          </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex-1 sm:flex-none min-w-fit">
-            <span className="hidden sm:inline">Analytics</span>
-            <span className="sm:hidden flex flex-col items-center text-xs">
-              <TrendingUp className="h-4 w-4 mb-1" />
-              Analytics
-            </span>
-          </TabsTrigger>
-        </TabsList>
+      {/* Dashboard Content */}
+      <div className="space-y-6">
+        {/* Top Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* User Stats Card */}
+          <Card className="overflow-hidden border border-muted/60 shadow-sm transition-all hover:border-primary/20 hover:shadow-md">
+            <CardHeader className="pb-2 pt-4 px-4 flex flex-row items-center justify-between space-y-0">
+              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent className="px-4 pb-4">
+              <div className="flex items-baseline space-x-2">
+                <span className="text-2xl font-bold">
+                  {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : stats?.users.total || 0}
+                </span>
+                <Badge variant="outline" className="text-xs bg-green-100 text-green-800 hover:bg-green-100">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  +{stats?.users.newThisWeek || 0} this week
+                </Badge>
+              </div>
+              
+              {!isLoading && stats && (
+                <div className="mt-3">
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span>Premium users</span>
+                    <span className="font-semibold">{Math.round(stats.users.premiumPercentage)}%</span>
+                  </div>
+                  <Progress value={stats.users.premiumPercentage} className="h-1" />
+                  <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                    <span>{stats.users.premium} Premium</span>
+                    <span>{stats.users.free} Free</span>
+                  </div>
+                </div>
+              )}
 
-        <TabsContent value="overview" className="space-y-6">
-          {/* Top Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* User Stats Card */}
-            <Card className="overflow-hidden border border-muted/60 shadow-sm transition-all hover:border-primary/20 hover:shadow-md">
-              <CardHeader className="pb-2 pt-4 px-4 flex flex-row items-center justify-between space-y-0">
-                <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent className="px-4 pb-4">
-                <div className="flex items-baseline space-x-2">
-                  <span className="text-2xl font-bold">
-                    {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : stats?.users.total || 0}
-                  </span>
+              <Button asChild variant="link" className="px-0 mt-3 text-xs">
+                <Link to="/admin/users">Manage Users</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Content Stats Card */}
+          <Card className="overflow-hidden border border-muted/60 shadow-sm transition-all hover:border-primary/20 hover:shadow-md">
+            <CardHeader className="pb-2 pt-4 px-4 flex flex-row items-center justify-between space-y-0">
+              <CardTitle className="text-sm font-medium">Total Content</CardTitle>
+              <Film className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent className="px-4 pb-4">
+              <div className="flex items-baseline space-x-2">
+                <span className="text-2xl font-bold">
+                  {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : stats?.content.total || 0}
+                </span>
+                <Badge variant="outline" className="text-xs bg-blue-100 text-blue-800 hover:bg-blue-100">
+                  <Eye className="h-3 w-3 mr-1" />
+                  {stats?.content.views?.today || 0} views today
+                </Badge>
+              </div>
+              
+              {!isLoading && stats && (
+                <div className="mt-3">
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span>Premium content</span>
+                    <span className="font-semibold">{Math.round(stats.content.premiumPercentage)}%</span>
+                  </div>
+                  <Progress value={stats.content.premiumPercentage} className="h-1" />
+                  <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                    <span>{stats.content.premium} Premium</span>
+                    <span>{stats.content.free} Free</span>
+                  </div>
+                </div>
+              )}
+
+              <Button asChild variant="link" className="px-0 mt-3 text-xs">
+                <Link to="/admin/content">Manage Content</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Categories Card */}
+          <Card className="overflow-hidden border border-muted/60 shadow-sm transition-all hover:border-primary/20 hover:shadow-md">
+            <CardHeader className="pb-2 pt-4 px-4 flex flex-row items-center justify-between space-y-0">
+              <CardTitle className="text-sm font-medium">Categories</CardTitle>
+              <Tag className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent className="px-4 pb-4">
+              <div className="text-2xl font-bold">
+                {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : stats?.categories.total || 0}
+              </div>
+              
+              {!isLoading && stats?.categories.popular && (
+                <div className="mt-3 space-y-2">
+                  <div className="text-xs font-medium">Popular Categories:</div>
+                  {stats.categories.popular.slice(0, 2).map((category, index) => (
+                    <div key={index} className="flex justify-between items-center text-xs">
+                      <span>{category.name}</span>
+                      <Badge variant="outline" className="text-xs">
+                        {category.count} items
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <Button asChild variant="link" className="px-0 mt-3 text-xs">
+                <Link to="/admin/categories">Manage Categories</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Revenue Card */}
+          <Card className="overflow-hidden border border-muted/60 shadow-sm transition-all hover:border-primary/20 hover:shadow-md">
+            <CardHeader className="pb-2 pt-4 px-4 flex flex-row items-center justify-between space-y-0">
+              <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent className="px-4 pb-4">
+              <div className="flex items-baseline space-x-2">
+                <span className="text-2xl font-bold">
+                  {isLoading ? (
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                  ) : (
+                    formatCurrency(stats?.revenue?.thisMonth || 0)
+                  )}
+                </span>
+                {!isLoading && stats?.revenue && stats.revenue.growth > 0 && (
                   <Badge variant="outline" className="text-xs bg-green-100 text-green-800 hover:bg-green-100">
                     <TrendingUp className="h-3 w-3 mr-1" />
-                    +{stats?.users.newThisWeek || 0} this week
+                    +{stats.revenue.growth.toFixed(1)}%
                   </Badge>
-                </div>
-                
-                {!isLoading && stats && (
-                  <div className="mt-3">
-                    <div className="flex items-center justify-between text-xs mb-1">
-                      <span>Premium users</span>
-                      <span className="font-semibold">{Math.round(stats.users.premiumPercentage)}%</span>
-                    </div>
-                    <Progress value={stats.users.premiumPercentage} className="h-1" />
-                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                      <span>{stats.users.premium} Premium</span>
-                      <span>{stats.users.free} Free</span>
-                    </div>
-                  </div>
                 )}
-
-                <Button asChild variant="link" className="px-0 mt-3 text-xs">
-                  <Link to="/admin/users">Manage Users</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Content Stats Card */}
-            <Card className="overflow-hidden border border-muted/60 shadow-sm transition-all hover:border-primary/20 hover:shadow-md">
-              <CardHeader className="pb-2 pt-4 px-4 flex flex-row items-center justify-between space-y-0">
-                <CardTitle className="text-sm font-medium">Total Content</CardTitle>
-                <Film className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent className="px-4 pb-4">
-                <div className="flex items-baseline space-x-2">
-                  <span className="text-2xl font-bold">
-                    {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : stats?.content.total || 0}
-                  </span>
-                  <Badge variant="outline" className="text-xs bg-blue-100 text-blue-800 hover:bg-blue-100">
-                    <Eye className="h-3 w-3 mr-1" />
-                    {stats?.content.views?.today || 0} views today
-                  </Badge>
+              </div>
+              
+              {!isLoading && stats?.revenue && (
+                <div className="text-xs text-muted-foreground mt-2">
+                  Last month: {formatCurrency(stats.revenue.lastMonth)}
                 </div>
-                
-                {!isLoading && stats && (
-                  <div className="mt-3">
-                    <div className="flex items-center justify-between text-xs mb-1">
-                      <span>Premium content</span>
-                      <span className="font-semibold">{Math.round(stats.content.premiumPercentage)}%</span>
-                    </div>
-                    <Progress value={stats.content.premiumPercentage} className="h-1" />
-                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                      <span>{stats.content.premium} Premium</span>
-                      <span>{stats.content.free} Free</span>
-                    </div>
-                  </div>
-                )}
+              )}
 
-                <Button asChild variant="link" className="px-0 mt-3 text-xs">
-                  <Link to="/admin/content">Manage Content</Link>
-                </Button>
-              </CardContent>
-            </Card>
+              <Button asChild variant="link" className="px-0 mt-3 text-xs">
+                <Link to="/admin/subscriptions">Manage Subscriptions</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
 
-            {/* Categories Card */}
-            <Card className="overflow-hidden border border-muted/60 shadow-sm transition-all hover:border-primary/20 hover:shadow-md">
-              <CardHeader className="pb-2 pt-4 px-4 flex flex-row items-center justify-between space-y-0">
-                <CardTitle className="text-sm font-medium">Categories</CardTitle>
-                <Tag className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent className="px-4 pb-4">
-                <div className="text-2xl font-bold">
-                  {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : stats?.categories.total || 0}
-                </div>
-                
-                {!isLoading && stats?.categories.popular && (
-                  <div className="mt-3 space-y-2">
-                    <div className="text-xs font-medium">Popular Categories:</div>
-                    {stats.categories.popular.slice(0, 2).map((category, index) => (
-                      <div key={index} className="flex justify-between items-center text-xs">
-                        <span>{category.name}</span>
-                        <Badge variant="outline" className="text-xs">
-                          {category.count} items
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <Button asChild variant="link" className="px-0 mt-3 text-xs">
-                  <Link to="/admin/categories">Manage Categories</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Revenue Card */}
-            <Card className="overflow-hidden border border-muted/60 shadow-sm transition-all hover:border-primary/20 hover:shadow-md">
-              <CardHeader className="pb-2 pt-4 px-4 flex flex-row items-center justify-between space-y-0">
-                <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent className="px-4 pb-4">
-                <div className="flex items-baseline space-x-2">
-                  <span className="text-2xl font-bold">
-                    {isLoading ? (
-                      <RefreshCw className="w-5 h-5 animate-spin" />
-                    ) : (
-                      formatCurrency(stats?.revenue?.thisMonth || 0)
-                    )}
-                  </span>
-                  {!isLoading && stats?.revenue && stats.revenue.growth > 0 && (
-                    <Badge variant="outline" className="text-xs bg-green-100 text-green-800 hover:bg-green-100">
-                      <TrendingUp className="h-3 w-3 mr-1" />
-                      +{stats.revenue.growth.toFixed(1)}%
-                    </Badge>
-                  )}
-                </div>
-                
-                {!isLoading && stats?.revenue && (
-                  <div className="text-xs text-muted-foreground mt-2">
-                    Last month: {formatCurrency(stats.revenue.lastMonth)}
-                  </div>
-                )}
-
-                <Button asChild variant="link" className="px-0 mt-3 text-xs">
-                  <Link to="/admin/subscriptions">Manage Subscriptions</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Middle Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Quick Actions */}
-            <Card className="lg:col-span-2 border border-muted/60 shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Common administrative tasks</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
-                    <Link to="/admin/vimeo">
-                      <Video className="mr-2 h-5 w-5 text-primary" />
-                      <div className="text-left">
-                        <div className="font-semibold">Vimeo Management</div>
-                        <div className="text-xs text-muted-foreground">Manage Vimeo videos</div>
-                      </div>
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
-                    <Link to="/admin/users">
-                      <Users className="mr-2 h-5 w-5 text-primary" />
-                      <div className="text-left">
-                        <div className="font-semibold">User Management</div>
-                        <div className="text-xs text-muted-foreground">Manage user accounts</div>
-                      </div>
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
-                    <Link to="/admin/content">
-                      <Film className="mr-2 h-5 w-5 text-primary" />
-                      <div className="text-left">
-                        <div className="font-semibold">Content Management</div>
-                        <div className="text-xs text-muted-foreground">Manage movies and videos</div>
-                      </div>
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
-                    <Link to="/admin/categories">
-                      <Tag className="mr-2 h-5 w-5 text-primary" />
-                      <div className="text-left">
-                        <div className="font-semibold">Categories</div>
-                        <div className="text-xs text-muted-foreground">Manage content categories</div>
-                      </div>
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
-                    <Link to="/admin/subscriptions">
-                      <Shield className="mr-2 h-5 w-5 text-primary" />
-                      <div className="text-left">
-                        <div className="font-semibold">Subscriptions</div>
-                        <div className="text-xs text-muted-foreground">Manage user subscriptions</div>
-                      </div>
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
-                    <Link to="/admin/analytics">
-                      <Activity className="mr-2 h-5 w-5 text-primary" />
-                      <div className="text-left">
-                        <div className="font-semibold">Analytics</div>
-                        <div className="text-xs text-muted-foreground">View platform analytics</div>
-                      </div>
-                    </Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Recent Activity Feed */}
-            <Card className="border border-muted/60 shadow-sm">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-center">
-                  <CardTitle>Recent Activity</CardTitle>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <RefreshCw className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="max-h-[300px] overflow-auto">
-                {isLoading ? (
-                  <div className="flex items-center justify-center h-40">
-                    <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
-                  </div>
-                ) : stats?.recentActivity && stats.recentActivity.length > 0 ? (
-                  <div className="space-y-4">
-                    {stats.recentActivity.map((activity) => (
-                      <div key={activity.id} className="flex items-start space-x-3">
-                        <div className="mt-0.5">
-                          {getActivityIcon(activity.type)}
-                        </div>
-                        <div className="flex-1 space-y-1">
-                          <p className="text-sm">{activity.message}</p>
-                          <p className="text-xs text-muted-foreground flex items-center">
-                            <Clock3 className="h-3 w-3 mr-1" />
-                            {activity.relativeTime}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-10 text-muted-foreground">
-                    <Activity className="h-10 w-10 mx-auto mb-2 opacity-20" />
-                    <p>No recent activity</p>
-                  </div>
-                )}
-              </CardContent>
-              <CardFooter className="pt-2 pb-3 border-t">
-                <Button variant="outline" size="sm" className="w-full text-xs">
-                  View All Activity
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-
-          {/* Popular Content */}
-          <Card className="border border-muted/60 shadow-sm">
+        {/* Middle Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Quick Actions */}
+          <Card className="lg:col-span-2 border border-muted/60 shadow-sm">
             <CardHeader className="pb-3">
-              <CardTitle>Popular Content</CardTitle>
-              <CardDescription>Most viewed videos this month</CardDescription>
+              <CardTitle>Quick Actions</CardTitle>
+              <CardDescription>Common administrative tasks</CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
+                  <Link to="/admin/vimeo">
+                    <Video className="mr-2 h-5 w-5 text-primary" />
+                    <div className="text-left">
+                      <div className="font-semibold">Vimeo Management</div>
+                      <div className="text-xs text-muted-foreground">Manage Vimeo videos</div>
+                    </div>
+                  </Link>
+                </Button>
+
+                <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
+                  <Link to="/admin/users">
+                    <Users className="mr-2 h-5 w-5 text-primary" />
+                    <div className="text-left">
+                      <div className="font-semibold">User Management</div>
+                      <div className="text-xs text-muted-foreground">Manage user accounts</div>
+                    </div>
+                  </Link>
+                </Button>
+
+                <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
+                  <Link to="/admin/content">
+                    <Film className="mr-2 h-5 w-5 text-primary" />
+                    <div className="text-left">
+                      <div className="font-semibold">Content Management</div>
+                      <div className="text-xs text-muted-foreground">Manage movies and videos</div>
+                    </div>
+                  </Link>
+                </Button>
+
+                <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
+                  <Link to="/admin/categories">
+                    <Tag className="mr-2 h-5 w-5 text-primary" />
+                    <div className="text-left">
+                      <div className="font-semibold">Categories</div>
+                      <div className="text-xs text-muted-foreground">Manage content categories</div>
+                    </div>
+                  </Link>
+                </Button>
+
+                <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
+                  <Link to="/admin/subscriptions">
+                    <Shield className="mr-2 h-5 w-5 text-primary" />
+                    <div className="text-left">
+                      <div className="font-semibold">Subscriptions</div>
+                      <div className="text-xs text-muted-foreground">Manage user subscriptions</div>
+                    </div>
+                  </Link>
+                </Button>
+
+                <Button asChild variant="outline" className="h-auto py-4 justify-start transition-all hover:border-primary hover:bg-primary/5">
+                  <Link to="/admin/analytics">
+                    <Activity className="mr-2 h-5 w-5 text-primary" />
+                    <div className="text-left">
+                      <div className="font-semibold">Analytics</div>
+                      <div className="text-xs text-muted-foreground">View platform analytics</div>
+                    </div>
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Activity Feed */}
+          <Card className="border border-muted/60 shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-center">
+                <CardTitle>Recent Activity</CardTitle>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="max-h-[300px] overflow-auto">
               {isLoading ? (
-                <div className="flex items-center justify-center h-24">
+                <div className="flex items-center justify-center h-40">
                   <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
                 </div>
-              ) : stats?.content.popular && stats.content.popular.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {stats.content.popular.map((item, index) => (
-                    <Card key={index} className="overflow-hidden border-muted">
-                      <div className="aspect-video bg-muted relative">
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                          <Film className="h-8 w-8 text-white opacity-70" />
-                        </div>
-                        <div className="absolute bottom-2 right-2">
-                          <Badge className="bg-black/60 hover:bg-black/70 text-white border-none text-xs">
-                            <Eye className="h-3 w-3 mr-1" />
-                            {item.views} views
-                          </Badge>
-                        </div>
+              ) : stats?.recentActivity && stats.recentActivity.length > 0 ? (
+                <div className="space-y-4">
+                  {stats.recentActivity.map((activity) => (
+                    <div key={activity.id} className="flex items-start space-x-3">
+                      <div className="mt-0.5">
+                        {getActivityIcon(activity.type)}
                       </div>
-                      <CardContent className="p-3">
-                        <h3 className="font-medium line-clamp-1">{item.title}</h3>
-                        <div className="flex items-center justify-between mt-2">
-                          <Button size="sm" variant="outline" className="h-7 text-xs">
-                            <Eye className="h-3 w-3 mr-1" />
-                            View
-                          </Button>
-                          <Button size="sm" variant="ghost" className="h-7 text-xs">
-                            <Edit className="h-3 w-3 mr-1" />
-                            Edit
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-sm">{activity.message}</p>
+                        <p className="text-xs text-muted-foreground flex items-center">
+                          <Clock3 className="h-3 w-3 mr-1" />
+                          {activity.relativeTime}
+                        </p>
+                      </div>
+                    </div>
                   ))}
                 </div>
               ) : (
                 <div className="text-center py-10 text-muted-foreground">
-                  <Film className="h-10 w-10 mx-auto mb-2 opacity-20" />
-                  <p>No popular content data available</p>
+                  <Activity className="h-10 w-10 mx-auto mb-2 opacity-20" />
+                  <p>No recent activity</p>
                 </div>
               )}
             </CardContent>
             <CardFooter className="pt-2 pb-3 border-t">
-              <Button asChild variant="outline" size="sm" className="w-full text-xs">
-                <Link to="/admin/content">
-                  View All Content
-                </Link>
+              <Button variant="outline" size="sm" className="w-full text-xs">
+                View All Activity
               </Button>
             </CardFooter>
           </Card>
-        </TabsContent>
+        </div>
 
-        <TabsContent value="users" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>User Management Quick Access</CardTitle>
-              <CardDescription>Manage your platform users</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <Button asChild>
-                  <Link to="/admin/users">
-                    <Users className="mr-2 h-4 w-4" />
-                    View All Users
-                  </Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link to="/admin/users?filter=premium">
-                    <Shield className="mr-2 h-4 w-4" />
-                    Premium Users
-                  </Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link to="/admin/users?action=new">
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add User
-                  </Link>
-                </Button>
+        {/* Popular Content */}
+        <Card className="border border-muted/60 shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle>Popular Content</CardTitle>
+            <CardDescription>Most viewed videos this month</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="flex items-center justify-center h-24">
+                <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="content" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Content Management Quick Access</CardTitle>
-              <CardDescription>Manage your platform content</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <Button asChild>
-                  <Link to="/admin/content">
-                    <Film className="mr-2 h-4 w-4" />
-                    View All Content
-                  </Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link to="/admin/vimeo">
-                    <Video className="mr-2 h-4 w-4" />
-                    Vimeo Management
-                  </Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link to="/admin/content?action=new">
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add Content
-                  </Link>
-                </Button>
+            ) : stats?.content.popular && stats.content.popular.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {stats.content.popular.map((item, index) => (
+                  <Card key={index} className="overflow-hidden border-muted">
+                    <div className="aspect-video bg-muted relative">
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <Film className="h-8 w-8 text-white opacity-70" />
+                      </div>
+                      <div className="absolute bottom-2 right-2">
+                        <Badge className="bg-black/60 hover:bg-black/70 text-white border-none text-xs">
+                          <Eye className="h-3 w-3 mr-1" />
+                          {item.views} views
+                        </Badge>
+                      </div>
+                    </div>
+                    <CardContent className="p-3">
+                      <h3 className="font-medium line-clamp-1">{item.title}</h3>
+                      <div className="flex items-center justify-between mt-2">
+                        <Button size="sm" variant="outline" className="h-7 text-xs">
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7 text-xs">
+                          <Edit className="h-3 w-3 mr-1" />
+                          Edit
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="analytics" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Analytics Quick Access</CardTitle>
-              <CardDescription>View your platform analytics</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <Button asChild>
-                  <Link to="/admin/analytics">
-                    <Activity className="mr-2 h-4 w-4" />
-                    View Analytics
-                  </Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link to="/admin/analytics?view=revenue">
-                    <DollarSign className="mr-2 h-4 w-4" />
-                    Revenue Reports
-                  </Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link to="/admin/analytics?view=usage">
-                    <Eye className="mr-2 h-4 w-4" />
-                    Usage Reports
-                  </Link>
-                </Button>
+            ) : (
+              <div className="text-center py-10 text-muted-foreground">
+                <Film className="h-10 w-10 mx-auto mb-2 opacity-20" />
+                <p>No popular content to show</p>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            )}
+          </CardContent>
+          <CardFooter className="pt-2 pb-3 border-t">
+            <Button asChild variant="outline" size="sm" className="w-full text-xs">
+              <Link to="/admin/content?sort=popular">View All Popular Content</Link>
+            </Button>
+          </CardFooter>
+        </Card>
 
-      {/* Search Section */}
-      <Card className="mb-8 border border-muted/60 shadow-sm">
-        <CardContent className="pt-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input 
-              placeholder="Search for users, content, or categories..." 
-              className="pl-10 pr-4"
-            />
-          </div>
-          
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Badge variant="outline" className="cursor-pointer hover:bg-primary/5">
-              <Users className="h-3 w-3 mr-1" />
-              Users
-            </Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-primary/5">
-              <Film className="h-3 w-3 mr-1" />
-              Content
-            </Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-primary/5">
-              <Tag className="h-3 w-3 mr-1" />
-              Categories
-            </Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-primary/5">
-              <Shield className="h-3 w-3 mr-1" />
-              Subscriptions
-            </Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-primary/5">
-              <Heart className="h-3 w-3 mr-1" />
-              Favorites
-            </Badge>
-          </div>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   );
 }
