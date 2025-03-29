@@ -13,12 +13,12 @@
   }
 
   html, body {
-    @apply h-full w-full overflow-x-hidden;
+    @apply h-full w-full overflow-x-hidden dark:bg-gray-900;
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground overscroll-none;
+    @apply font-sans antialiased bg-background text-foreground overscroll-none dark:bg-gray-900 dark:text-gray-100;
     text-rendering: optimizeSpeed;
   }
 }
@@ -45,6 +45,7 @@
     position: fixed;
     height: 100%;
     overflow: hidden;
+    @apply dark:bg-gray-900;
   }
   
   body {
@@ -53,6 +54,7 @@
     height: 100%;
     -webkit-overflow-scrolling: touch;
     width: 100%;
+    @apply dark:bg-gray-900 dark:text-gray-100;
   }
 }
 
