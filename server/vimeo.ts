@@ -238,7 +238,7 @@ export class VimeoService {
     video: VimeoVideoDetails, 
     categoryId: number = 1, 
     isPremium: boolean = false, 
-    contentType: 'movie' | 'series' | 'music_video' | 'trailer' = 'movie'
+    contentType: 'movie' | 'music_video' | 'trailer' | 'short_film' = 'movie'
   ): Partial<ContentItem> {
     return {
       title: video.title,
