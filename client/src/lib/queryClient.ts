@@ -25,9 +25,21 @@ export async function apiRequest(
     url = urlOrConfig;
   }
   
+  // Get auth token from localStorage
+  const token = localStorage.getItem("auth_token");
+  
+  // Set up headers
+  const headers: HeadersInit = {};
+  if (actualData) {
+    headers["Content-Type"] = "application/json";
+  }
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  
   const res = await fetch(url, {
     method: actualMethod,
-    headers: actualData ? { "Content-Type": "application/json" } : {},
+    headers,
     body: actualData ? JSON.stringify(actualData) : undefined,
     credentials: "include",
   });
@@ -53,7 +65,17 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    // Get auth token from localStorage
+    const token = localStorage.getItem("auth_token");
+    
+    // Set up headers
+    const headers: HeadersInit = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    
     const res = await fetch(queryKey[0] as string, {
+      headers,
       credentials: "include",
     });
 

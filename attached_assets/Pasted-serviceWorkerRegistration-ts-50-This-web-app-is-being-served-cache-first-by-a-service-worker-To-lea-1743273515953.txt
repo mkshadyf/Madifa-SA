@@ -1,0 +1,155 @@
+serviceWorkerRegistration.ts:50 This web app is being served cache-first by a service worker. To learn more, visit https://cra.link/PWA
+users:1 Error while trying to use the following icon from the Manifest: https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/logo192.png (Download error or resource isn't a valid image)
+/api/admin/users:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+hook.js:608 Failed to fetch users: Error: 401: {"message":"Authentication required"}
+    at throwIfResNotOk (queryClient.ts:6:11)
+    at async apiRequest (queryClient.ts:35:3)
+    at async fetchUsers (Users.tsx:78:22)
+overrideMethod @ hook.js:608
+users:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+users:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+users:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+hook.js:608 Failed to check Vimeo authentication: TypeError: Failed to execute 'fetch' on 'Window': '/api/vimeo/auth-check' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at checkAuth (VimeoManagement.tsx:113:32)
+    at VimeoManagement.tsx:128:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to fetch categories: TypeError: Failed to execute 'fetch' on 'Window': '/api/categories' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at fetchCategories (VimeoManagement.tsx:161:32)
+    at VimeoManagement.tsx:174:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to fetch categories: TypeError: Failed to execute 'fetch' on 'Window': '/api/categories' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at fetchCategories (Categories.tsx:49:32)
+    at Categories.tsx:64:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to fetch categories: TypeError: Failed to execute 'fetch' on 'Window': '/api/categories' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at fetchCategories (Categories.tsx:49:32)
+    at Categories.tsx:64:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to fetch categories: TypeError: Failed to execute 'fetch' on 'Window': '/api/categories' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at fetchCategories (Categories.tsx:49:32)
+    at Categories.tsx:64:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to fetch categories: TypeError: Failed to execute 'fetch' on 'Window': '/api/categories' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at fetchCategories (Categories.tsx:49:32)
+    at Categories.tsx:64:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to fetch categories: TypeError: Failed to execute 'fetch' on 'Window': '/api/categories' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at fetchCategories (Categories.tsx:49:32)
+    at Categories.tsx:64:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+/api/admin/stats:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+hook.js:608 Failed to fetch admin stats: Error: 401: {"message":"Authentication required"}
+    at throwIfResNotOk (queryClient.ts:6:11)
+    at async apiRequest (queryClient.ts:35:3)
+    at async fetchStats (Dashboard.tsx:108:22)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to check Vimeo authentication: TypeError: Failed to execute 'fetch' on 'Window': '/api/vimeo/auth-check' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at checkAuth (VimeoManagement.tsx:113:32)
+    at VimeoManagement.tsx:128:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to fetch categories: TypeError: Failed to execute 'fetch' on 'Window': '/api/categories' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at fetchCategories (VimeoManagement.tsx:161:32)
+    at VimeoManagement.tsx:174:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+/api/admin/stats:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+hook.js:608 Failed to fetch admin stats: Error: 401: {"message":"Authentication required"}
+    at throwIfResNotOk (queryClient.ts:6:11)
+    at async apiRequest (queryClient.ts:35:3)
+    at async fetchStats (Dashboard.tsx:108:22)
+overrideMethod @ hook.js:608
+/api/admin/users:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)
+hook.js:608 Failed to fetch users: Error: 401: {"message":"Authentication required"}
+    at throwIfResNotOk (queryClient.ts:6:11)
+    at async apiRequest (queryClient.ts:35:3)
+    at async fetchUsers (Users.tsx:78:22)
+overrideMethod @ hook.js:608
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.
