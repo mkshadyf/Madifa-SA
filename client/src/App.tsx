@@ -126,10 +126,7 @@ function App() {
     return cleanup;
   }, []);
   
-  // Make performance settings available to MobileNav
-  const handleOpenPerformanceSettings = () => {
-    setShowPerformanceSettings(true);
-  };
+
   
   return (
     <QueryClientProvider client={queryClient}>
@@ -153,7 +150,7 @@ function App() {
             />
             
             {/* Mobile Navigation */}
-            <MobileNav onOpenPerformanceSettings={handleOpenPerformanceSettings} />
+            <MobileNav />
             
             {/* Add padding bottom for mobile to avoid content being hidden behind the nav bar */}
             <div className="md:hidden h-16 safe-area-bottom"></div>

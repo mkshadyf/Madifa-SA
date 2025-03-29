@@ -31,8 +31,9 @@ import {
 } from "@/components/ui/card";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { User, Settings, CreditCard, Bell, Shield, LogOut, Loader } from "lucide-react";
+import { User, Settings, CreditCard, Bell, Shield, LogOut, Loader, Gauge } from "lucide-react";
 import { generateAvatarUrl } from "@/lib/utils";
+import PerformanceSettings from "@/components/app/PerformanceSettings";
 
 const profileSchema = z.object({
   username: z.string().min(3, { message: "Username must be at least 3 characters" }),
@@ -61,6 +62,7 @@ const Profile = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
+  const [showPerformanceSettings, setShowPerformanceSettings] = useState(false);
   
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -212,6 +214,10 @@ const Profile = () => {
                       <Shield className="h-4 w-4 mr-2" />
                       Security
                     </TabsTrigger>
+                    <TabsTrigger value="settings" className="justify-start">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Settings
+                    </TabsTrigger>
                   </TabsList>
                 </Tabs>
                 
@@ -227,7 +233,7 @@ const Profile = () => {
               
               <div className="flex md:hidden">
                 <Tabs defaultValue={activeTab} className="w-full" onValueChange={setActiveTab}>
-                  <TabsList className="grid grid-cols-4 w-full">
+                  <TabsList className="grid grid-cols-5 w-full">
                     <TabsTrigger value="account">
                       <User className="h-4 w-4" />
                     </TabsTrigger>
@@ -239,6 +245,9 @@ const Profile = () => {
                     </TabsTrigger>
                     <TabsTrigger value="security">
                       <Shield className="h-4 w-4" />
+                    </TabsTrigger>
+                    <TabsTrigger value="settings">
+                      <Settings className="h-4 w-4" />
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
@@ -252,6 +261,7 @@ const Profile = () => {
                   <TabsTrigger value="subscription">Subscription</TabsTrigger>
                   <TabsTrigger value="notifications">Notifications</TabsTrigger>
                   <TabsTrigger value="security">Security</TabsTrigger>
+                  <TabsTrigger value="settings">Settings</TabsTrigger>
                 </TabsList>
               </Tabs>
               
@@ -563,12 +573,99 @@ const Profile = () => {
                   </Card>
                 </div>
               )}
+              
+              {activeTab === "settings" && (
+                <div>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>App Settings</CardTitle>
+                      <CardDescription>
+                        Configure your app experience
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-6">
+                        {/* Performance Settings Button */}
+                        <div className="border border-border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <h3 className="font-semibold flex items-center">
+                                <Gauge className="h-4 w-4 mr-2" />
+                                Performance Settings
+                              </h3>
+                              <p className="text-sm text-muted-foreground">
+                                Optimize for your device and connection speed
+                              </p>
+                            </div>
+                          </div>
+                          <Button 
+                            onClick={() => setShowPerformanceSettings(true)}
+                            className="w-full md:w-auto"
+                          >
+                            Adjust Performance Settings
+                          </Button>
+                        </div>
+                        
+                        {/* Theme Settings */}
+                        <div className="border border-border rounded-lg p-4">
+                          <div className="mb-4">
+                            <h3 className="font-semibold">Theme Preferences</h3>
+                            <p className="text-sm text-muted-foreground">
+                              Choose your preferred appearance
+                            </p>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4">
+                            <Button 
+                              variant="outline" 
+                              className="flex items-center justify-center gap-2 p-4 h-auto border-primary/30 hover:border-primary"
+                              onClick={() => document.documentElement.classList.remove('dark')}
+                            >
+                              <div className="h-4 w-4 rounded-full bg-primary"></div>
+                              Light Mode
+                            </Button>
+                            
+                            <Button 
+                              variant="outline" 
+                              className="flex items-center justify-center gap-2 p-4 h-auto border-primary/30 hover:border-primary"
+                              onClick={() => document.documentElement.classList.add('dark')}
+                            >
+                              <div className="h-4 w-4 rounded-full bg-primary"></div>
+                              Dark Mode
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        <div className="border border-border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="font-semibold">Language</h3>
+                            <Badge>Coming Soon</Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Select your preferred language
+                          </p>
+                          
+                          <Button variant="outline" className="w-full md:w-auto" disabled>
+                            English (Default)
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </main>
       
       <Footer />
+      
+      {/* Performance Settings Modal */}
+      <PerformanceSettings 
+        isOpen={showPerformanceSettings} 
+        onClose={() => setShowPerformanceSettings(false)}
+      />
     </div>
   );
 };
