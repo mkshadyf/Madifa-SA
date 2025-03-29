@@ -233,21 +233,26 @@ const Profile = () => {
               
               <div className="flex md:hidden">
                 <Tabs defaultValue={activeTab} className="w-full" onValueChange={setActiveTab}>
-                  <TabsList className="grid grid-cols-5 w-full">
-                    <TabsTrigger value="account">
-                      <User className="h-4 w-4" />
+                  <TabsList className="grid grid-cols-5 w-full overflow-x-auto">
+                    <TabsTrigger value="account" className="flex flex-col items-center p-2 h-auto">
+                      <User className="h-4 w-4 mb-1" />
+                      <span className="text-[10px]">Account</span>
                     </TabsTrigger>
-                    <TabsTrigger value="subscription">
-                      <CreditCard className="h-4 w-4" />
+                    <TabsTrigger value="subscription" className="flex flex-col items-center p-2 h-auto">
+                      <CreditCard className="h-4 w-4 mb-1" />
+                      <span className="text-[10px]">Billing</span>
                     </TabsTrigger>
-                    <TabsTrigger value="notifications">
-                      <Bell className="h-4 w-4" />
+                    <TabsTrigger value="notifications" className="flex flex-col items-center p-2 h-auto">
+                      <Bell className="h-4 w-4 mb-1" />
+                      <span className="text-[10px]">Alerts</span>
                     </TabsTrigger>
-                    <TabsTrigger value="security">
-                      <Shield className="h-4 w-4" />
+                    <TabsTrigger value="security" className="flex flex-col items-center p-2 h-auto">
+                      <Shield className="h-4 w-4 mb-1" />
+                      <span className="text-[10px]">Security</span>
                     </TabsTrigger>
-                    <TabsTrigger value="settings">
-                      <Settings className="h-4 w-4" />
+                    <TabsTrigger value="settings" className="flex flex-col items-center p-2 h-auto">
+                      <Settings className="h-4 w-4 mb-1" />
+                      <span className="text-[10px]">Settings</span>
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
@@ -568,6 +573,48 @@ const Profile = () => {
                           <LogOut className="h-4 w-4 mr-2" />
                           Log Out of All Devices
                         </Button>
+                      </div>
+                      
+                      <Separator className="my-6" />
+                      
+                      <div>
+                        <h3 className="font-semibold mb-4 text-destructive">Danger Zone</h3>
+                        <div className="border border-destructive/20 rounded-lg p-4">
+                          <div className="flex flex-col space-y-4">
+                            <div>
+                              <p className="font-medium">Delete Account</p>
+                              <p className="text-sm text-muted-foreground mb-4">
+                                This action is irreversible. All your data will be permanently removed.
+                              </p>
+                              <Button 
+                                variant="destructive" 
+                                onClick={() => {
+                                  // Show confirmation dialog through toast
+                                  toast({
+                                    title: "Are you sure?",
+                                    description: "This action cannot be undone. Please confirm that you want to permanently delete your account.",
+                                    action: (
+                                      <Button 
+                                        variant="destructive" 
+                                        onClick={() => {
+                                          // Implement actual account deletion logic here
+                                          toast({
+                                            title: "Account deletion initiated",
+                                            description: "Your account deletion request has been submitted. This process may take 24-48 hours to complete.",
+                                          });
+                                        }}
+                                      >
+                                        Confirm Delete
+                                      </Button>
+                                    ),
+                                  });
+                                }}
+                              >
+                                Delete Account
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
