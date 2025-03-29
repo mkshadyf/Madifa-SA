@@ -355,12 +355,17 @@ const MovieDetails = () => {
                     <Button 
                       className="bg-orange-600 hover:bg-orange-700 text-white" 
                       onClick={() => {
-                        // Check if this is premium content and user is not premium
-                        if (content.isPremium && (!user || !user.isPremium)) {
-                          // Show upgrade/auth modal
+                        // First check if user is logged in
+                        if (!user) {
+                          // Not logged in - show auth modal
+                          setShowAuthModal(true);
+                        } 
+                        // Then check if content is premium and user is not premium
+                        else if (content.isPremium && !user.isPremium) {
+                          // Show upgrade modal for premium content
                           setShowAuthModal(true);
                         } else {
-                          // Otherwise, just scroll to the player
+                          // User is logged in and either content is not premium or user is premium
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                         }
                       }}

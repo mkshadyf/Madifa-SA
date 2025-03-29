@@ -262,9 +262,13 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
       });
       
       // Add a slight delay before showing the subscription modal
-      // Only show for non-authenticated users
+      // Show different modals based on auth status
       const timer = setTimeout(() => {
         if (!user) {
+          // Not logged in, show register modal
+          setShowAuthModal(true);
+        } else if (!user.isPremium) {
+          // Logged in but not premium, show upgrade modal
           setShowAuthModal(true);
         }
       }, 8000);
@@ -371,14 +375,20 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
   };
   
   const togglePlay = () => {
-    // Only show auth modal if this is premium content, user is not authenticated 
-    // or not a premium user, AND we're not already playing the trailer
-    if (content.isPremium && (!user || !user.isPremium) && !videoUrl.includes('trailer')) {
+    // First check if user is logged in at all
+    if (!user) {
+      // Not logged in - show auth modal
+      setShowAuthModal(true);
+      return;
+    }
+    // Then check if content is premium and user is not premium AND we're not already playing the trailer
+    else if (content.isPremium && !user.isPremium && !videoUrl.includes('trailer')) {
       // If trying to watch premium content as a free user
       setShowAuthModal(true);
       return;
     }
     
+    // User is authorized to play the video
     if (isPlaying) {
       playerControls.pause();
     } else {

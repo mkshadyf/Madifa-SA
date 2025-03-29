@@ -35,10 +35,17 @@ const HeroSection = ({ content, onAddToWatchlist }: HeroSectionProps) => {
   if (!content) return null;
   
   const handleWatchNow = () => {
-    if (content.isPremium && (!user || !user.isPremium)) {
+    // First check if user is logged in at all
+    if (!user) {
       setShowAuthModal(true);
       return;
     }
+    // Then check if content is premium and user is not premium
+    if (content.isPremium && !user.isPremium) {
+      setShowAuthModal(true);
+      return;
+    }
+    // User is logged in and either content is not premium or user is premium
     navigate(`/movie/${content.id}`);
   };
   
@@ -147,7 +154,7 @@ const HeroSection = ({ content, onAddToWatchlist }: HeroSectionProps) => {
       <AuthModal 
         isOpen={showAuthModal} 
         onClose={() => setShowAuthModal(false)}
-        initialView={user ? "login" : "register"}
+        initialView={user ? (user.isPremium ? "login" : "upgrade") : "register"}
       />
     </>
   );
