@@ -73,9 +73,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
   
   const onLoginSubmit = async (values: LoginFormValues) => {
     try {
-      // Disable form while submitting
-      loginForm.formState.isSubmitting = true;
-      
+      // We don't need to manually set isSubmitting as it's handled by react-hook-form
       await login(values.email, values.password);
       
       toast({
@@ -96,16 +94,12 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
         description: error instanceof Error ? error.message : "Something went wrong with authentication. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      loginForm.formState.isSubmitting = false;
     }
   };
   
   const onRegisterSubmit = async (values: RegisterFormValues) => {
     try {
-      // Disable form while submitting
-      registerForm.formState.isSubmitting = true;
-      
+      // We don't need to manually set isSubmitting as it's handled by react-hook-form
       const { confirmPassword, ...userData } = values;
       await register(userData);
       
@@ -127,8 +121,6 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
         description: error instanceof Error ? error.message : "Account creation failed. Please check your information and try again.",
         variant: "destructive",
       });
-    } finally {
-      registerForm.formState.isSubmitting = false;
     }
   };
 
@@ -160,14 +152,14 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
 
   return (
     <Dialog modal={true} open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 sm:max-w-md max-w-[calc(100vw-2rem)] w-full overflow-auto shadow-xl rounded-xl z-50" aria-describedby="auth-dialog-description">
+      <DialogContent className="sm:max-w-md max-w-[calc(100vw-2rem)] w-full overflow-auto" aria-describedby="auth-dialog-description">
         {/* We're using the built-in close button from DialogPrimitive */}
         <DialogHeader className="flex justify-between items-center">
           <DialogTitle className="text-2xl font-bold">
             {activeTab === "login" ? "Sign In" : activeTab === "register" ? "Create Account" : "Upgrade to Premium"}
           </DialogTitle>
         </DialogHeader>
-        <DialogDescription id="auth-dialog-description" className="sr-only">
+        <DialogDescription id="auth-dialog-description">
           {activeTab === "login" ? "Enter your credentials to sign in to your account" : activeTab === "register" ? "Create a new account" : "Upgrade your account to premium"}
         </DialogDescription>
         
