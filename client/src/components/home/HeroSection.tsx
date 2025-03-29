@@ -61,9 +61,9 @@ const HeroSection = ({ content, onAddToWatchlist }: HeroSectionProps) => {
             alt={content.title} 
             className="w-full h-full object-cover"
           />
-          {/* Reduce opacity of gradient overlays to make the image more visible */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent/10"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent/10"></div>
+          {/* Reduced opacity of gradient overlays to make the image more visible */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/20 to-transparent"></div>
           
           <div className="absolute bottom-0 left-0 p-6 md:p-16 w-full md:w-1/2">
             <div className="flex items-center space-x-2 mb-4">
@@ -90,30 +90,30 @@ const HeroSection = ({ content, onAddToWatchlist }: HeroSectionProps) => {
               )}
             </div>
             
-            <h1 className="text-3xl md:text-5xl font-bold mb-2 text-foreground">{content.title}</h1>
+            <h1 className="text-3xl md:text-5xl font-bold mb-2 text-foreground drop-shadow-sm">{content.title}</h1>
             
             {/* Mobile-friendly description with toggle */}
             {isMobile ? (
               <div className="relative mb-4">
-                <p className={`text-foreground text-sm mb-1 ${!showFullDescription ? 'line-clamp-2' : ''}`}>
+                <p className={`text-foreground text-sm mb-1 drop-shadow backdrop-blur-sm bg-background/10 p-2 rounded ${!showFullDescription ? 'line-clamp-2' : ''}`}>
                   {content.description}
                 </p>
                 <button 
                   onClick={() => setShowFullDescription(!showFullDescription)}
-                  className="text-primary text-xs flex items-center"
+                  className="text-primary text-xs flex items-center bg-background/20 px-2 py-1 rounded mt-1"
                 >
                   {showFullDescription ? 'Show Less' : 'Show More'}
                   <ChevronDown className={`h-3 w-3 ml-1 transition-transform ${showFullDescription ? 'rotate-180' : ''}`} />
                 </button>
               </div>
             ) : (
-              <p className="text-foreground text-base mb-4">{content.description}</p>
+              <p className="text-foreground text-base mb-4 drop-shadow-sm backdrop-blur-sm bg-background/10 p-2 rounded">{content.description}</p>
             )}
             
             {/* Mobile-optimized button layout */}
-            <div className={`flex ${isMobile ? 'justify-between w-full' : 'flex-wrap gap-3'}`}>
+            <div className={`flex ${isMobile ? 'justify-between w-full' : 'flex-wrap gap-3'} mt-3`}>
               <Button 
-                className={`bg-orange-600 hover:bg-orange-700 text-white ${isMobile ? 'flex-1 mr-2' : ''}`} 
+                className={`bg-orange-600 hover:bg-orange-700 text-white shadow-md font-semibold ${isMobile ? 'flex-1 mr-2' : ''}`} 
                 size={isMobile ? "sm" : "default"}
                 onClick={handleWatchNow}
               >
@@ -124,7 +124,7 @@ const HeroSection = ({ content, onAddToWatchlist }: HeroSectionProps) => {
               <Button 
                 variant="secondary"
                 size={isMobile ? "sm" : "default"}
-                className={isMobile ? 'flex-1 mr-2' : ''}
+                className={`shadow-md backdrop-blur-sm bg-white/90 hover:bg-white/100 text-black dark:bg-white/90 dark:hover:bg-white/100 dark:text-black ${isMobile ? 'flex-1 mr-2' : ''}`}
                 onClick={handleAddToList}
               >
                 <Plus className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'} mr-1`} />
@@ -134,7 +134,7 @@ const HeroSection = ({ content, onAddToWatchlist }: HeroSectionProps) => {
               <Button 
                 variant="secondary" 
                 size="icon"
-                className={isMobile ? 'h-9 w-9' : ''}
+                className={`shadow-md backdrop-blur-sm bg-white/80 hover:bg-white/100 text-black dark:bg-white/80 dark:hover:bg-white/100 dark:text-black ${isMobile ? 'h-9 w-9' : ''}`}
                 onClick={() => navigate(`/movie/${content.id}`)}
               >
                 <Info className={isMobile ? 'h-4 w-4' : 'h-5 w-5'} />
