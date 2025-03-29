@@ -159,7 +159,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log("Supabase login failed, trying custom auth:", supabaseError.message);
         // Fallback to our custom auth
         try {
-          const data = await apiRequest("POST", "/api/auth/login", { email, password });
+          const data = await apiRequest("/api/auth/login", "POST", { email, password });
           
           if (!data || !data.token || !data.user) {
             throw new Error("Invalid response from authentication server");
@@ -249,7 +249,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log("Supabase registration failed, trying custom auth:", supabaseError.message);
         // Fallback to our custom auth
         try {
-          const data = await apiRequest("POST", "/api/auth/register", userData);
+          const data = await apiRequest("/api/auth/register", "POST", userData);
           
           if (!data || !data.token || !data.user) {
             throw new Error("Invalid response from authentication server");
