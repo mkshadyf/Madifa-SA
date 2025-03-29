@@ -160,16 +160,8 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 sm:max-w-md relative overflow-hidden shadow-xl rounded-xl transform-gpu scale-100 opacity-100 z-50">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={onClose} 
-          className="absolute right-4 top-4 z-10"
-          aria-label="Close dialog"
-        >
-          <X className="h-4 w-4" />
-        </Button>
+      <DialogContent className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 sm:max-w-md relative overflow-hidden shadow-xl rounded-xl transform-gpu scale-100 opacity-100 z-50">
+        {/* We're using the built-in close button from DialogPrimitive */}
         <DialogHeader className="flex justify-between items-center">
           <DialogTitle className="text-2xl font-bold">
             {activeTab === "login" ? "Sign In" : activeTab === "register" ? "Create Account" : "Upgrade to Premium"}

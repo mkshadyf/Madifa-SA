@@ -177,7 +177,7 @@ export class VimeoSync {
     // Format the video data according to our schema
     const contentData: InsertContent = {
       title: video.title,
-      description: video.description || `Video from Vimeo`,
+      description: video.description || `Exclusive content on ${video.title}. Watch now on Madifa.`,
       thumbnailUrl: video.thumbnailUrl,
       videoUrl: video.streamingUrl,
       trailerUrl: isTrailer ? video.streamingUrl : '',
@@ -215,7 +215,7 @@ export class VimeoSync {
     // Format the update data
     const updateData = {
       title: video.title,
-      description: video.description || `Video from Vimeo`,
+      description: video.description || `Exclusive content on ${video.title}. Watch now on Madifa.`,
       thumbnailUrl: video.thumbnailUrl,
       videoUrl: video.streamingUrl,
       trailerUrl: isTrailer ? video.streamingUrl : '',
