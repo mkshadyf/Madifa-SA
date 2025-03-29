@@ -15,8 +15,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useAuth } from "@/contexts/AuthContext";
-import { X, CheckIcon } from "lucide-react";
+import { X, CheckIcon, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -45,6 +46,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) => {
   const [activeTab, setActiveTab] = useState<string>(initialView);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const { login, register } = useAuth();
   const { toast } = useToast();
   
@@ -71,49 +73,107 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
   
   const onLoginSubmit = async (values: LoginFormValues) => {
     try {
+      // Disable form while submitting
+      loginForm.formState.isSubmitting = true;
+      
       await login(values.email, values.password);
+      
       toast({
         title: "Login successful",
         description: "Welcome back to Madifa!",
+        className: "bg-green-50 border-green-500 text-green-900"
       });
-      onClose();
+      
+      // Add small delay to show success message
+      setTimeout(() => {
+        onClose();
+      }, 1500);
     } catch (error) {
+      console.error('Login error:', error);
+      
       toast({
         title: "Login failed",
-        description: error instanceof Error ? error.message : "Something went wrong",
+        description: error instanceof Error ? error.message : "Something went wrong with authentication. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      loginForm.formState.isSubmitting = false;
     }
   };
   
   const onRegisterSubmit = async (values: RegisterFormValues) => {
     try {
+      // Disable form while submitting
+      registerForm.formState.isSubmitting = true;
+      
       const { confirmPassword, ...userData } = values;
       await register(userData);
+      
       toast({
         title: "Registration successful",
         description: "Welcome to Madifa!",
+        className: "bg-green-50 border-green-500 text-green-900"
       });
-      onClose();
+      
+      // Add small delay to show success message
+      setTimeout(() => {
+        onClose();
+      }, 1500);
     } catch (error) {
+      console.error('Registration error:', error);
+      
       toast({
         title: "Registration failed",
-        description: error instanceof Error ? error.message : "Something went wrong",
+        description: error instanceof Error ? error.message : "Account creation failed. Please check your information and try again.",
         variant: "destructive",
       });
+    } finally {
+      registerForm.formState.isSubmitting = false;
     }
+  };
+
+  // Handle Google authentication with proper error handling and loading state
+  const handleGoogleAuth = () => {
+    setIsGoogleLoading(true);
+    
+    toast({
+      title: "Google Authentication",
+      description: "Connecting to Google...",
+    });
+    
+    // Example of Google Auth - redirect to Google OAuth
+    supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `https://madifa.site/auth/callback`
+      }
+    }).catch(error => {
+      console.error('Google auth error:', error);
+      toast({
+        title: "Authentication failed",
+        description: "Could not connect to Google. Please try again.",
+        variant: "destructive",
+      });
+      setIsGoogleLoading(false);
+    });
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-background border-gray-700 sm:max-w-md">
+      <DialogContent className="bg-background border-gray-700 sm:max-w-md relative overflow-hidden">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={onClose} 
+          className="absolute right-4 top-4 z-10"
+          aria-label="Close dialog"
+        >
+          <X className="h-4 w-4" />
+        </Button>
         <DialogHeader className="flex justify-between items-center">
           <DialogTitle className="text-2xl font-bold">
             {activeTab === "login" ? "Sign In" : activeTab === "register" ? "Create Account" : "Upgrade to Premium"}
           </DialogTitle>
-          <Button variant="ghost" size="icon" onClick={onClose} className="absolute right-4 top-4">
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
         
         <Tabs defaultValue={initialView} value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -172,8 +232,19 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                   )}
                 />
                 
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
-                  Sign In
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary hover:bg-primary/90" 
+                  disabled={loginForm.formState.isSubmitting}
+                >
+                  {loginForm.formState.isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Signing in...
+                    </>
+                  ) : (
+                    "Sign In"
+                  )}
                 </Button>
               </form>
             </Form>
@@ -184,12 +255,29 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
               <div className="flex-grow border-t border-gray-700"></div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
-              <Button variant="outline" className="border-gray-700">
-                Google
-              </Button>
-              <Button variant="outline" className="border-gray-700">
-                Facebook
+            <div className="flex justify-center">
+              <Button 
+                variant="outline" 
+                className="border-gray-700 flex items-center gap-2 w-full max-w-xs transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                disabled={isGoogleLoading}
+                onClick={handleGoogleAuth}
+              >
+                {isGoogleLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Connecting...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                      <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+                      <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+                      <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+                      <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
+                    </svg>
+                    Continue with Google
+                  </>
+                )}
               </Button>
             </div>
           </TabsContent>
@@ -289,8 +377,19 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                   )}
                 />
                 
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
-                  Create Account
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary hover:bg-primary/90"
+                  disabled={registerForm.formState.isSubmitting}
+                >
+                  {registerForm.formState.isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating account...
+                    </>
+                  ) : (
+                    "Create Account"
+                  )}
                 </Button>
               </form>
             </Form>
@@ -301,12 +400,29 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
               <div className="flex-grow border-t border-gray-700"></div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
-              <Button variant="outline" className="border-gray-700">
-                Google
-              </Button>
-              <Button variant="outline" className="border-gray-700">
-                Facebook
+            <div className="flex justify-center">
+              <Button 
+                variant="outline" 
+                className="border-gray-700 flex items-center gap-2 w-full max-w-xs transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                disabled={isGoogleLoading}
+                onClick={handleGoogleAuth}
+              >
+                {isGoogleLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Connecting...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                      <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+                      <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+                      <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+                      <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
+                    </svg>
+                    Continue with Google
+                  </>
+                )}
               </Button>
             </div>
           </TabsContent>
