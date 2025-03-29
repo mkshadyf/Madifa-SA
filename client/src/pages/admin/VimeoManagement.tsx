@@ -110,8 +110,7 @@ export default function VimeoManagement() {
     const checkAuth = async () => {
       setIsAuthLoading(true);
       try {
-        const response = await apiRequest('GET', '/api/vimeo/auth-check');
-        const data = await response.json();
+        const data = await apiRequest('/api/vimeo/auth-check');
         setAuthStatus(data);
       } catch (error) {
         console.error('Failed to check Vimeo authentication:', error);
@@ -133,8 +132,7 @@ export default function VimeoManagement() {
     const fetchVideos = async () => {
       setIsVideosLoading(true);
       try {
-        const response = await apiRequest('GET', `/api/vimeo/videos?page=${currentPage}&perPage=${perPage}`);
-        const data: VideosResponse = await response.json();
+        const data: VideosResponse = await apiRequest(`/api/vimeo/videos?page=${currentPage}&perPage=${perPage}`);
         setVideos(data.videos);
         setTotalVideos(data.total);
       } catch (error) {
@@ -158,8 +156,7 @@ export default function VimeoManagement() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await apiRequest('GET', '/api/categories');
-        const data = await response.json();
+        const data = await apiRequest('/api/categories');
         setCategories(data);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
@@ -201,39 +198,32 @@ export default function VimeoManagement() {
     }, 1000);
 
     try {
-      const response = await apiRequest('POST', '/api/vimeo/videos', uploadFormData);
+      const data = await apiRequest('/api/vimeo/videos', 'POST', uploadFormData);
+      clearInterval(progressInterval);
+      setUploadProgress(100);
       
-      if (response.ok) {
-        const data = await response.json();
-        clearInterval(progressInterval);
-        setUploadProgress(100);
-        
-        // Reset form
-        setUploadFormData({
-          fileUrl: '',
-          name: '',
-          description: '',
-          privacy: {
-            view: 'anybody',
-            embed: 'public',
-            download: false,
-            add: false,
-          },
-        });
+      // Reset form
+      setUploadFormData({
+        fileUrl: '',
+        name: '',
+        description: '',
+        privacy: {
+          view: 'anybody',
+          embed: 'public',
+          download: false,
+          add: false,
+        },
+      });
 
-        toast({
-          title: 'Upload Successful',
-          description: `Video upload initiated with ID: ${data.videoId}`,
-        });
+      toast({
+        title: 'Upload Successful',
+        description: `Video upload initiated with ID: ${data.videoId}`,
+      });
 
-        // Refresh videos list after a delay to allow processing
-        setTimeout(() => {
-          setCurrentPage(1); // Reset to first page
-        }, 3000);
-      } else {
-        const error = await response.text();
-        throw new Error(error);
-      }
+      // Refresh videos list after a delay to allow processing
+      setTimeout(() => {
+        setCurrentPage(1); // Reset to first page
+      }, 3000);
     } catch (error) {
       console.error('Upload failed:', error);
       toast({
@@ -262,29 +252,23 @@ export default function VimeoManagement() {
     setSelectedVideoId(videoId);
 
     try {
-      const response = await apiRequest('POST', `/api/vimeo/import/${videoId}`, {
+      const data = await apiRequest(`/api/vimeo/import/${videoId}`, 'POST', {
         categoryId: parseInt(importFormData.categoryId),
         isPremium: importFormData.isPremium,
         contentType: importFormData.contentType,
       });
+        
+      toast({
+        title: 'Import Successful',
+        description: `Video "${data.content.title}" imported to platform.`,
+      });
 
-      if (response.ok) {
-        const data = await response.json();
-        toast({
-          title: 'Import Successful',
-          description: `Video "${data.content.title}" imported to platform.`,
-        });
-
-        // Reset import form
-        setImportFormData({
-          categoryId: '',
-          isPremium: false,
-          contentType: 'movie',
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Import failed');
-      }
+      // Reset import form
+      setImportFormData({
+        categoryId: '',
+        isPremium: false,
+        contentType: 'movie',
+      });
     } catch (error) {
       console.error('Import failed:', error);
       toast({
@@ -304,20 +288,15 @@ export default function VimeoManagement() {
     setSelectedVideoId(videoId);
 
     try {
-      const response = await apiRequest('DELETE', `/api/vimeo/videos/${videoId}`);
-
-      if (response.ok) {
-        // Remove from local state
-        setVideos(prev => prev.filter(video => video.id !== videoId));
-        
-        toast({
-          title: 'Video Deleted',
-          description: 'Video was successfully deleted from Vimeo.',
-        });
-      } else {
-        const error = await response.text();
-        throw new Error(error);
-      }
+      await apiRequest(`/api/vimeo/videos/${videoId}`, 'DELETE');
+      
+      // Remove from local state
+      setVideos(prev => prev.filter(video => video.id !== videoId));
+      
+      toast({
+        title: 'Video Deleted',
+        description: 'Video was successfully deleted from Vimeo.',
+      });
     } catch (error) {
       console.error('Delete failed:', error);
       toast({
@@ -343,8 +322,7 @@ export default function VimeoManagement() {
     setIsCaptionsLoading(true);
     setVideoCaptions([]);
     
-    apiRequest('GET', `/api/vimeo/videos/${video.id}/captions`)
-      .then(response => response.json())
+    apiRequest(`/api/vimeo/videos/${video.id}/captions`)
       .then(data => {
         setVideoCaptions(data);
       })
