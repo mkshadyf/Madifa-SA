@@ -160,7 +160,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-background border-gray-700 sm:max-w-md relative overflow-hidden">
+      <DialogContent className="bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 sm:max-w-md relative overflow-hidden shadow-xl rounded-xl transform-gpu scale-100 opacity-100 z-50">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -200,7 +200,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                         <Input
                           placeholder="your@email.com"
                           {...field}
-                          className="bg-background border-gray-700"
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary"
                         />
                       </FormControl>
                       <FormMessage />
@@ -219,7 +219,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                           type="password"
                           placeholder="********"
                           {...field}
-                          className="bg-background border-gray-700"
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary"
                         />
                       </FormControl>
                       <div className="flex justify-end mt-1">
@@ -295,7 +295,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                         <Input
                           placeholder="username"
                           {...field}
-                          className="bg-background border-gray-700"
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary"
                         />
                       </FormControl>
                       <FormMessage />
@@ -313,7 +313,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                         <Input
                           placeholder="Your Name"
                           {...field}
-                          className="bg-background border-gray-700"
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary"
                         />
                       </FormControl>
                       <FormMessage />
@@ -331,7 +331,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                         <Input
                           placeholder="your@email.com"
                           {...field}
-                          className="bg-background border-gray-700"
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary"
                         />
                       </FormControl>
                       <FormMessage />
@@ -350,7 +350,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                           type="password"
                           placeholder="********"
                           {...field}
-                          className="bg-background border-gray-700"
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary"
                         />
                       </FormControl>
                       <FormMessage />
@@ -369,7 +369,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                           type="password"
                           placeholder="********"
                           {...field}
-                          className="bg-background border-gray-700"
+                          className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary"
                         />
                       </FormControl>
                       <FormMessage />
