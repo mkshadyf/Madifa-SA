@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Home, Search, Film, User, Download, Settings, Gauge } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePerformanceContext } from "@/contexts/PerformanceContext";
+import AuthModal from "../auth/AuthModal";
 
 interface MobileNavProps {
   onOpenPerformanceSettings?: () => void;
@@ -13,6 +15,8 @@ export function MobileNav({ onOpenPerformanceSettings }: MobileNavProps) {
   const isMobile = useIsMobile();
   const { user } = useAuth();
   const { lightweight } = usePerformanceContext();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalView, setAuthModalView] = useState<"login" | "register">("login");
   
   if (!isMobile) return null;
 
@@ -20,6 +24,14 @@ export function MobileNav({ onOpenPerformanceSettings }: MobileNavProps) {
     e.preventDefault();
     if (onOpenPerformanceSettings) {
       onOpenPerformanceSettings();
+    }
+  };
+  
+  const handleSignInClick = (e: React.MouseEvent) => {
+    if (!user) {
+      e.preventDefault();
+      setAuthModalView("login");
+      setShowAuthModal(true);
     }
   };
 
@@ -61,14 +73,30 @@ export function MobileNav({ onOpenPerformanceSettings }: MobileNavProps) {
           <span className="text-xs mt-1 font-medium">Speed</span>
         </button>
         
-        <Link 
-          href={user ? "/profile" : "/login"} 
-          className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/profile" || location === "/login" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}
-        >
-          <User size={20} />
-          <span className="text-xs mt-1 font-medium">{user ? "Profile" : "Sign In"}</span>
-        </Link>
+        {user ? (
+          <Link 
+            href="/profile" 
+            className={`flex flex-col items-center justify-center w-full h-full py-2 ${location === "/profile" ? "text-primary" : "text-muted-foreground"} active:bg-muted/30 transition-colors`}
+          >
+            <User size={20} />
+            <span className="text-xs mt-1 font-medium">Profile</span>
+          </Link>
+        ) : (
+          <button
+            onClick={handleSignInClick}
+            className={`flex flex-col items-center justify-center w-full h-full py-2 text-muted-foreground bg-transparent border-none active:bg-muted/30 transition-colors`}
+          >
+            <User size={20} />
+            <span className="text-xs mt-1 font-medium">Sign In</span>
+          </button>
+        )}
       </nav>
+      
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+        initialView={authModalView} 
+      />
     </div>
   );
 }

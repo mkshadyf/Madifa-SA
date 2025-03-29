@@ -160,13 +160,16 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 sm:max-w-md relative overflow-hidden shadow-xl rounded-xl transform-gpu scale-100 opacity-100 z-50">
+      <DialogContent className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 sm:max-w-md relative overflow-hidden shadow-xl rounded-xl transform-gpu scale-100 opacity-100 z-50" aria-describedby="auth-dialog-description">
         {/* We're using the built-in close button from DialogPrimitive */}
         <DialogHeader className="flex justify-between items-center">
           <DialogTitle className="text-2xl font-bold">
             {activeTab === "login" ? "Sign In" : activeTab === "register" ? "Create Account" : "Upgrade to Premium"}
           </DialogTitle>
         </DialogHeader>
+        <DialogDescription id="auth-dialog-description" className="sr-only">
+          {activeTab === "login" ? "Enter your credentials to sign in to your account" : activeTab === "register" ? "Create a new account" : "Upgrade your account to premium"}
+        </DialogDescription>
         
         <Tabs defaultValue={initialView} value={activeTab} onValueChange={setActiveTab} className="w-full">
           {initialView === "upgrade" ? (

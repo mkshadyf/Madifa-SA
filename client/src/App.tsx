@@ -2,7 +2,7 @@ import { Switch, Route } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
-import { setAppHeight } from "./lib/viewport";
+import { setAppHeight, enableSafeAreas } from "./lib/viewport";
 import { AuthProvider } from "./contexts/AuthContext";
 import { DataSourceProvider } from "./contexts/DataSourceContext";
 import { PerformanceProvider } from "./contexts/PerformanceContext";
@@ -117,7 +117,12 @@ function App() {
   
   // Fix for mobile viewport height issues
   useEffect(() => {
+    // Set dynamic viewport height
     const cleanup = setAppHeight();
+    
+    // Enable safe areas for notched devices
+    enableSafeAreas();
+    
     return cleanup;
   }, []);
   

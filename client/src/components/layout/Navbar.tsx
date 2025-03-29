@@ -73,7 +73,7 @@ const Navbar = () => {
     <>
       <nav className={`fixed top-0 left-0 right-0 z-50 bg-opacity-95 backdrop-blur-sm border-b ${
         isScrolled ? "bg-background border-gray-800" : "bg-transparent border-transparent"
-      } transition-all duration-300`}>
+      } transition-all duration-300 safe-area-top`}>
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center space-x-10">
             <Link href="/" className="flex items-center">
@@ -115,7 +115,7 @@ const Navbar = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Avatar className="cursor-pointer h-8 w-8">
+                  <Avatar className="cursor-pointer h-8 w-8 hidden md:block">
                     <AvatarImage src={user.avatarUrl || generateAvatarUrl(user.fullName || user.username)} />
                     <AvatarFallback className="bg-primary text-white">
                       {user.username.substring(0, 2).toUpperCase()}
@@ -150,7 +150,7 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex items-center space-x-1">
+              <div className="hidden md:flex items-center space-x-1">
                 <Button variant="outline" onClick={handleLogin} className="text-foreground border-primary-dark hover:bg-primary-dark transition rounded-full px-4 py-1">
                   Log In
                 </Button>

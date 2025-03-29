@@ -7,6 +7,11 @@
     @apply border-border;
   }
 
+  :root {
+    --app-height: 100%;
+    --vh: 1vh;
+  }
+
   html, body {
     @apply h-full w-full overflow-x-hidden;
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
@@ -16,66 +21,89 @@
     @apply font-sans antialiased bg-background text-foreground overscroll-none;
     text-rendering: optimizeSpeed;
   }
-  
-  /* Fix 100vh issue on mobile browsers */
-  :root {
-    --app-height: 100%;
-  }
-  
-  @supports (-webkit-touch-callout: none) {
-    .h-screen {
-      height: var(--app-height);
-    }
-  }
-  
-  .content-carousel {
-    scrollbar-width: none;
-  }
+}
 
-  .content-carousel::-webkit-scrollbar {
-    display: none;
-  }
+/* Viewport height fixes */
+.h-screen {
+  height: 100vh; /* Fallback */
+  height: calc(var(--vh, 1vh) * 100);
+}
+  
+.h-dynamic-90 {
+  height: 90vh; /* Fallback */
+  height: calc(var(--vh, 1vh) * 90);
+}
 
-  /* Default hover effects - disabled in lightweight mode */
-  .movie-card:hover .card-overlay {
-    opacity: 1;
+/* iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .h-screen {
+    height: calc(var(--vh, 1vh) * 100);
   }
+  
+  /* Fix for overscroll bounce on iOS */
+  html {
+    position: fixed;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+}
 
-  .movie-card:hover img {
-    transform: scale(1.05);
-  }
-  
-  /* Lightweight mode overrides */
-  .lightweight-mode * {
-    transition-duration: 0ms !important;
-    animation-duration: 0ms !important;
-  }
-  
-  .lightweight-mode .movie-card:hover img {
-    transform: none !important;
-  }
-  
-  .lightweight-mode .bg-gradient-to-t,
-  .lightweight-mode .bg-gradient-to-r,
-  .lightweight-mode .bg-gradient-to-b,
-  .lightweight-mode .bg-gradient-to-l {
-    background: rgba(0, 0, 0, 0.7) !important;
-  }
-  
-  .lightweight-mode .animate-in,
-  .lightweight-mode .animate-out {
-    animation: none !important;
-  }
-  
-  .lightweight-mode .transition {
-    transition: none !important;
-  }
-  
-  .lightweight-mode .shadow-lg,
-  .lightweight-mode .shadow-md,
-  .lightweight-mode .shadow-sm {
-    box-shadow: none !important;
-  }
+/* Scrollbar hiding classes */  
+.content-carousel {
+  scrollbar-width: none;
+}
+
+.content-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Default hover effects - disabled in lightweight mode */
+.movie-card:hover .card-overlay {
+  opacity: 1;
+}
+
+.movie-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Lightweight mode overrides */
+.lightweight-mode * {
+  transition-duration: 0ms !important;
+  animation-duration: 0ms !important;
+}
+
+.lightweight-mode .movie-card:hover img {
+  transform: none !important;
+}
+
+.lightweight-mode .bg-gradient-to-t,
+.lightweight-mode .bg-gradient-to-r,
+.lightweight-mode .bg-gradient-to-b,
+.lightweight-mode .bg-gradient-to-l {
+  background: rgba(0, 0, 0, 0.7) !important;
+}
+
+.lightweight-mode .animate-in,
+.lightweight-mode .animate-out {
+  animation: none !important;
+}
+
+.lightweight-mode .transition {
+  transition: none !important;
+}
+
+.lightweight-mode .shadow-lg,
+.lightweight-mode .shadow-md,
+.lightweight-mode .shadow-sm {
+  box-shadow: none !important;
 }
 
 @layer components {
