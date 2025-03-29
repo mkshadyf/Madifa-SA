@@ -105,8 +105,7 @@ export default function AdminDashboard() {
       setIsLoading(true);
       try {
         // Fetch statistics from your API
-        const response = await apiRequest('GET', '/api/admin/stats');
-        const data = await response.json();
+        const data = await apiRequest('/api/admin/stats');
         
         // Enhance with additional data for demo purposes
         const enhancedData = {

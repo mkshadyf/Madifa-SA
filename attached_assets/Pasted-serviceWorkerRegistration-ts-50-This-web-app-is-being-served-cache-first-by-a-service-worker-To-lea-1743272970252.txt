@@ -1,0 +1,45 @@
+serviceWorkerRegistration.ts:50 This web app is being served cache-first by a service worker. To learn more, visit https://cra.link/PWA
+/admin:1 Error while trying to use the following icon from the Manifest: https://2ad23c07-d734-4dc1-8cb1-99b7ba2b65f8-00-3mkv2oedkntn2.spock.replit.dev/logo192.png (Download error or resource isn't a valid image)
+Dashboard.tsx:168 Failed to fetch admin stats: TypeError: Failed to execute 'fetch' on 'Window': '/api/admin/stats' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at fetchStats (Dashboard.tsx:108:32)
+    at Dashboard.tsx:208:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+fetchStats @ Dashboard.tsx:168
+hook.js:608 Failed to fetch admin stats: TypeError: Failed to execute 'fetch' on 'Window': '/api/admin/stats' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at fetchStats (Dashboard.tsx:108:32)
+    at Dashboard.tsx:208:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to fetch users: TypeError: Failed to execute 'fetch' on 'Window': '/api/admin/users' is not a valid HTTP method.
+    at apiRequest (queryClient.ts:28:21)
+    at fetchUsers (Users.tsx:54:32)
+    at Users.tsx:69:5
+    at commitHookEffectListMount (chunk-UPELNCPK.js?v=f9129401:16915:34)
+    at commitPassiveMountOnFiber (chunk-UPELNCPK.js?v=f9129401:18156:19)
+    at commitPassiveMountEffects_complete (chunk-UPELNCPK.js?v=f9129401:18129:17)
+    at commitPassiveMountEffects_begin (chunk-UPELNCPK.js?v=f9129401:18119:15)
+    at commitPassiveMountEffects (chunk-UPELNCPK.js?v=f9129401:18109:11)
+    at flushPassiveEffectsImpl (chunk-UPELNCPK.js?v=f9129401:19490:11)
+    at flushPassiveEffects (chunk-UPELNCPK.js?v=f9129401:19447:22)
+overrideMethod @ hook.js:608
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.

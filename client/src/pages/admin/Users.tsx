@@ -4,37 +4,50 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import { RefreshCw, Edit, Trash2, Plus, ShieldCheck, User, Users, UserCog, UserCheck, Calendar } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
-import { User as UserType } from '@shared/schema';
-import { generateAvatarUrl } from '@/lib/utils';
+import { Plus, Users as UsersIcon, Edit, Calendar, RefreshCw, User, ShieldCheck, UserCheck, UserCog } from 'lucide-react';
+
+interface UserType {
+  id: number;
+  username: string;
+  email: string;
+  fullName?: string;
+  isAdmin?: boolean;
+  isPremium?: boolean;
+  avatarUrl?: string;
+  createdAt?: string;
+}
 
 interface UserFormData {
   username: string;
   email: string;
   password: string;
   confirmPassword: string;
-  fullName?: string;
+  fullName: string;
   isAdmin: boolean;
   isPremium: boolean;
 }
 
-export default function UsersPage() {
+// Generate avatar URL based on name
+const generateAvatarUrl = (name: string) => {
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+};
+
+export default function Users() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [users, setUsers] = useState<UserType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [showCreateAdminDialog, setShowCreateAdminDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+  const [showCreateAdminDialog, setShowCreateAdminDialog] = useState<boolean>(false);
   const [formData, setFormData] = useState<UserFormData>({
     username: '',
     email: '',
@@ -44,15 +57,25 @@ export default function UsersPage() {
     isAdmin: false,
     isPremium: false,
   });
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+
+  // Handle form input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+    setFormData(prev => ({ ...prev, [name]: newValue }));
+  };
+
+  // Toggle switch handlers
+  const handleSwitchChange = (name: string, checked: boolean) => {
+    setFormData(prev => ({ ...prev, [name]: checked }));
+  };
 
   // Fetch all users
   useEffect(() => {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const response = await apiRequest('GET', '/api/admin/users');
-        const data = await response.json();
+        const data = await apiRequest('/api/admin/users');
         setUsers(data);
       } catch (error) {
         console.error('Failed to fetch users:', error);
@@ -68,18 +91,6 @@ export default function UsersPage() {
 
     fetchUsers();
   }, [toast]);
-
-  // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    const newValue = type === 'checkbox' ? checked : value;
-    setFormData(prev => ({ ...prev, [name]: newValue }));
-  };
-
-  // Toggle switch handlers
-  const handleSwitchChange = (name: string, checked: boolean) => {
-    setFormData(prev => ({ ...prev, [name]: checked }));
-  };
 
   // Handle user creation
   const handleCreateUser = async () => {
@@ -102,7 +113,7 @@ export default function UsersPage() {
     }
 
     try {
-      const response = await apiRequest('POST', '/api/admin/create-admin', {
+      const newUser = await apiRequest('/api/admin/create-admin', 'POST', {
         username: formData.username,
         email: formData.email,
         password: formData.password,
@@ -111,30 +122,24 @@ export default function UsersPage() {
         isPremium: formData.isPremium,
       });
       
-      if (response.ok) {
-        const newUser = await response.json();
-        setUsers(prev => [...prev, newUser.user]);
-        
-        toast({
-          title: 'Admin Created',
-          description: `Admin account "${formData.username}" has been created.`,
-        });
-        
-        // Reset form and close dialog
-        setFormData({
-          username: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
-          fullName: '',
-          isAdmin: false,
-          isPremium: false,
-        });
-        setShowCreateAdminDialog(false);
-      } else {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to create admin');
-      }
+      setUsers(prev => [...prev, newUser.user]);
+      
+      toast({
+        title: 'Admin Created',
+        description: `Admin account "${formData.username}" has been created.`,
+      });
+      
+      // Reset form and close dialog
+      setFormData({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        fullName: '',
+        isAdmin: false,
+        isPremium: false,
+      });
+      setShowCreateAdminDialog(false);
     } catch (error) {
       console.error('Create failed:', error);
       toast({
@@ -173,35 +178,29 @@ export default function UsersPage() {
 
       updateData.confirmPassword = undefined; // Remove confirmPassword as it's not part of the API
       
-      const response = await apiRequest('PUT', `/api/admin/users/${selectedUserId}`, updateData);
+      const updatedUser = await apiRequest(`/api/admin/users/${selectedUserId}`, 'PUT', updateData);
       
-      if (response.ok) {
-        const updatedUser = await response.json();
-        setUsers(prev => 
-          prev.map(usr => usr.id === selectedUserId ? updatedUser : usr)
-        );
-        
-        toast({
-          title: 'User Updated',
-          description: `User "${formData.username}" has been updated.`,
-        });
-        
-        // Reset form and close dialog
-        setFormData({
-          username: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
-          fullName: '',
-          isAdmin: false,
-          isPremium: false,
-        });
-        setSelectedUserId(null);
-        setShowEditDialog(false);
-      } else {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to update user');
-      }
+      setUsers(prev => 
+        prev.map(usr => usr.id === selectedUserId ? updatedUser : usr)
+      );
+      
+      toast({
+        title: 'User Updated',
+        description: `User "${formData.username}" has been updated.`,
+      });
+      
+      // Reset form and close dialog
+      setFormData({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        fullName: '',
+        isAdmin: false,
+        isPremium: false,
+      });
+      setSelectedUserId(null);
+      setShowEditDialog(false);
     } catch (error) {
       console.error('Update failed:', error);
       toast({
@@ -230,8 +229,7 @@ export default function UsersPage() {
   // Format date from ISO string
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -285,7 +283,7 @@ export default function UsersPage() {
             </div>
           ) : users.length === 0 ? (
             <div className="text-center py-8 space-y-3">
-              <Users className="mx-auto h-12 w-12 text-muted-foreground" />
+              <UsersIcon className="mx-auto h-12 w-12 text-muted-foreground" />
               <h3 className="text-lg font-semibold">No users found</h3>
               <p className="text-sm text-muted-foreground">
                 Get started by adding your first user.
