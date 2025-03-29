@@ -38,6 +38,13 @@ import AdminDashboard from "@/pages/admin/Dashboard";
 import VimeoManagement from "@/pages/admin/VimeoManagement";
 import Categories from "@/pages/admin/Categories";
 import Users from "@/pages/admin/Users";
+import Content from "@/pages/admin/Content";
+import Subscriptions from "@/pages/admin/Subscriptions";
+import Upload from "@/pages/admin/Upload";
+import Analytics from "@/pages/admin/Analytics";
+import Payments from "@/pages/admin/Payments";
+import Settings from "@/pages/admin/Settings";
+import Help from "@/pages/admin/Help";
 
 // Extract Router into a separate component for better organization
 
@@ -83,6 +90,20 @@ function Router() {
           </AdminLayout>
         </AdminRoute>
       </Route>
+      <Route path="/admin/content">
+        <AdminRoute>
+          <AdminLayout>
+            <Content />
+          </AdminLayout>
+        </AdminRoute>
+      </Route>
+      <Route path="/admin/users">
+        <AdminRoute>
+          <AdminLayout>
+            <Users />
+          </AdminLayout>
+        </AdminRoute>
+      </Route>
       <Route path="/admin/vimeo">
         <AdminRoute>
           <AdminLayout>
@@ -97,11 +118,45 @@ function Router() {
           </AdminLayout>
         </AdminRoute>
       </Route>
-      
-      <Route path="/admin/users">
+      <Route path="/admin/upload">
         <AdminRoute>
           <AdminLayout>
-            <Users />
+            <Upload />
+          </AdminLayout>
+        </AdminRoute>
+      </Route>
+      <Route path="/admin/subscriptions">
+        <AdminRoute>
+          <AdminLayout>
+            <Subscriptions />
+          </AdminLayout>
+        </AdminRoute>
+      </Route>
+      <Route path="/admin/analytics">
+        <AdminRoute>
+          <AdminLayout>
+            <Analytics />
+          </AdminLayout>
+        </AdminRoute>
+      </Route>
+      <Route path="/admin/payments">
+        <AdminRoute>
+          <AdminLayout>
+            <Payments />
+          </AdminLayout>
+        </AdminRoute>
+      </Route>
+      <Route path="/admin/settings">
+        <AdminRoute>
+          <AdminLayout>
+            <Settings />
+          </AdminLayout>
+        </AdminRoute>
+      </Route>
+      <Route path="/admin/help">
+        <AdminRoute>
+          <AdminLayout>
+            <Help />
           </AdminLayout>
         </AdminRoute>
       </Route>
