@@ -12,12 +12,13 @@ interface MobileNavProps {
 
 export function MobileNav({ onOpenPerformanceSettings }: MobileNavProps) {
   const [location] = useLocation();
-  const isMobile = useIsMobile();
   const { user } = useAuth();
   const { lightweight } = usePerformanceContext();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authModalView, setAuthModalView] = useState<"login" | "register">("login");
+  const isMobile = useIsMobile();
   
+  // Don't render the component on non-mobile devices
   if (!isMobile) return null;
 
   const handlePerformanceClick = (e: React.MouseEvent) => {

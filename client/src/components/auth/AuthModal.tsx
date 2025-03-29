@@ -159,8 +159,8 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 sm:max-w-md relative overflow-hidden shadow-xl rounded-xl transform-gpu scale-100 opacity-100 z-50" aria-describedby="auth-dialog-description">
+    <Dialog modal={true} open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 sm:max-w-md max-w-[calc(100vw-2rem)] w-full overflow-auto shadow-xl rounded-xl z-50" aria-describedby="auth-dialog-description">
         {/* We're using the built-in close button from DialogPrimitive */}
         <DialogHeader className="flex justify-between items-center">
           <DialogTitle className="text-2xl font-bold">
