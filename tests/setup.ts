@@ -1,3 +1,9 @@
 import '@testing-library/jest-dom';
 
-// This file extends Jest with additional assertions
+// Mock global fetch
+global.fetch = jest.fn();
+
+// Reset mocks between tests
+beforeEach(() => {
+  jest.resetAllMocks();
+});

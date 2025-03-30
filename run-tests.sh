@@ -1,68 +1,20 @@
 #!/bin/bash
 
-# Colors for output
+# Colors for pretty output
 GREEN='\033[0;32m'
-RED='\033[0;31m'
-BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}     MADIFA PLATFORM TEST RUNNER        ${NC}"
-echo -e "${BLUE}========================================${NC}"
-echo -e "Date: $(date)"
-echo -e "${BLUE}----------------------------------------${NC}"
+echo -e "${YELLOW}Running Madifa Tests${NC}"
+echo "==============================="
 
-# Function to run a test and check its result
-run_test() {
-  local test_name=$1
-  local test_file=$2
-  
-  echo -e "\n${YELLOW}📋 Running $test_name...${NC}"
-  npx tsx server/$test_file
-  
-  if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✅ $test_name Completed Successfully${NC}"
-    return 0
-  else
-    echo -e "${RED}❌ $test_name Failed${NC}"
-    return 1
-  fi
-}
+# First run Jest tests
+echo -e "\n${YELLOW}Running Jest Unit and Integration Tests:${NC}"
+npx jest || { echo -e "${RED}Jest tests failed!${NC}"; exit 1; }
 
-# Check if a specific test was requested
-if [ "$1" != "" ]; then
-  case "$1" in
-    "auth")
-      run_test "Authentication Tests" "test-auth.ts"
-      ;;
-    "vimeo")
-      run_test "Vimeo Sync Tests" "test-vimeo-sync.ts"
-      ;;
-    "categories")
-      run_test "Category Management Tests" "test-categories.ts"
-      ;;
-    "all")
-      run_test "All Tests" "testSuite.ts"
-      ;;
-    *)
-      echo -e "${RED}Unknown test: $1${NC}"
-      echo -e "Available tests: auth, vimeo, categories, all"
-      exit 1
-      ;;
-  esac
-  exit $?
-fi
+# Then run Cypress tests in headless mode
+echo -e "\n${YELLOW}Running Cypress E2E Tests:${NC}"
+npx cypress run || { echo -e "${RED}Cypress tests failed!${NC}"; exit 1; }
 
-# Run all tests by default
-echo -e "\n${YELLOW}Running complete test suite...${NC}"
-npx tsx server/testSuite.ts
-
-if [ $? -eq 0 ]; then
-  echo -e "\n${GREEN}✅ ALL TESTS COMPLETED SUCCESSFULLY${NC}"
-else
-  echo -e "\n${RED}❌ SOME TESTS FAILED${NC}"
-  exit 1
-fi
-
-echo -e "${BLUE}----------------------------------------${NC}"
+echo -e "\n${GREEN}All tests passed successfully!${NC}"

@@ -1,119 +1,92 @@
 describe('Content Browsing', () => {
   beforeEach(() => {
-    // Start from home page
+    // Start from the homepage
     cy.visit('/');
   });
 
-  it('should display featured content on the home page', () => {
-    // Verify hero/featured section exists
+  it('should display featured content on homepage', () => {
+    // Verify hero section exists with content
     cy.get('[data-test="hero-section"]').should('be.visible');
-    
-    // Verify featured content title
-    cy.get('[data-test="hero-section"]').find('h1').should('exist');
-    
-    // Verify play button is present in hero section
-    cy.get('[data-test="hero-section"]')
-      .find('[data-test="play-button"]')
-      .should('be.visible');
+    cy.get('[data-test="hero-title"]').should('be.visible');
+    cy.get('[data-test="hero-description"]').should('be.visible');
+    cy.get('[data-test="hero-play-button"]').should('be.visible');
   });
 
-  it('should navigate to browse page and display content categories', () => {
-    // Navigate to browse page
-    cy.get('[data-test="browse-link"]').click();
-    cy.url().should('include', '/browse');
+  it('should display category sections on homepage', () => {
+    // Verify at least one category section exists
+    cy.get('[data-test="category-section"]').should('exist');
     
-    // Verify category sections exist
-    cy.get('[data-test="category-section"]').should('have.length.at.least', 1);
-    
-    // Verify at least one video card is displayed
-    cy.get('[data-test="video-card"]').should('have.length.at.least', 1);
+    // Verify category heading and content cards
+    cy.get('[data-test="category-title"]').should('be.visible');
+    cy.get('[data-test="content-card"]').should('be.visible');
   });
 
-  it('should filter content by category', () => {
-    // Navigate to browse page
+  it('should allow navigation to content details page', () => {
+    // Click on a content card
+    cy.get('[data-test="content-card"]').first().click();
+    
+    // Verify redirected to content details page
+    cy.url().should('include', '/movie/');
+    
+    // Verify content details are visible
+    cy.get('[data-test="content-title"]').should('be.visible');
+    cy.get('[data-test="content-description"]').should('be.visible');
+    cy.get('[data-test="play-button"]').should('be.visible');
+  });
+
+  it('should allow filtering content by category', () => {
+    // Go to browse page
     cy.visit('/browse');
     
-    // Click on a specific category (if categories are in sidebar or tabs)
-    cy.get('[data-test="category-filter"]').first().click();
+    // Select a category from the filter dropdown
+    cy.get('[data-test="category-filter"]').click();
+    cy.get('[data-test="category-option"]').first().click();
     
-    // Verify filtered results
-    cy.get('[data-test="video-card"]').should('have.length.at.least', 1);
-    
-    // Click on another category
-    cy.get('[data-test="category-filter"]').eq(1).click();
-    
-    // Verify different content is shown
-    cy.get('[data-test="active-category"]').should('exist');
+    // Verify content is filtered
+    cy.get('[data-test="active-filter"]').should('be.visible');
+    cy.get('[data-test="content-card"]').should('exist');
   });
 
-  it('should perform a search and display results', () => {
-    // Navigate to browse page
-    cy.visit('/browse');
-    
-    // Find search input and type a search term
-    cy.get('[data-test="search-input"]').type('test video');
+  it('should allow searching for content', () => {
+    // Click search icon
     cy.get('[data-test="search-button"]').click();
     
-    // Verify search results container exists
-    cy.get('[data-test="search-results"]').should('exist');
+    // Type search term
+    cy.get('[data-test="search-input"]').type('Movie');
+    cy.get('[data-test="search-input"]').type('{enter}');
     
-    // Verify search title is displayed
-    cy.get('[data-test="search-results-title"]')
-      .should('contain', 'test video');
+    // Verify search results appear
+    cy.get('[data-test="search-results"]').should('be.visible');
+    cy.get('[data-test="content-card"]').should('exist');
   });
 
-  it('should open and play a video when clicked', () => {
-    // Navigate to browse page
-    cy.visit('/browse');
+  it('should play content when play button is clicked', () => {
+    // Login first to access content
+    cy.login('test@example.com', 'Password123!');
     
-    // Click on first video card
-    cy.get('[data-test="video-card"]').first().click();
+    // Navigate to a movie
+    cy.get('[data-test="content-card"]').first().click();
     
-    // Verify we are on video detail page
-    cy.url().should('include', '/watch');
-    
-    // Verify video player exists
-    cy.get('[data-test="video-player"]').should('be.visible');
-    
-    // Click play button if video doesn't autoplay
+    // Click play button
     cy.get('[data-test="play-button"]').click();
     
-    // Verify video is playing
-    cy.isVideoPlaying().should('eq', true);
+    // Verify video player is visible and playing
+    cy.get('video').should('be.visible');
+    cy.isVideoPlaying().should('be.true');
+    
+    // Verify player controls are visible
+    cy.get('[data-test="player-controls"]').should('be.visible');
   });
 
-  it('should navigate through pagination', () => {
-    // Navigate to browse page with many results
-    cy.visit('/browse');
+  it('should display relevant recommendations on content details page', () => {
+    // Navigate to a movie
+    cy.get('[data-test="content-card"]').first().click();
     
-    // Verify pagination controls exist (if implemented)
-    cy.get('[data-test="pagination"]').should('exist');
+    // Scroll down to recommendations section
+    cy.get('[data-test="recommendations-section"]').scrollIntoView();
     
-    // Store title of first video on page 1
-    cy.get('[data-test="video-card"]')
-      .first()
-      .find('[data-test="video-title"]')
-      .invoke('text')
-      .as('firstPageTitle');
-    
-    // Click next page button
-    cy.get('[data-test="next-page"]').click();
-    
-    // Verify we're on page 2
-    cy.get('[data-test="current-page"]').should('contain', '2');
-    
-    // Store title of first video on page 2
-    cy.get('[data-test="video-card"]')
-      .first()
-      .find('[data-test="video-title"]')
-      .invoke('text')
-      .as('secondPageTitle');
-    
-    // Compare titles to ensure they're different (page changed)
-    cy.get('@firstPageTitle').then((firstTitle) => {
-      cy.get('@secondPageTitle').then((secondTitle) => {
-        expect(firstTitle).not.to.equal(secondTitle);
-      });
-    });
+    // Verify recommendations are visible
+    cy.get('[data-test="recommendations-title"]').should('be.visible');
+    cy.get('[data-test="recommendation-card"]').should('have.length.at.least', 1);
   });
 });

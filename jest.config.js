@@ -23,6 +23,7 @@ module.exports = {
       displayName: 'node',
       testEnvironment: 'node',
       testMatch: [
+        '<rootDir>/tests/integration/**/*.test.ts',
         '<rootDir>/tests/api.test.ts',
         '<rootDir>/tests/auth.test.ts',
         '<rootDir>/tests/storage.test.ts',
@@ -35,6 +36,7 @@ module.exports = {
       displayName: 'jsdom',
       testEnvironment: 'jsdom',
       testMatch: [
+        '<rootDir>/tests/unit/**/*.test.ts?(x)',
         '<rootDir>/tests/components.test.ts?(x)',
       ],
       setupFilesAfterEnv: [

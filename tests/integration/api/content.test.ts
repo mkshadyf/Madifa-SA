@@ -1,129 +1,262 @@
 import request from 'supertest';
-import app from '../../../server/index';
-import { db } from '../../../server/db';
-import { content } from '../../../shared/schema';
-import { eq } from 'drizzle-orm';
+import { Express, Request, Response } from 'express';
+import { registerRoutes } from '../../../server/routes';
+import { Content } from '../../../shared/schema';
+import { MemStorage } from '../../../server/storage';
+import jwt from 'jsonwebtoken';
 
-describe('Content API Endpoints', () => {
-  let testContentId: string;
-  let authToken: string;
+// Mock the entire VimeoService
+jest.mock('../../../server/vimeo', () => {
+  return {
+    VimeoService: {
+      getAllVideos: jest.fn().mockResolvedValue({
+        videos: [
+          {
+            id: 'vimeo123',
+            title: 'Test Movie',
+            description: 'Test movie description',
+            thumbnailUrl: 'https://example.com/thumbnail.jpg',
+            streamingUrl: 'https://example.com/movie.mp4',
+            duration: 120,
+          },
+          {
+            id: 'vimeo456',
+            title: 'Test Trailer',
+            description: 'Test trailer description',
+            thumbnailUrl: 'https://example.com/trailer-thumb.jpg',
+            streamingUrl: 'https://example.com/trailer.mp4',
+            duration: 60,
+          }
+        ]
+      }),
+      checkAuthentication: jest.fn().mockResolvedValue(true)
+    }
+  };
+});
+
+// Mock JWT secret for authentication
+process.env.JWT_SECRET = 'test-secret-key';
+
+describe('Content API Routes', () => {
+  let app: Express;
+  let storage: MemStorage;
+  const adminToken = jwt.sign(
+    { userId: 1, isAdmin: true, username: 'admin' },
+    process.env.JWT_SECRET
+  );
+  const userToken = jwt.sign(
+    { userId: 2, isAdmin: false, username: 'user' },
+    process.env.JWT_SECRET
+  );
   
-  // Setup: Create a test user and get auth token
-  beforeAll(async () => {
-    // Create test user
-    const userData = {
-      username: 'testuser',
-      email: 'test@example.com',
-      password: 'Password123!'
-    };
-    
-    // Register user
-    await request(app)
-      .post('/api/auth/register')
-      .send(userData);
+  beforeEach(async () => {
+    // Reset the storage before each test
+    storage = new MemStorage();
+    app = await registerRoutes(storage);
+  });
+  
+  describe('GET /api/contents', () => {
+    it('should return an empty array when no content exists', async () => {
+      const response = await request(app).get('/api/contents');
       
-    // Login to get token
-    const loginResponse = await request(app)
-      .post('/api/auth/login')
-      .send({
-        email: userData.email,
-        password: userData.password
-      });
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual([]);
+    });
+    
+    it('should fetch from Vimeo when no content exists in storage', async () => {
+      const response = await request(app).get('/api/contents');
       
-    authToken = loginResponse.body.token;
+      expect(response.status).toBe(200);
+      expect(response.body.length).toBe(2);
+      expect(response.body[0].title).toBe('Test Movie');
+      expect(response.body[1].title).toBe('Test Trailer');
+    });
     
-    // Create test content if not exists
-    const testContent = await db.select().from(content).where(eq(content.title, 'Test Content')).limit(1);
-    
-    if (testContent.length === 0) {
-      const newContent = {
-        title: 'Test Content',
-        description: 'This is test content for API testing',
-        vimeoId: '12345',
-        posterUrl: 'https://example.com/poster.jpg',
-        contentType: 'movie',
+    it('should return content from storage when it exists', async () => {
+      // Add sample content to storage
+      const content: Content = {
+        id: 1,
+        title: 'Stored Movie',
+        description: 'Description',
+        thumbnailUrl: 'https://example.com/thumb.jpg',
+        videoUrl: 'https://example.com/video.mp4',
+        trailerUrl: 'https://example.com/trailer.mp4',
+        releaseYear: 2023,
         duration: 120,
-        releaseDate: new Date().toISOString(),
-        isPremium: false
+        isPremium: false,
+        contentType: 'movie',
+        categoryId: 1,
+        createdAt: new Date(),
+        displayPriority: 0,
+        vimeoId: null,
+        rating: null,
+        metadata: null,
+        averageRating: null,
+        reviewCount: 0
       };
       
-      const insertResult = await db.insert(content).values(newContent).returning();
-      testContentId = insertResult[0].id;
-    } else {
-      testContentId = testContent[0].id;
-    }
-  });
-  
-  // Clean up after tests
-  afterAll(async () => {
-    // Remove test content
-    await db.delete(content).where(eq(content.id, testContentId));
-  });
-  
-  describe('GET /api/content', () => {
-    it('should return a list of content items', async () => {
-      const response = await request(app).get('/api/content');
+      await storage.createContent(content);
+      
+      const response = await request(app).get('/api/contents');
       
       expect(response.status).toBe(200);
-      expect(response.body.length).toBe(response.body.length);
-    });
-    
-    it('should filter content by type', async () => {
-      const contentType = 'movie';
-      const response = await request(app).get(`/api/content?type=${contentType}`);
-      
-      expect(response.status).toBe(200);
-      expect(response.body.length).toBe(response.body.length);
-      
-      // Check if all returned items are of the requested type
-      const allMatchType = response.body.every((item: any) => item.contentType === contentType);
-      expect(allMatchType).toBe(true);
+      expect(response.body.length).toBe(1);
+      expect(response.body[0].title).toBe('Stored Movie');
     });
   });
   
-  describe('GET /api/content/:id', () => {
-    it('should return a single content item by ID', async () => {
-      const response = await request(app).get(`/api/content/${testContentId}`);
+  describe('GET /api/contents/premium', () => {
+    it('should return premium content from storage', async () => {
+      // Add premium content to storage
+      const premiumContent: Content = {
+        id: 1,
+        title: 'Premium Movie',
+        description: 'Description',
+        thumbnailUrl: 'https://example.com/thumb.jpg',
+        videoUrl: 'https://example.com/video.mp4',
+        trailerUrl: 'https://example.com/trailer.mp4',
+        releaseYear: 2023,
+        duration: 120,
+        isPremium: true,
+        contentType: 'movie',
+        categoryId: 1,
+        createdAt: new Date(),
+        displayPriority: 0,
+        vimeoId: null,
+        rating: null,
+        metadata: null,
+        averageRating: null,
+        reviewCount: 0
+      };
+      
+      await storage.createContent(premiumContent);
+      
+      const response = await request(app).get('/api/contents/premium');
       
       expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('id', testContentId);
-    });
-    
-    it('should return 404 for non-existent content ID', async () => {
-      const fakeId = '00000000-0000-0000-0000-000000000000';
-      const response = await request(app).get(`/api/content/${fakeId}`);
-      
-      expect(response.status).toBe(404);
+      expect(response.body.length).toBe(1);
+      expect(response.body[0].isPremium).toBe(true);
+      expect(response.body[0].title).toBe('Premium Movie');
     });
   });
   
-  describe('GET /api/content/premium', () => {
-    it('should return a list of premium content', async () => {
+  describe('Admin Content Management', () => {
+    it('should create new content when admin is authenticated', async () => {
+      const newContent = {
+        title: 'New Movie',
+        description: 'Description',
+        thumbnailUrl: 'https://example.com/thumb.jpg',
+        videoUrl: 'https://example.com/video.mp4',
+        trailerUrl: 'https://example.com/trailer.mp4',
+        releaseYear: 2023,
+        duration: 120,
+        isPremium: false,
+        contentType: 'movie',
+        categoryId: 1,
+      };
+      
       const response = await request(app)
-        .get('/api/content/premium')
-        .set('Authorization', `Bearer ${authToken}`);
+        .post('/api/admin/contents')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send(newContent);
       
-      expect(response.status).toBe(200);
-      expect(response.body.length).toBe(response.body.length);
-      
-      // Verify all returned content is premium
-      const allPremium = response.body.every((item: any) => item.isPremium === true);
-      expect(allPremium).toBe(true);
+      expect(response.status).toBe(201);
+      expect(response.body.title).toBe('New Movie');
     });
     
-    it('should require authentication', async () => {
-      const response = await request(app).get('/api/content/premium');
+    it('should reject content creation without admin authorization', async () => {
+      const newContent = {
+        title: 'New Movie',
+        description: 'Description',
+        thumbnailUrl: 'https://example.com/thumb.jpg',
+        videoUrl: 'https://example.com/video.mp4',
+        trailerUrl: 'https://example.com/trailer.mp4',
+        releaseYear: 2023,
+        duration: 120,
+        isPremium: false,
+        contentType: 'movie',
+        categoryId: 1,
+      };
       
-      expect(response.status).toBe(401);
+      const response = await request(app)
+        .post('/api/admin/contents')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send(newContent);
+      
+      expect(response.status).toBe(403);
     });
-  });
-  
-  describe('GET /api/content/featured', () => {
-    it('should return featured content', async () => {
-      const response = await request(app).get('/api/content/featured');
+    
+    it('should update existing content when admin is authenticated', async () => {
+      // First create content
+      const content: Content = {
+        id: 1,
+        title: 'Original Title',
+        description: 'Description',
+        thumbnailUrl: 'https://example.com/thumb.jpg',
+        videoUrl: 'https://example.com/video.mp4',
+        trailerUrl: 'https://example.com/trailer.mp4',
+        releaseYear: 2023,
+        duration: 120,
+        isPremium: false,
+        contentType: 'movie',
+        categoryId: 1,
+        createdAt: new Date(),
+        displayPriority: 0,
+        vimeoId: null,
+        rating: null,
+        metadata: null,
+        averageRating: null,
+        reviewCount: 0
+      };
       
-      expect(response.status).toBe(200);
-      expect(response.body.length).toBe(response.body.length);
+      await storage.createContent(content);
+      
+      // Now update it
+      const updateResponse = await request(app)
+        .put('/api/admin/contents/1')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ title: 'Updated Title' });
+      
+      expect(updateResponse.status).toBe(200);
+      expect(updateResponse.body.title).toBe('Updated Title');
+      expect(updateResponse.body.description).toBe('Description'); // Other fields should remain unchanged
+    });
+    
+    it('should delete existing content when admin is authenticated', async () => {
+      // First create content
+      const content: Content = {
+        id: 1,
+        title: 'To Be Deleted',
+        description: 'Description',
+        thumbnailUrl: 'https://example.com/thumb.jpg',
+        videoUrl: 'https://example.com/video.mp4',
+        trailerUrl: 'https://example.com/trailer.mp4',
+        releaseYear: 2023,
+        duration: 120,
+        isPremium: false,
+        contentType: 'movie',
+        categoryId: 1,
+        createdAt: new Date(),
+        displayPriority: 0,
+        vimeoId: null,
+        rating: null,
+        metadata: null,
+        averageRating: null,
+        reviewCount: 0
+      };
+      
+      await storage.createContent(content);
+      
+      // Now delete it
+      const deleteResponse = await request(app)
+        .delete('/api/admin/contents/1')
+        .set('Authorization', `Bearer ${adminToken}`);
+      
+      expect(deleteResponse.status).toBe(204);
+      
+      // Verify it's been deleted
+      const getResponse = await request(app).get('/api/contents');
+      expect(getResponse.body.length).toBe(0);
     });
   });
 });

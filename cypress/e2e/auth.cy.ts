@@ -1,81 +1,75 @@
-describe('Authentication', () => {
+describe('Authentication Flow', () => {
   beforeEach(() => {
     cy.visit('/');
   });
 
-  it('should display login form', () => {
-    cy.get('[data-test="login-button"]').click();
-    cy.get('[data-test="auth-modal"]').should('be.visible');
-    cy.get('[data-test="login-tab"]').click();
+  it('should allow users to register', () => {
+    // Open auth modal
+    cy.get('[data-test="sign-up-button"]').click();
     
-    cy.get('input[name="email"]').should('be.visible');
-    cy.get('input[name="password"]').should('be.visible');
-    cy.get('button[type="submit"]').contains('Sign In').should('be.visible');
+    // Fill out registration form
+    cy.get('input[name="username"]').type('testuser');
+    cy.get('input[name="email"]').type('test@example.com');
+    cy.get('input[name="password"]').type('Password123!');
+    cy.get('input[name="confirmPassword"]').type('Password123!');
+    
+    // Submit form
+    cy.get('form').submit();
+    
+    // Verify successful registration (might redirect to profile completion)
+    cy.url().should('include', '/profile');
+    cy.contains('Welcome').should('be.visible');
   });
 
-  it('should display registration form', () => {
-    cy.get('[data-test="register-button"]').click();
-    cy.get('[data-test="auth-modal"]').should('be.visible');
-    cy.get('[data-test="register-tab"]').click();
+  it('should allow users to login', () => {
+    // Open auth modal
+    cy.get('[data-test="sign-in-button"]').click();
     
-    cy.get('input[name="username"]').should('be.visible');
-    cy.get('input[name="email"]').should('be.visible');
-    cy.get('input[name="password"]').should('be.visible');
-    cy.get('input[name="confirmPassword"]').should('be.visible');
-    cy.get('button[type="submit"]').contains('Create Account').should('be.visible');
-  });
-
-  it('should show error for invalid login', () => {
-    cy.get('[data-test="login-button"]').click();
-    cy.get('[data-test="auth-modal"]').should('be.visible');
-    cy.get('[data-test="login-tab"]').click();
+    // Fill out login form
+    cy.get('input[name="email"]').type('test@example.com');
+    cy.get('input[name="password"]').type('Password123!');
     
-    cy.get('input[name="email"]').type('invalid@example.com');
-    cy.get('input[name="password"]').type('wrongpassword');
-    cy.get('button[type="submit"]').click();
+    // Submit form
+    cy.get('form').submit();
     
-    // Wait for error message
-    cy.get('[data-test="auth-error"]').should('be.visible');
-    cy.get('[data-test="auth-error"]').should('contain', 'Invalid credentials');
-  });
-
-  it('should allow user to register and then login', () => {
-    // Generate unique email to avoid duplicate account issues in tests
-    const uniqueId = Date.now();
-    const testUser = {
-      username: `testuser${uniqueId}`,
-      email: `testuser${uniqueId}@example.com`,
-      password: 'Password123!'
-    };
-
-    // Register new account
-    cy.get('[data-test="register-button"]').click();
-    cy.get('[data-test="auth-modal"]').should('be.visible');
-    cy.get('[data-test="register-tab"]').click();
-    
-    cy.get('input[name="username"]').type(testUser.username);
-    cy.get('input[name="email"]').type(testUser.email);
-    cy.get('input[name="password"]').type(testUser.password);
-    cy.get('input[name="confirmPassword"]').type(testUser.password);
-    cy.get('button[type="submit"]').click();
-    
-    // Wait for success message or redirect
-    cy.url().should('include', '/browse');
-    
-    // Log out
-    cy.logout();
-    
-    // Log back in with new account
-    cy.get('[data-test="login-button"]').click();
-    cy.get('[data-test="auth-modal"]').should('be.visible');
-    cy.get('[data-test="login-tab"]').click();
-    
-    cy.get('input[name="email"]').type(testUser.email);
-    cy.get('input[name="password"]').type(testUser.password);
-    cy.get('button[type="submit"]').click();
-    
-    // Verify login success
+    // Verify successful login
     cy.url().should('include', '/browse');
     cy.get('[data-test="user-menu"]').should('be.visible');
+  });
+
+  it('should display error message for invalid login', () => {
+    // Open auth modal
+    cy.get('[data-test="sign-in-button"]').click();
+    
+    // Fill out login form with invalid credentials
+    cy.get('input[name="email"]').type('wrong@example.com');
+    cy.get('input[name="password"]').type('WrongPassword123!');
+    
+    // Submit form
+    cy.get('form').submit();
+    
+    // Verify error message appears
+    cy.contains('Invalid email or password').should('be.visible');
+    cy.url().should('not.include', '/browse');
+  });
+
+  it('should allow users to logout', () => {
+    // Login first
+    cy.login('test@example.com', 'Password123!');
+    
+    // Then logout
+    cy.logout();
+    
+    // Verify logged out state
+    cy.get('[data-test="sign-in-button"]').should('be.visible');
+  });
+
+  it('should redirect unauthenticated users trying to access premium content', () => {
+    // Try to visit premium content page directly
+    cy.visit('/movie/1');
+    
+    // Verify auth modal appears with appropriate message
+    cy.contains('Premium Content').should('be.visible');
+    cy.contains('Sign in to continue watching').should('be.visible');
   });
 });
