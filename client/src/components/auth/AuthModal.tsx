@@ -241,7 +241,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                             id="remember-me" 
                             checked={rememberMe} 
                             onCheckedChange={(checked) => setRememberMe(checked === true)}
-                            className="border-gray-400 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                            className="h-4 w-4 border-gray-400 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                           />
                           <label
                             htmlFor="remember-me"
