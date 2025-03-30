@@ -1,130 +1,289 @@
-import { type ClassValue, clsx } from "clsx";
+import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+/**
+ * Combines class names with Tailwind's merge function
+ */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Format duration from seconds to "HH:MM:SS" or "MM:SS" format
+/**
+ * Calculate video progress percentage 
+ */
+export function calculateProgress(currentTime: number, duration: number): number {
+  if (duration === 0) return 0;
+  return (currentTime / duration) * 100;
+}
+
+/**
+ * Format duration for display (mm:ss or hh:mm:ss)
+ */
 export function formatDuration(seconds: number): string {
-  if (!seconds) return '00:00';
+  if (isNaN(seconds) || seconds < 0) return '00:00';
   
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-  const remainingSeconds = Math.floor(seconds % 60);
-
-  const paddedMinutes = String(minutes).padStart(2, '0');
-  const paddedSeconds = String(remainingSeconds).padStart(2, '0');
-
+  const secs = Math.floor(seconds % 60);
+  
   if (hours > 0) {
-    return `${hours}:${paddedMinutes}:${paddedSeconds}`;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
   
-  return `${paddedMinutes}:${paddedSeconds}`;
+  return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
-// Format date to readable string
-export function formatDate(date: Date | string): string {
-  if (!date) return '';
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateTimeFormat('en-ZA', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  }).format(dateObj);
+/**
+ * Format view count for display (e.g., 1.2k, 2.3M)
+ */
+export function formatViewCount(count: number): string {
+  if (count < 1000) return count.toString();
+  if (count < 1000000) return `${(count / 1000).toFixed(1)}k`;
+  return `${(count / 1000000).toFixed(1)}M`;
 }
 
-// Get random element from array
-export function getRandomElement<T>(array: T[]): T {
-  if (!array || array.length === 0) return null as unknown as T;
-  return array[Math.floor(Math.random() * array.length)];
+/**
+ * Format release date (YYYY-MM-DD) to display format
+ */
+export function formatReleaseDate(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  } catch (error) {
+    return dateString;
+  }
 }
 
-// Calculate progress percentage
-export function calculateProgress(current: number, total: number): number {
-  if (!current || !total || total === 0) return 0;
-  const percentage = (current / total) * 100;
-  return Math.min(Math.max(percentage, 0), 100);
+/**
+ * Get elapsed time since date (e.g., "2 days ago")
+ */
+export function getElapsedTime(dateString: string): string {
+  try {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffMs = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) {
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      if (diffHours === 0) {
+        const diffMinutes = Math.floor(diffMs / (1000 * 60));
+        return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''} ago`;
+      }
+      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+    } else if (diffDays < 30) {
+      return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+    } else if (diffDays < 365) {
+      const diffMonths = Math.floor(diffDays / 30);
+      return `${diffMonths} month${diffMonths !== 1 ? 's' : ''} ago`;
+    } else {
+      const diffYears = Math.floor(diffDays / 365);
+      return `${diffYears} year${diffYears !== 1 ? 's' : ''} ago`;
+    }
+  } catch (error) {
+    return 'Unknown date';
+  }
 }
 
-// Parse video URL to extract video ID (for various providers)
-export function parseVideoUrl(url: string): { provider: string; id: string } | null {
+/**
+ * Extract year from date string
+ */
+export function extractYear(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    return date.getFullYear().toString();
+  } catch (error) {
+    return '';
+  }
+}
+
+/**
+ * Convert minutes to hours and minutes display
+ */
+export function convertMinutesToHoursAndMinutes(minutes: number): string {
+  if (minutes < 60) return `${minutes}m`;
+  
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  
+  if (mins === 0) return `${hours}h`;
+  return `${hours}h ${mins}m`;
+}
+
+/**
+ * Truncate text with ellipsis if too long
+ */
+export function truncateText(text: string, maxLength: number): string {
+  if (!text || text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + '...';
+}
+
+/**
+ * Generate random ID
+ */
+export function generateRandomId(): string {
+  return Math.random().toString(36).substring(2, 15);
+}
+
+/**
+ * Filter bad words from text (simplistic implementation)
+ */
+export function filterBadWords(text: string): string {
+  const badWords = ['badword1', 'badword2', 'badword3'];
+  let filteredText = text;
+  
+  badWords.forEach(word => {
+    const regex = new RegExp(word, 'gi');
+    filteredText = filteredText.replace(regex, '*'.repeat(word.length));
+  });
+  
+  return filteredText;
+}
+
+/**
+ * Validate email format
+ */
+export function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+/**
+ * Check if a URL is valid
+ */
+export function isValidUrl(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Generate avatar URL from username or email
+ */
+export function generateAvatarUrl(identifier: string): string {
+  // Use either UI Avatars or Dicebear API
+  const encodedIdentifier = encodeURIComponent(identifier);
+  return `https://ui-avatars.com/api/?name=${encodedIdentifier}&background=random&size=200`;
+}
+
+/**
+ * Parse video URL to extract provider and video ID
+ */
+export function parseVideoUrl(url: string): { provider: string; videoId: string } | null {
   if (!url) return null;
-  
-  // YouTube
-  const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
-  const youtubeMatch = url.match(youtubeRegex);
-  
-  if (youtubeMatch) {
-    return { provider: 'youtube', id: youtubeMatch[1] };
+
+  // Vimeo URL patterns
+  const vimeoPatterns = [
+    /vimeo\.com\/(\d+)/,                   // vimeo.com/123456789
+    /vimeo\.com\/channels\/[^\/]+\/(\d+)/, // vimeo.com/channels/channel/123456789
+    /vimeo\.com\/groups\/[^\/]+\/videos\/(\d+)/, // vimeo.com/groups/group/videos/123456789
+    /player\.vimeo\.com\/video\/(\d+)/     // player.vimeo.com/video/123456789
+  ];
+
+  // YouTube URL patterns
+  const youtubePatterns = [
+    /youtube\.com\/watch\?v=([^&]+)/,      // youtube.com/watch?v=abc123
+    /youtube\.com\/embed\/([^?]+)/,        // youtube.com/embed/abc123
+    /youtube\.com\/v\/([^?]+)/,            // youtube.com/v/abc123
+    /youtu\.be\/([^?]+)/                   // youtu.be/abc123
+  ];
+
+  // Check Vimeo patterns
+  for (const pattern of vimeoPatterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) {
+      return { provider: 'vimeo', videoId: match[1] };
+    }
   }
-  
-  // Vimeo
-  const vimeoRegex = /(?:vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)(?:[a-zA-Z0-9_-]+)?)/i;
-  const vimeoMatch = url.match(vimeoRegex);
-  
-  if (vimeoMatch) {
-    return { provider: 'vimeo', id: vimeoMatch[1] };
+
+  // Check YouTube patterns
+  for (const pattern of youtubePatterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) {
+      return { provider: 'youtube', videoId: match[1] };
+    }
   }
-  
-  // Dailymotion
-  const dailymotionRegex = /(?:dailymotion\.com\/(?:video\/|hub\/(?:[^\/]+)#video=)|dai\.ly\/)([a-zA-Z0-9]+)/i;
-  const dailymotionMatch = url.match(dailymotionRegex);
-  
-  if (dailymotionMatch) {
-    return { provider: 'dailymotion', id: dailymotionMatch[1] };
-  }
-  
+
   return null;
 }
 
-// Generate secure avatar URL from user initials
-export function generateAvatarUrl(name: string): string {
-  if (!name) return '';
-  const initials = name
-    .split(' ')
-    .map(n => n[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=8A2BE2&color=fff`;
-}
-
-// Calculate similarity between two objects with weighted properties
-export function calculateSimilarity(
-  objA: Record<string, any>,
-  objB: Record<string, any>,
-  weights: Record<string, number> = {}
-): number {
-  if (!objA || !objB) return 0;
+/**
+ * Format date for display
+ */
+export function formatDate(date: Date | string, format: string = 'medium'): string {
+  if (!date) return '';
   
-  const keys = Object.keys(weights).length ? Object.keys(weights) : Object.keys(objA);
-  let totalScore = 0;
-  let maxScore = 0;
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
   
-  for (const key of keys) {
-    const weight = weights[key] || 1;
-    maxScore += weight;
-    
-    // Skip if property doesn't exist in either object
-    if (objA[key] === undefined || objB[key] === undefined) continue;
-    
-    // Handle different types of comparisons
-    if (typeof objA[key] === 'number' && typeof objB[key] === 'number') {
-      // For numeric values, calculate how close they are (normalized to 0-1)
-      const max = Math.max(objA[key], objB[key]);
-      const min = Math.min(objA[key], objB[key]);
-      // Avoid division by zero
-      const similarity = max === 0 ? (min === 0 ? 1 : 0) : 1 - ((max - min) / max);
-      totalScore += similarity * weight;
-    } else if (typeof objA[key] === 'string' && typeof objB[key] === 'string') {
-      // For strings, exact match = 1, otherwise 0
-      totalScore += (objA[key] === objB[key] ? 1 : 0) * weight;
-    } else if (typeof objA[key] === 'boolean' && typeof objB[key] === 'boolean') {
-      // For booleans, exact match = 1, otherwise 0
-      totalScore += (objA[key] === objB[key] ? 1 : 0) * weight;
+  // Return invalid date as empty string
+  if (isNaN(dateObj.getTime())) return '';
+  
+  try {
+    switch (format) {
+      case 'short':
+        return dateObj.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      case 'medium':
+        return dateObj.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      case 'long':
+        return dateObj.toLocaleDateString('en-US', {
+          weekday: 'long',
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      case 'numeric':
+        return dateObj.toLocaleDateString('en-US', {
+          month: 'numeric',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      case 'year':
+        return dateObj.getFullYear().toString();
+      case 'month-year':
+        return dateObj.toLocaleDateString('en-US', {
+          month: 'long',
+          year: 'numeric'
+        });
+      case 'time':
+        return dateObj.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      case 'datetime':
+        return `${dateObj.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        })} ${dateObj.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit'
+        })}`;
+      case 'iso':
+        return dateObj.toISOString();
+      default:
+        return dateObj.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        });
     }
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return '';
   }
-  
-  return maxScore === 0 ? 0 : totalScore / maxScore;
 }

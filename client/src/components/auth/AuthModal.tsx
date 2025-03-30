@@ -94,6 +94,9 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
         description: error instanceof Error ? error.message : "Something went wrong with authentication. Please try again.",
         variant: "destructive",
       });
+      
+      // Reset the form state to avoid any issues with isSubmitting
+      loginForm.reset(values);
     }
   };
   
@@ -121,6 +124,9 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
         description: error instanceof Error ? error.message : "Account creation failed. Please check your information and try again.",
         variant: "destructive",
       });
+      
+      // Reset the form state to avoid any issues with isSubmitting
+      registerForm.reset(values);
     }
   };
 

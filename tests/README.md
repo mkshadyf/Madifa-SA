@@ -1,139 +1,122 @@
-# Madifa Video Platform Testing Documentation
+# Madifa Streams Tests
 
-This document provides guidance on running tests for the Madifa Video Platform, a South African streaming service delivering localized, inclusive content experiences.
+This directory contains unit and integration tests for the Madifa Streams application.
 
-## Testing Infrastructure
+## Framework
 
-The project uses the following testing frameworks and tools:
+We use Jest as our testing framework with:
+- TypeScript support
+- React Testing Library for component tests
+- Supertest for API endpoint tests
 
-- **Jest**: For unit and integration testing of components, services, and utility functions
-- **Cypress**: For end-to-end testing of the user interface
-- **Supertest**: For API testing
+## Structure
 
-## Test Categories
-
-The test suite is divided into several categories:
-
-1. **Unit Tests**
-   - Storage Implementation (`storage.test.ts`)
-   - Authentication (`auth.test.ts`)
-   - Utility Functions (`utils.test.ts`)
-   - Components (`components.test.ts`)
-
-2. **Integration Tests**
-   - PayFast Payment Integration (`payment.test.ts`)
-   - Vimeo API Integration (`vimeo.test.ts`)
-   - API Endpoints (`api.test.ts`)
-
-3. **End-to-End Tests**
-   - User Interface (Cypress tests in `cypress/e2e/`)
+- `/unit` - Unit tests
+  - `/components` - Component unit tests
+  - `/services` - Service unit tests
+  - `/utils` - Utility function tests
+- `/integration` - Integration tests
+  - `/api` - API endpoint tests
+  - `/db` - Database integration tests
 
 ## Running Tests
 
-### Running All Tests
-
-To run all Jest tests:
+### All Tests
 
 ```bash
-bash run-tests.sh
+npm run test
 ```
 
-### Running Individual Test Categories
-
-To run specific tests, you can modify the `run-tests.sh` script by uncommenting the appropriate section.
-
-For example, to run only authentication tests:
+### Single Test File
 
 ```bash
-npx jest tests/auth.test.ts
+npm run test -- -t "test name pattern"
 ```
 
-### Running Cypress E2E Tests
-
-To run the Cypress end-to-end tests:
+### With Coverage
 
 ```bash
-npx cypress run
+npm run test:coverage
 ```
 
-To open the Cypress test runner:
+## Writing Tests
 
-```bash
-npx cypress open
+### Component Tests
+
+For React components, use React Testing Library:
+
+```typescript
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Button } from '@/components/ui/button';
+
+describe('Button component', () => {
+  it('renders correctly', () => {
+    render(<Button>Click me</Button>);
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
+
+  it('calls onClick when clicked', () => {
+    const onClick = jest.fn();
+    render(<Button onClick={onClick}>Click me</Button>);
+    fireEvent.click(screen.getByText('Click me'));
+    expect(onClick).toHaveBeenCalled();
+  });
+});
 ```
 
-## Test Setup
+### API Tests
 
-The test environment is configured in the following files:
+For API endpoints, use Supertest:
 
-- `jest.config.js`: Configuration for Jest tests
-- `tests/setup.ts`: Global setup for test environment
-- `cypress.config.ts`: Configuration for Cypress tests
+```typescript
+import request from 'supertest';
+import express from 'express';
+import { registerRoutes } from '../server/routes';
 
-## Mocks
+describe('Content API', () => {
+  let app: express.Express;
 
-The testing infrastructure includes mocks for several external dependencies:
+  beforeAll(async () => {
+    app = express();
+    await registerRoutes(app);
+  });
 
-1. **Supabase**: Mocked in `tests/setup.ts` for authentication and storage operations
-2. **LocalStorage**: Mocked for browser environment testing
-3. **Vimeo API**: Mocked in `tests/vimeo.test.ts` to avoid actual API calls
-4. **PayFast**: Mocked in `tests/payment.test.ts` for payment integration testing
+  it('retrieves content items', async () => {
+    const response = await request(app).get('/api/contents');
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+  });
+});
+```
+
+## Mocking
+
+### API Mocks
+
+Use Jest's mocking capabilities to mock API calls:
+
+```typescript
+jest.mock('@/lib/api', () => ({
+  fetchData: jest.fn().mockResolvedValue([{ id: 1, title: 'Test' }])
+}));
+```
+
+### Component Context Mocks
+
+Wrap components with necessary providers:
+
+```typescript
+const wrapper = ({ children }) => (
+  <AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  </AuthProvider>
+);
+
+render(<Component />, { wrapper });
+```
 
 ## Test Coverage
 
-To generate a test coverage report:
-
-```bash
-npx jest --coverage
-```
-
-The coverage report will be available in the `coverage` directory.
-
-## Writing New Tests
-
-When adding new features to the application, be sure to add corresponding tests.
-
-### Example: Testing a Component
-
-```typescript
-import { render, screen } from '@testing-library/react';
-import MyComponent from '../client/src/components/MyComponent';
-
-describe('MyComponent', () => {
-  test('renders correctly', () => {
-    render(<MyComponent />);
-    expect(screen.getByText('Expected Text')).toBeInTheDocument();
-  });
-});
-```
-
-### Example: Testing an API Endpoint
-
-```typescript
-import supertest from 'supertest';
-import { app } from '../server';
-
-describe('API Endpoint', () => {
-  test('GET /api/endpoint returns expected data', async () => {
-    const res = await supertest(app).get('/api/endpoint');
-    expect(res.status).toBe(200);
-    expect(res.body).toEqual({ data: 'expected' });
-  });
-});
-```
-
-## Troubleshooting
-
-Common issues and their solutions:
-
-1. **Tests failing with module resolution errors**
-   - Make sure all dependencies are installed
-   - Check import paths in test files
-
-2. **API tests failing**
-   - Ensure the server is properly mocked or running
-   - Check authentication is correctly set up for protected routes
-
-3. **Component tests failing**
-   - Ensure the testing library can find elements (using correct queries)
-   - Check that component renders as expected with all props
+The project aims for at least 80% test coverage. Coverage reports are generated in the `/coverage` directory when running `npm run test:coverage`.

@@ -1,48 +1,43 @@
 // ***********************************************
-// This file implements custom commands for Cypress
+// This file defines custom commands for Cypress
+// https://on.cypress.io/custom-commands
 // ***********************************************
 
-// Login command
-Cypress.Commands.add('login', (username: string, password: string) => {
+Cypress.Commands.add('login', (email, password) => {
   cy.visit('/login');
-  cy.get('input[name="username"]').type(username);
+  cy.get('input[name="email"]').type(email);
   cy.get('input[name="password"]').type(password);
-  cy.get('button[type="submit"]').click();
-  
-  // Wait for the login to complete and redirect
-  cy.url().should('not.include', '/login');
+  cy.get('form').submit();
+  // Wait for login to complete
+  cy.url().should('include', '/browse');
 });
 
-// Check if element is in viewport
-Cypress.Commands.add('inViewport', { prevSubject: true }, (subject) => {
-  const bottom = Cypress.$(cy.state('window')).height();
-  const rect = subject[0].getBoundingClientRect();
-  
-  expect(rect.top).to.be.lessThan(bottom);
-  expect(rect.bottom).to.be.greaterThan(0);
-  
-  return subject;
+Cypress.Commands.add('logout', () => {
+  // Find user menu and click
+  cy.get('[data-test="user-menu"]').click();
+  // Click logout button
+  cy.get('[data-test="logout-button"]').click();
+  // Verify logout by checking URL or login button presence
+  cy.url().should('include', '/');
 });
 
-// Check if ad is loaded
-Cypress.Commands.add('checkAdLoaded', () => {
-  // For Google AdSense integration
-  cy.get('iframe[id^="google_ads_iframe"]').should('be.visible');
-  cy.wait(1000); // Wait for ad to load
-  
-  // Check if the ad is not empty
-  cy.get('iframe[id^="google_ads_iframe"]')
-    .its('0.contentDocument.body')
-    .should('not.be.empty');
+Cypress.Commands.add('selectContent', (title) => {
+  // Find content by title
+  cy.contains('.movie-card', title).click();
+  // Wait for content page to load
+  cy.url().should('include', '/movie/');
 });
 
-// Declare the types
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      login(username: string, password: string): Chainable<Element>;
-      inViewport(): Chainable<Element>;
-      checkAdLoaded(): Chainable<Element>;
-    }
-  }
-}
+Cypress.Commands.add('verifyPremiumAccess', () => {
+  // Check if premium badge is visible somewhere on the page
+  cy.get('[data-test="premium-badge"]').should('be.visible');
+  // Verify premium content is accessible
+  cy.get('[data-test="play-button"]').should('be.visible');
+});
+
+Cypress.Commands.add('isVideoPlaying', () => {
+  return cy.get('video').then($video => {
+    const video = $video[0] as HTMLVideoElement;
+    return !video.paused;
+  });
+});

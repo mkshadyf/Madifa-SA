@@ -17,7 +17,7 @@ const CategorySection = ({ categories }: CategorySectionProps) => {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {categories.map((category) => (
           <Link key={category.id} href={`/category/${category.id}`}>
-            <a className="block relative group overflow-hidden rounded-lg h-32">
+            <div className="block relative group overflow-hidden rounded-lg h-32 cursor-pointer">
               {category.thumbnailUrl ? (
                 <img 
                   src={category.thumbnailUrl} 
@@ -30,7 +30,7 @@ const CategorySection = ({ categories }: CategorySectionProps) => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
                 <h3 className="text-white font-medium text-lg">{category.name}</h3>
               </div>
-            </a>
+            </div>
           </Link>
         ))}
       </div>
