@@ -176,7 +176,7 @@ export function generateAvatarUrl(identifier: string): string {
 /**
  * Parse video URL to extract provider and video ID
  */
-export function parseVideoUrl(url: string): { provider: string; videoId: string } | null {
+export function parseVideoUrl(url: string): { provider: string; id: string } | null {
   if (!url) return null;
 
   // Vimeo URL patterns
@@ -199,7 +199,7 @@ export function parseVideoUrl(url: string): { provider: string; videoId: string 
   for (const pattern of vimeoPatterns) {
     const match = url.match(pattern);
     if (match && match[1]) {
-      return { provider: 'vimeo', videoId: match[1] };
+      return { provider: 'vimeo', id: match[1] };
     }
   }
 
@@ -207,11 +207,44 @@ export function parseVideoUrl(url: string): { provider: string; videoId: string 
   for (const pattern of youtubePatterns) {
     const match = url.match(pattern);
     if (match && match[1]) {
-      return { provider: 'youtube', videoId: match[1] };
+      return { provider: 'youtube', id: match[1] };
     }
   }
 
+  // If direct URL to a video file, return null but allow fallback
+  if (url.match(/\.(mp4|webm|ogg|mov)($|\?)/i)) {
+    return null;
+  }
+
   return null;
+}
+
+/**
+ * Get the MIME type for a video file based on extension
+ */
+export function getVideoMimeType(url: string): string {
+  // Default to MP4 if no extension is found
+  if (!url) return 'video/mp4';
+  
+  // Check file extension
+  if (url.endsWith('.mp4')) return 'video/mp4';
+  if (url.endsWith('.webm')) return 'video/webm';
+  if (url.endsWith('.ogg') || url.endsWith('.ogv')) return 'video/ogg';
+  if (url.endsWith('.mov')) return 'video/quicktime';
+  if (url.endsWith('.m3u8')) return 'application/x-mpegURL';
+  if (url.endsWith('.mpd')) return 'application/dash+xml';
+  
+  // Handle URLs with query parameters
+  const urlWithoutParams = url.split('?')[0];
+  if (urlWithoutParams.endsWith('.mp4')) return 'video/mp4';
+  if (urlWithoutParams.endsWith('.webm')) return 'video/webm';
+  if (urlWithoutParams.endsWith('.ogg') || urlWithoutParams.endsWith('.ogv')) return 'video/ogg';
+  if (urlWithoutParams.endsWith('.mov')) return 'video/quicktime';
+  if (urlWithoutParams.endsWith('.m3u8')) return 'application/x-mpegURL';
+  if (urlWithoutParams.endsWith('.mpd')) return 'application/dash+xml';
+  
+  // Default to MP4
+  return 'video/mp4';
 }
 
 /**

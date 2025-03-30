@@ -9,7 +9,7 @@ import { useCaptions } from "@/hooks/useCaptions";
 import { useSync } from "@/hooks/useSync";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePerformanceContext } from "@/contexts/PerformanceContext";
-import { formatDuration, parseVideoUrl } from "@/lib/utils";
+import { formatDuration, parseVideoUrl, getVideoMimeType } from "@/lib/utils";
 import { isAppInstalled } from "@/lib/serviceWorkerRegistration";
 import { 
   Play, Pause, Volume2, VolumeX, Maximize, Minimize, 
@@ -559,10 +559,29 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
   const embedVideo = () => {
     if (!videoUrl) return null;
     
+    // Check if vimeoId is available directly in the content prop 
+    // This ensures we use Vimeo ID first if it's already provided
+    if (content.vimeoId) {
+      return (
+        <iframe
+          ref={vimeoIframeRef}
+          className="w-full h-full"
+          src={`https://player.vimeo.com/video/${content.vimeoId}?autoplay=${autoPlay ? 1 : 0}&controls=0&transparent=1&background=1&title=0&byline=0&portrait=0&api=1&dnt=1&texttrack=false&autopause=0&pip=0&logo=0&quality=auto`}
+          frameBorder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      );
+    }
+    
+    // Otherwise, try to parse the videoUrl
     const parsedVideo = parseVideoUrl(videoUrl);
     
+    // For direct video files (mp4, webm, etc.)
     if (!parsedVideo) {
-      // Direct video file
+      // Direct video file - add MIME type detection
+      const type = getVideoMimeType(videoUrl);
+      
       return (
         <video
           ref={videoRef}
@@ -571,8 +590,13 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
           crossOrigin="anonymous" // Required for external caption files
+          controls={false} // Use custom controls
+          playsInline // Important for mobile
         >
-          <source src={videoUrl} type="video/mp4" />
+          <source src={videoUrl} type={type} />
+          
+          {/* Fallback for browsers that can handle MP4 but might have issues with MIME type */}
+          {type !== "video/mp4" && <source src={videoUrl} type="video/mp4" />}
           
           {/* Add captions/subtitles when available */}
           {selectedTrack && (
@@ -633,6 +657,8 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
             crossOrigin="anonymous"
+            controls={false} // Use custom controls
+            playsInline // Important for mobile
           >
             <source src={videoUrl} type="video/mp4" />
             
