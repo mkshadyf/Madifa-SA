@@ -3,7 +3,7 @@ import { ChevronLeft, Volume2, VolumeX, Maximize, SkipBack, SkipForward, Play, P
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from '@/hooks/use-toast';
 import { ContentItem } from '@shared/types';
-import { formatDuration } from '@/lib/utils';
+import { formatDuration, getVideoMimeType } from '@/lib/utils';
 import { useCaptions, Track } from '@/hooks/useCaptions';
 
 interface MobileVideoPlayerProps {
@@ -269,11 +269,16 @@ const MobileVideoPlayer = ({
       {/* Video Element */}
       <video
         ref={videoRef}
-        src={content.videoUrl}
         className="w-full h-full object-contain"
         playsInline
         poster={content.thumbnailUrl}
       >
+        {/* Use proper source element with MIME type */}
+        <source src={content.videoUrl} type={getVideoMimeType(content.videoUrl)} />
+        
+        {/* Fallback for browsers that can handle MP4 but might have issues with other formats */}
+        {!content.videoUrl.endsWith('.mp4') && <source src={content.videoUrl} type="video/mp4" />}
+        
         {/* Captions */}
         {selectedTrack && (
           <track 

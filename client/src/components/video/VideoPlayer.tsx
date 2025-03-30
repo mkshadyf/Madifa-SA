@@ -493,8 +493,19 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
     if (!videoUrl) return;
 
     const parsedVideo = parseVideoUrl(videoUrl);
-    if (!parsedVideo || parsedVideo.provider !== 'vimeo' || !vimeoIframeRef.current) return;
+    
+    // Skip if not a valid video URL or not a Vimeo video or iframe not ready
+    if (!parsedVideo || parsedVideo.provider !== 'vimeo' || !vimeoIframeRef.current) {
+      if (parsedVideo?.provider === 'direct') {
+        // Handle direct video file URLs
+        console.log('Direct video URL detected:', parsedVideo.directUrl);
+        setIsLoading(false);
+      }
+      return;
+    }
 
+    console.log('Setting up Vimeo player for video ID:', parsedVideo.id);
+    
     // Create Vimeo player instance
     const player = new Player(vimeoIframeRef.current);
     vimeoPlayerRef.current = player;
@@ -517,7 +528,7 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
         setDuration(videoDuration);
       });
       
-      // Check if muted and set initial volume
+      // Check iff muted and set initial volume
       player.getMuted().then(muted => {
         setIsMuted(muted);
       });

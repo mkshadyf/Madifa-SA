@@ -176,47 +176,58 @@ export function generateAvatarUrl(identifier: string): string {
 /**
  * Parse video URL to extract provider and video ID
  */
-export function parseVideoUrl(url: string): { provider: string; id: string } | null {
+export function parseVideoUrl(url: string): { provider: string; id: string; directUrl?: string } | null {
   if (!url) return null;
 
-  // Vimeo URL patterns
-  const vimeoPatterns = [
-    /vimeo\.com\/(\d+)/,                   // vimeo.com/123456789
-    /vimeo\.com\/channels\/[^\/]+\/(\d+)/, // vimeo.com/channels/channel/123456789
-    /vimeo\.com\/groups\/[^\/]+\/videos\/(\d+)/, // vimeo.com/groups/group/videos/123456789
-    /player\.vimeo\.com\/video\/(\d+)/     // player.vimeo.com/video/123456789
-  ];
+  try {
+    // Vimeo URL patterns
+    const vimeoPatterns = [
+      /vimeo\.com\/(\d+)/,                   // vimeo.com/123456789
+      /vimeo\.com\/channels\/[^\/]+\/(\d+)/, // vimeo.com/channels/channel/123456789
+      /vimeo\.com\/groups\/[^\/]+\/videos\/(\d+)/, // vimeo.com/groups/group/videos/123456789
+      /player\.vimeo\.com\/video\/(\d+)/     // player.vimeo.com/video/123456789
+    ];
 
-  // YouTube URL patterns
-  const youtubePatterns = [
-    /youtube\.com\/watch\?v=([^&]+)/,      // youtube.com/watch?v=abc123
-    /youtube\.com\/embed\/([^?]+)/,        // youtube.com/embed/abc123
-    /youtube\.com\/v\/([^?]+)/,            // youtube.com/v/abc123
-    /youtu\.be\/([^?]+)/                   // youtu.be/abc123
-  ];
+    // YouTube URL patterns
+    const youtubePatterns = [
+      /youtube\.com\/watch\?v=([^&]+)/,      // youtube.com/watch?v=abc123
+      /youtube\.com\/embed\/([^?]+)/,        // youtube.com/embed/abc123
+      /youtube\.com\/v\/([^?]+)/,            // youtube.com/v/abc123
+      /youtu\.be\/([^?]+)/                   // youtu.be/abc123
+    ];
 
-  // Check Vimeo patterns
-  for (const pattern of vimeoPatterns) {
-    const match = url.match(pattern);
-    if (match && match[1]) {
-      return { provider: 'vimeo', id: match[1] };
+    // Check Vimeo patterns
+    for (const pattern of vimeoPatterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        return { provider: 'vimeo', id: match[1] };
+      }
     }
-  }
 
-  // Check YouTube patterns
-  for (const pattern of youtubePatterns) {
-    const match = url.match(pattern);
-    if (match && match[1]) {
-      return { provider: 'youtube', id: match[1] };
+    // Check YouTube patterns
+    for (const pattern of youtubePatterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        return { provider: 'youtube', id: match[1] };
+      }
     }
-  }
 
-  // If direct URL to a video file, return null but allow fallback
-  if (url.match(/\.(mp4|webm|ogg|mov)($|\?)/i)) {
+    // Check for direct URLs to media files
+    const directVideoPattern = /\.(mp4|webm|ogg|mov|m3u8|mpd)($|\?)/i;
+    if (url.match(directVideoPattern)) {
+      return { 
+        provider: 'direct', 
+        id: new URL(url).pathname.split('/').pop() || '',
+        directUrl: url
+      };
+    }
+
+    // Unknown URL type
+    return null;
+  } catch (error) {
+    console.error('Error parsing video URL:', error);
     return null;
   }
-
-  return null;
 }
 
 /**

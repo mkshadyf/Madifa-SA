@@ -6,6 +6,7 @@ import { useCaptions, Track } from '@/hooks/useCaptions';
 import { Slider } from '@/components/ui/slider';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { throttle } from '@/lib/performanceOptimizer';
+import { parseVideoUrl, getVideoMimeType } from '@/lib/utils';
 
 interface OptimizedVideoPlayerProps {
   content: ContentItem;
@@ -40,9 +41,23 @@ const OptimizedVideoPlayer: React.FC<OptimizedVideoPlayerProps> = ({
     optimizeImageUrl
   } = usePerformanceContext();
   
-  // Choose the video source based on quality settings
+  // Choose the video source based on quality settings and parse video type
   const getOptimizedVideoSource = () => {
-    // This is a placeholder implementation
+    // Check if we have a Vimeo ID directly available
+    if (content.vimeoId) {
+      return content.videoUrl;
+    }
+    
+    // Parse video URL to check for provider
+    const parsedVideo = parseVideoUrl(content.videoUrl);
+    
+    if (parsedVideo?.provider === 'vimeo') {
+      // Use vimeo ID if available from URL
+      return content.videoUrl;
+    }
+    
+    // For direct video URLs, quality settings could be applied (e.g., lower resolution for lightweight mode)
+    // This is a placeholder for quality selection logic
     // In a real app, you would have different quality versions of each video
     return content.videoUrl;
   };
@@ -265,11 +280,16 @@ const OptimizedVideoPlayer: React.FC<OptimizedVideoPlayerProps> = ({
       <video
         ref={videoRef}
         className="w-full h-full object-contain mx-auto"
-        src={getOptimizedVideoSource()}
         poster={optimizeImageUrl(content.thumbnailUrl)}
         playsInline
         preload={lightweight ? "none" : "auto"}
       >
+        {/* Source element with proper MIME type */}
+        <source src={getOptimizedVideoSource()} type={getVideoMimeType(content.videoUrl)} />
+        
+        {/* Fallback for browsers that might have issues with the MIME type */}
+        {!content.videoUrl.endsWith('.mp4') && <source src={content.videoUrl} type="video/mp4" />}
+        
         {/* Captions */}
         {selectedTrack && (
           <track 
