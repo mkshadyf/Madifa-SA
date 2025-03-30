@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, Volume2, VolumeX, Maximize, SkipBack, SkipForward, Play, Pause, Settings } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { ContentItem } from '@shared/types';
 import { formatDuration, getVideoMimeType } from '@/lib/utils';
 import { useCaptions, Track } from '@/hooks/useCaptions';
+import AuthModal from "../auth/AuthModal";
 
 interface MobileVideoPlayerProps {
   content: ContentItem;
@@ -36,6 +38,11 @@ const MobileVideoPlayer = ({
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isMobile = useIsMobile();
   const { toast } = useToast();
+  const { user } = useAuth();
+  
+  // Authentication modal
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [initialView, setInitialView] = useState<"login" | "register" | "upgrade">("login");
   
   // Handle captions
   const { captions: tracks, isLoading: captionsLoading } = useCaptions(content.id);
@@ -167,6 +174,20 @@ const MobileVideoPlayer = ({
     const video = videoRef.current;
     if (!video) return;
 
+    // If premium content and user is not logged in, show auth modal
+    if (content.isPremium && !user) {
+      setInitialView("login");
+      setShowAuthModal(true);
+      return;
+    }
+
+    // If premium content and user doesn't have premium access, show upgrade modal
+    if (content.isPremium && user && !user.isPremium) {
+      setInitialView("upgrade");
+      setShowAuthModal(true);
+      return;
+    }
+
     if (isPlaying) {
       video.pause();
     } else {
@@ -259,150 +280,159 @@ const MobileVideoPlayer = ({
   };
 
   return (
-    <div 
-      ref={videoContainerRef}
-      className={`relative w-full rounded-lg overflow-hidden bg-black ${isFullscreen ? 'h-screen' : 'aspect-video'}`}
-      onClick={showControlsTemporarily}
-      onTouchStart={showControlsTemporarily}
-      onMouseMove={showControlsTemporarily}
-    >
-      {/* Video Element */}
-      <video
-        ref={videoRef}
-        className="w-full h-full object-contain"
-        playsInline
-        poster={content.thumbnailUrl}
+    <>
+      <div 
+        ref={videoContainerRef}
+        className={`relative w-full rounded-lg overflow-hidden bg-black ${isFullscreen ? 'h-screen' : 'aspect-video'}`}
+        onClick={showControlsTemporarily}
+        onTouchStart={showControlsTemporarily}
+        onMouseMove={showControlsTemporarily}
       >
-        {/* Use proper source element with MIME type */}
-        <source src={content.videoUrl} type={getVideoMimeType(content.videoUrl)} />
-        
-        {/* Fallback for browsers that can handle MP4 but might have issues with other formats */}
-        {!content.videoUrl.endsWith('.mp4') && <source src={content.videoUrl} type="video/mp4" />}
-        
-        {/* Captions */}
-        {selectedTrack && (
-          <track 
-            kind="subtitles" 
-            src={selectedTrack.fileUrl} 
-            srcLang={selectedTrack.language} 
-            label={selectedTrack.label} 
-            default={selectedTrack.isDefault} 
-          />
+        {/* Video Element */}
+        <video
+          ref={videoRef}
+          className="w-full h-full object-contain"
+          playsInline
+          poster={content.thumbnailUrl}
+        >
+          {/* Use proper source element with MIME type */}
+          <source src={content.videoUrl} type={getVideoMimeType(content.videoUrl)} />
+          
+          {/* Fallback for browsers that can handle MP4 but might have issues with other formats */}
+          {!content.videoUrl.endsWith('.mp4') && <source src={content.videoUrl} type="video/mp4" />}
+          
+          {/* Captions */}
+          {selectedTrack && (
+            <track 
+              kind="subtitles" 
+              src={selectedTrack.fileUrl} 
+              srcLang={selectedTrack.language} 
+              label={selectedTrack.label} 
+              default={selectedTrack.isDefault} 
+            />
+          )}
+          Your browser does not support the video tag.
+        </video>
+
+        {/* Loading Indicator */}
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60">
+            <div className="w-16 h-16 border-4 border-t-purple-600 border-purple-200 rounded-full animate-spin"></div>
+          </div>
         )}
-        Your browser does not support the video tag.
-      </video>
 
-      {/* Loading Indicator */}
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-          <div className="w-16 h-16 border-4 border-t-purple-600 border-purple-200 rounded-full animate-spin"></div>
-        </div>
-      )}
+        {/* Error Message */}
+        {error && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/80 text-white flex-col p-4">
+            <span className="text-red-500 text-xl mb-2">⚠️</span>
+            <p className="text-center">{error}</p>
+          </div>
+        )}
 
-      {/* Error Message */}
-      {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/80 text-white flex-col p-4">
-          <span className="text-red-500 text-xl mb-2">⚠️</span>
-          <p className="text-center">{error}</p>
-        </div>
-      )}
-
-      {/* Video Controls */}
-      {showControls && (
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent">
-          {/* Top Controls */}
-          <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between">
-            <button 
-              onClick={onBack} 
-              className="rounded-full bg-black/40 p-2 text-white"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <div className="flex items-center space-x-2">
+        {/* Video Controls */}
+        {showControls && (
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent">
+            {/* Top Controls */}
+            <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between">
               <button 
-                onClick={() => setShowCaptionMenu(!showCaptionMenu)} 
+                onClick={onBack} 
                 className="rounded-full bg-black/40 p-2 text-white"
               >
-                <Settings size={20} />
+                <ChevronLeft size={20} />
+              </button>
+              <div className="flex items-center space-x-2">
+                <button 
+                  onClick={() => setShowCaptionMenu(!showCaptionMenu)} 
+                  className="rounded-full bg-black/40 p-2 text-white"
+                >
+                  <Settings size={20} />
+                </button>
+              </div>
+            </div>
+
+            {/* Center Controls */}
+            <div className="absolute inset-0 flex items-center justify-center space-x-8">
+              <button 
+                onClick={skipBackward} 
+                className="rounded-full bg-black/40 p-3 text-white"
+              >
+                <SkipBack size={24} />
+              </button>
+              <button 
+                onClick={togglePlay} 
+                className="rounded-full bg-black/40 p-4 text-white"
+              >
+                {isPlaying ? <Pause size={32} /> : <Play size={32} />}
+              </button>
+              <button 
+                onClick={skipForward} 
+                className="rounded-full bg-black/40 p-3 text-white"
+              >
+                <SkipForward size={24} />
               </button>
             </div>
-          </div>
 
-          {/* Center Controls */}
-          <div className="absolute inset-0 flex items-center justify-center space-x-8">
-            <button 
-              onClick={skipBackward} 
-              className="rounded-full bg-black/40 p-3 text-white"
-            >
-              <SkipBack size={24} />
-            </button>
-            <button 
-              onClick={togglePlay} 
-              className="rounded-full bg-black/40 p-4 text-white"
-            >
-              {isPlaying ? <Pause size={32} /> : <Play size={32} />}
-            </button>
-            <button 
-              onClick={skipForward} 
-              className="rounded-full bg-black/40 p-3 text-white"
-            >
-              <SkipForward size={24} />
-            </button>
-          </div>
-
-          {/* Bottom Controls */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 space-y-2">
-            {/* Progress Bar */}
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={progress}
-              onChange={handleSeek}
-              className="w-full h-1 bg-gray-600 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
-            />
-            
-            {/* Time and Controls */}
-            <div className="flex items-center justify-between text-white text-sm">
-              <span>{formatDuration(currentTime)}</span>
-              <div className="flex items-center space-x-3">
-                <button onClick={toggleMute}>
-                  {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-                </button>
-                <button onClick={toggleFullscreen}>
-                  <Maximize size={20} />
-                </button>
+            {/* Bottom Controls */}
+            <div className="absolute bottom-0 left-0 right-0 p-4 space-y-2">
+              {/* Progress Bar */}
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={progress}
+                onChange={handleSeek}
+                className="w-full h-1 bg-gray-600 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
+              />
+              
+              {/* Time and Controls */}
+              <div className="flex items-center justify-between text-white text-sm">
+                <span>{formatDuration(currentTime)}</span>
+                <div className="flex items-center space-x-3">
+                  <button onClick={toggleMute}>
+                    {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                  </button>
+                  <button onClick={toggleFullscreen}>
+                    <Maximize size={20} />
+                  </button>
+                </div>
+                <span>-{formatDuration(duration - currentTime)}</span>
               </div>
-              <span>-{formatDuration(duration - currentTime)}</span>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Caption/Settings Menu */}
-      {showCaptionMenu && (
-        <div className="absolute right-4 top-16 bg-black/80 p-4 rounded-lg text-white min-w-[200px]">
-          <h3 className="font-semibold mb-2">Captions</h3>
-          <div className="space-y-2">
-            <div 
-              className={`cursor-pointer hover:bg-purple-800 p-2 rounded ${selectedTrack === null ? 'bg-purple-700' : ''}`}
-              onClick={() => handleTrackSelect(null)}
-            >
-              Off
-            </div>
-            {tracks?.map(track => (
+        {/* Caption/Settings Menu */}
+        {showCaptionMenu && (
+          <div className="absolute right-4 top-16 bg-black/80 p-4 rounded-lg text-white min-w-[200px]">
+            <h3 className="font-semibold mb-2">Captions</h3>
+            <div className="space-y-2">
               <div 
-                key={track.id} 
-                className={`cursor-pointer hover:bg-purple-800 p-2 rounded ${selectedTrack?.id === track.id ? 'bg-purple-700' : ''}`}
-                onClick={() => handleTrackSelect(track.id)}
+                className={`cursor-pointer hover:bg-purple-800 p-2 rounded ${selectedTrack === null ? 'bg-purple-700' : ''}`}
+                onClick={() => handleTrackSelect(null)}
               >
-                {track.label}
+                Off
               </div>
-            ))}
+              {tracks?.map(track => (
+                <div 
+                  key={track.id} 
+                  className={`cursor-pointer hover:bg-purple-800 p-2 rounded ${selectedTrack?.id === track.id ? 'bg-purple-700' : ''}`}
+                  onClick={() => handleTrackSelect(track.id)}
+                >
+                  {track.label}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+
+      {/* Authentication Modal */}
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)}
+        initialView={initialView}
+      />
+    </>
   );
 };
 

@@ -57,6 +57,7 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<"login" | "register" | "upgrade">("login");
   const [adShowing, setAdShowing] = useState(false);
   
   // Define player control methods to work with both HTML5 video and Vimeo
@@ -266,9 +267,11 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
       const timer = setTimeout(() => {
         if (!user) {
           // Not logged in, show register modal
+          setActiveTab("register");
           setShowAuthModal(true);
         } else if (!user.isPremium) {
           // Logged in but not premium, show upgrade modal
+          setActiveTab("upgrade");
           setShowAuthModal(true);
         }
       }, 8000);
@@ -375,15 +378,29 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
   };
   
   const togglePlay = () => {
-    // First check if user is logged in at all
+    // First check if it's a trailer - trailers should always be playable
+    if (videoUrl.includes('trailer')) {
+      // Trailers are playable by anyone
+      if (isPlaying) {
+        playerControls.pause();
+      } else {
+        playerControls.play();
+      }
+      return;
+    }
+    
+    // For non-trailer content, check authentication
     if (!user) {
-      // Not logged in - show auth modal
+      // Not logged in - show auth modal with login/register view
       setShowAuthModal(true);
       return;
     }
-    // Then check if content is premium and user is not premium AND we're not already playing the trailer
-    else if (content.isPremium && !user.isPremium && !videoUrl.includes('trailer')) {
-      // If trying to watch premium content as a free user
+    
+    // User is logged in, check premium status for premium content
+    if (content.isPremium && !user.isPremium) {
+      // Logged in but not premium, show upgrade modal
+      // Set AuthModal to upgrade view for premium users
+      setActiveTab("upgrade");
       setShowAuthModal(true);
       return;
     }
@@ -832,7 +849,7 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
       <AuthModal 
         isOpen={showAuthModal} 
         onClose={() => setShowAuthModal(false)}
-        initialView={user ? "upgrade" : "register"}
+        initialView={activeTab}
       />
     </>
   );
