@@ -31,9 +31,10 @@ import {
 } from "@/components/ui/card";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { User, Settings, CreditCard, Bell, Shield, LogOut, Loader, Gauge } from "lucide-react";
+import { User, Settings, CreditCard, Bell, Shield, LogOut, Loader, Gauge, Smartphone } from "lucide-react";
 import { generateAvatarUrl } from "@/lib/utils";
 import PerformanceSettings from "@/components/app/PerformanceSettings";
+import { PwaInfo } from "@/components/pwa";
 
 const profileSchema = z.object({
   username: z.string().min(3, { message: "Username must be at least 3 characters" }),
@@ -632,6 +633,22 @@ const Profile = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-6">
+                        {/* Install Madifa App Section */}
+                        <div className="border border-border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <h3 className="font-semibold flex items-center">
+                                <Smartphone className="h-4 w-4 mr-2" />
+                                Madifa Mobile App
+                              </h3>
+                              <p className="text-sm text-muted-foreground">
+                                Install Madifa on your device for offline viewing
+                              </p>
+                            </div>
+                          </div>
+                          <PwaInfo />
+                        </div>
+
                         {/* Performance Settings Button */}
                         <div className="border border-border rounded-lg p-4">
                           <div className="flex items-center justify-between mb-4">
