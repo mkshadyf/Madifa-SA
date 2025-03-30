@@ -770,7 +770,7 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
     <>
       <div 
         ref={playerContainerRef}
-        className="relative w-full aspect-video bg-black"
+        className="relative w-full aspect-video bg-black rounded-lg overflow-hidden shadow-lg"
         onMouseMove={() => {
           setShowControls(true);
           if (controlsTimerRef.current) {
@@ -865,7 +865,13 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
                     <Settings className="h-5 w-5" />
                   </Button>
                   
-                  <Button variant="ghost" size="icon" onClick={toggleFullScreen} className="text-white hover:bg-white/20">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={toggleFullScreen} 
+                    className="text-white hover:bg-white/20"
+                    title={isFullScreen ? "Exit fullscreen" : "Enter fullscreen"}
+                  >
                     {isFullScreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
                   </Button>
                 </div>

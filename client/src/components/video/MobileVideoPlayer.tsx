@@ -316,7 +316,7 @@ const MobileVideoPlayer = ({
     <>
       <div 
         ref={videoContainerRef}
-        className={`relative w-full rounded-lg overflow-hidden bg-black ${isFullscreen ? 'h-screen' : 'aspect-video'}`}
+        className={`relative w-full rounded-lg overflow-hidden shadow-lg bg-black ${isFullscreen ? 'h-screen' : 'aspect-video'}`}
         onClick={showControlsTemporarily}
         onTouchStart={showControlsTemporarily}
         onMouseMove={showControlsTemporarily}
@@ -421,10 +421,18 @@ const MobileVideoPlayer = ({
               <div className="flex items-center justify-between text-white text-sm">
                 <span>{formatDuration(currentTime)}</span>
                 <div className="flex items-center space-x-3">
-                  <button onClick={toggleMute}>
+                  <button 
+                    onClick={toggleMute}
+                    title={isMuted ? "Unmute" : "Mute"}
+                    className="p-1 rounded-full hover:bg-white/20"
+                  >
                     {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
                   </button>
-                  <button onClick={toggleFullscreen}>
+                  <button 
+                    onClick={toggleFullscreen}
+                    title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                    className="p-1 rounded-full hover:bg-white/20"
+                  >
                     <Maximize size={20} />
                   </button>
                 </div>

@@ -301,7 +301,7 @@ const MovieDetails = () => {
       <main className="flex-grow pt-16">
         {content && (
           <>
-            <div className="w-full">
+            <div className="container mx-auto max-w-4xl">
               <VideoPlayer 
                 content={content} 
                 autoPlay={autoPlay} 
