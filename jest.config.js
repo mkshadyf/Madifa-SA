@@ -1,5 +1,6 @@
-module.exports = {
-  preset: 'ts-jest',
+/** @type {import('ts-jest').JestConfigWithTsJest} */
+export default {
+  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
   roots: ['<rootDir>/tests'],
   testMatch: ['**/*.test.ts?(x)'],
@@ -8,12 +9,16 @@ module.exports = {
     '^@shared/(.*)$': '<rootDir>/shared/$1',
     // Handle CSS imports (with CSS modules)
     '\\.css$': 'identity-obj-proxy',
+    // Handle ESM modules
+    "^(\\.{1,2}/.*)\\.js$": "$1"
   },
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { 
       tsconfig: 'tsconfig.json',
+      useESM: true,
     }],
   },
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   testPathIgnorePatterns: ['/node_modules/', '/cypress/'],
@@ -21,6 +26,7 @@ module.exports = {
   projects: [
     {
       displayName: 'node',
+      preset: 'ts-jest/presets/default-esm',
       testEnvironment: 'node',
       testMatch: [
         '<rootDir>/tests/integration/**/*.test.ts',
@@ -31,18 +37,30 @@ module.exports = {
         '<rootDir>/tests/utils.test.ts',
         '<rootDir>/tests/vimeo.test.ts',
       ],
+      transform: {
+        '^.+\\.tsx?$': ['ts-jest', { 
+          tsconfig: 'tsconfig.json',
+          useESM: true,
+        }],
+      },
     },
     {
       displayName: 'jsdom',
+      preset: 'ts-jest/presets/default-esm',
       testEnvironment: 'jsdom',
       testMatch: [
         '<rootDir>/tests/unit/**/*.test.ts?(x)',
         '<rootDir>/tests/components.test.ts?(x)',
       ],
       setupFilesAfterEnv: [
-        '<rootDir>/tests/setup.ts',
-        '@testing-library/jest-dom/extend-expect'
+        '<rootDir>/tests/setup.ts'
       ],
+      transform: {
+        '^.+\\.tsx?$': ['ts-jest', { 
+          tsconfig: 'tsconfig.json',
+          useESM: true,
+        }],
+      },
     },
   ],
   // Global settings
