@@ -66,14 +66,31 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
       const video = videoRef.current;
       const vimeoPlayer = vimeoPlayerRef.current;
       
-      if (vimeoPlayer) {
-        vimeoPlayer.play().catch(error => {
-          console.error("Vimeo play failed:", error);
-        });
-      } else if (video) {
-        video.play().catch(error => {
-          console.error("Play failed:", error);
-        });
+      try {
+        if (vimeoPlayer) {
+          vimeoPlayer.play().catch(error => {
+            // Check if error is due to media being removed
+            if (error.name === 'AbortError' || error.message?.includes('removed from the document')) {
+              console.log('Video was removed from the document, ignoring play error');
+            } else {
+              console.error("Vimeo play failed:", error);
+            }
+          });
+        } else if (video) {
+          // Check if video element is still in the document
+          if (document.body.contains(video)) {
+            video.play().catch(error => {
+              // Check if error is due to media being removed
+              if (error.name === 'AbortError' || error.message?.includes('removed from the document')) {
+                console.log('Video was removed from the document, ignoring play error');
+              } else {
+                console.error("Play failed:", error);
+              }
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Play error caught:", error);
       }
     },
     
@@ -81,12 +98,24 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
       const video = videoRef.current;
       const vimeoPlayer = vimeoPlayerRef.current;
       
-      if (vimeoPlayer) {
-        vimeoPlayer.pause().catch(error => {
-          console.error("Vimeo pause failed:", error);
-        });
-      } else if (video) {
-        video.pause();
+      try {
+        if (vimeoPlayer) {
+          vimeoPlayer.pause().catch(error => {
+            // Check if error is due to media being removed
+            if (error.name === 'AbortError' || error.message?.includes('removed from the document')) {
+              console.log('Video was removed from the document, ignoring pause error');
+            } else {
+              console.error("Vimeo pause failed:", error);
+            }
+          });
+        } else if (video) {
+          // Check if video element is still in the document
+          if (document.body.contains(video)) {
+            video.pause();
+          }
+        }
+      } catch (error) {
+        console.error("Pause error caught:", error);
       }
     },
     

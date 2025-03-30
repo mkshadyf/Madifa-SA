@@ -37,16 +37,19 @@ const HeroSection = ({ content, onAddToWatchlist }: HeroSectionProps) => {
   const handleWatchNow = () => {
     // First check if user is logged in at all
     if (!user) {
+      // Set the modal to show the register view for non-logged in users
       setShowAuthModal(true);
       return;
     }
     // Then check if content is premium and user is not premium
     if (content.isPremium && !user.isPremium) {
+      // For premium content but non-premium users, show the upgrade view
       setShowAuthModal(true);
       return;
     }
     // User is logged in and either content is not premium or user is premium
-    navigate(`/movie/${content.id}`);
+    // Add autoplay parameter to automatically start playing
+    navigate(`/movie/${content.id}?autoplay=true`);
   };
   
   const handleAddToList = () => {
@@ -154,7 +157,7 @@ const HeroSection = ({ content, onAddToWatchlist }: HeroSectionProps) => {
       <AuthModal 
         isOpen={showAuthModal} 
         onClose={() => setShowAuthModal(false)}
-        initialView={user ? (user.isPremium ? "login" : "upgrade") : "register"}
+        initialView={user ? (content.isPremium && !user.isPremium ? "upgrade" : "login") : "register"}
       />
     </>
   );

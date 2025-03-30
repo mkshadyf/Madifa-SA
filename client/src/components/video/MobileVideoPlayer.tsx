@@ -117,12 +117,26 @@ const MobileVideoPlayer = ({
 
     // Auto play if specified
     if (autoPlay) {
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // Auto-play was prevented, show a play button
-          setIsPlaying(false);
-        });
+      try {
+        // Check if video element is still in the document
+        if (document.body.contains(video)) {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch((error) => {
+              // Check if error is due to media being removed
+              if (error.name === 'AbortError' || error.message?.includes('removed from the document')) {
+                console.log('Video was removed from the document, ignoring play error');
+              } else {
+                // Auto-play was prevented, show a play button
+                console.log('Auto-play prevented:', error);
+                setIsPlaying(false);
+              }
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Autoplay error caught:", error);
+        setIsPlaying(false);
       }
     }
 
@@ -189,16 +203,35 @@ const MobileVideoPlayer = ({
     }
 
     if (isPlaying) {
-      video.pause();
+      try {
+        // Check if video element is still in the document
+        if (document.body.contains(video)) {
+          video.pause();
+        }
+      } catch (error) {
+        console.error("Pause error caught:", error);
+      }
     } else {
-      video.play().catch(err => {
-        console.error('Error playing video:', err);
-        toast({
-          title: 'Playback Error',
-          description: 'Could not play the video.',
-          variant: 'destructive'
-        });
-      });
+      try {
+        // Check if video element is still in the document
+        if (document.body.contains(video)) {
+          video.play().catch(error => {
+            // Check if error is due to media being removed
+            if (error.name === 'AbortError' || error.message?.includes('removed from the document')) {
+              console.log('Video was removed from the document, ignoring play error');
+            } else {
+              console.error('Error playing video:', error);
+              toast({
+                title: 'Playback Error',
+                description: 'Could not play the video.',
+                variant: 'destructive'
+              });
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Play error caught:", error);
+      }
     }
   };
 
