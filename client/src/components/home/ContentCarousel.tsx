@@ -6,7 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import VideoCard from "../video/VideoCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { staggerContainerVariants, fadeInVariants, carouselItemVariants } from "@/lib/animations";
+import { staggeredFadeIn, simpleFade, staggeredItem } from "@/lib/animations";
 
 interface ContentCarouselProps {
   title: string;
@@ -50,11 +50,11 @@ const ContentCarousel = ({
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-100px" }}
-      variants={fadeInVariants}
+      variants={simpleFade}
     >
       <motion.div 
         className="flex items-center justify-between mb-3 md:mb-4 px-4 md:px-0"
-        variants={fadeInVariants}
+        variants={simpleFade}
       >
         <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-foreground`}>{title}</h2>
         {viewAllLink && (
@@ -74,14 +74,14 @@ const ContentCarousel = ({
           ref={carouselRef}
           className={`flex ${isMobile ? 'space-x-3 pl-4' : 'space-x-4'} overflow-x-auto pb-4 scrollbar-hide scroll-smooth`}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          variants={staggerContainerVariants}
+          variants={staggeredFadeIn}
           initial="hidden"
-          animate="show"
+          animate="visible"
         >
           {items.map((item) => (
             <motion.div
               key={item.id}
-              variants={carouselItemVariants}
+              variants={staggeredItem}
               initial="hidden"
               animate="visible"
               layout

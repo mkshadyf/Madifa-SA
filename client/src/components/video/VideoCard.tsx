@@ -10,7 +10,7 @@ import { calculateProgress } from "@/lib/utils";
 import { getImageUrl } from "@/lib/supabase";
 import { ContentTypeIcon, getContentTypeLabel } from "../icons/ContentTypeIcons";
 import { motion } from "framer-motion";
-import { scaleOnHoverVariants } from "@/lib/animations";
+import { videoCardAnimation } from "@/lib/animations";
 
 interface VideoCardProps {
   content: ContentItem;
@@ -71,7 +71,7 @@ const VideoCard = ({
         onClick={handleCardClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        variants={scaleOnHoverVariants}
+        variants={videoCardAnimation}
         initial="initial"
         whileHover="hover"
         whileTap="tap"

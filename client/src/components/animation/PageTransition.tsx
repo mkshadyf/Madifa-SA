@@ -1,27 +1,45 @@
-import { ReactNode } from "react";
-import { motion } from "framer-motion";
-import { pageVariants } from "@/lib/animations";
+import React, { ReactNode } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'wouter';
+import { pageTransition } from '@/lib/animations';
 
 interface PageTransitionProps {
   children: ReactNode;
   className?: string;
+  mode?: 'sync' | 'wait';
+  direction?: 'forward' | 'backward';
 }
 
-/**
- * A wrapper component that adds smooth page transitions
- * Wrap your entire page content with this component for consistent page transitions
- */
-export const PageTransition = ({ children, className = "" }: PageTransitionProps) => {
+const PageTransition: React.FC<PageTransitionProps> = ({
+  children,
+  className = '',
+  mode = 'wait',
+  direction = 'forward'
+}) => {
+  const [location] = useLocation();
+
   return (
-    <motion.div
-      className={className}
-      initial="initial"
-      animate="in"
-      exit="out"
-      variants={pageVariants}
+    <AnimatePresence
+      mode={mode}
+      initial={false}
+      custom={direction === 'forward' ? 1 : -1}
     >
-      {children}
-    </motion.div>
+      <motion.div
+        key={location}
+        initial="initial"
+        animate="enter"
+        exit="exit"
+        variants={pageTransition}
+        className={className}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 30
+        }}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

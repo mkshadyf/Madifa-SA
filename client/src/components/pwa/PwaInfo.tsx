@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { usePwaInstall } from "@/hooks/usePwaInstall";
-import { InstallButton } from "./InstallButton";
+import InstallButton from "./InstallButton";
 import { Download, Smartphone, Wifi, Clock, Zap } from "lucide-react";
 
 export function PwaInfo() {
@@ -64,7 +64,7 @@ export function PwaInfo() {
               <Download className="h-4 w-4 inline mr-1" />
               Install now to get the best experience
             </div>
-            <InstallButton showIcon={false} />
+            <InstallButton />
           </>
         )}
       </CardFooter>

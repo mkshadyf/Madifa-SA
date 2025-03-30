@@ -10,6 +10,12 @@
   :root {
     --app-height: 100%;
     --vh: 1vh;
+    --font-scale: 1;
+  }
+
+  /* Accessibility font scaling */
+  html {
+    font-size: calc(100% * var(--font-scale));
   }
 
   html, body {
@@ -20,6 +26,30 @@
   body {
     @apply font-sans antialiased bg-background text-foreground overscroll-none dark:bg-gray-900 dark:text-gray-100;
     text-rendering: optimizeSpeed;
+  }
+  
+  /* Enhanced focus styles for keyboard navigation */
+  .keyboard-navigation :focus-visible,
+  .focus-visible-mode :focus-visible,
+  .focus-visible-mode :focus {
+    @apply outline-2 outline-offset-2 outline-primary ring-2 ring-primary ring-offset-2;
+  }
+
+  /* Increased contrast mode */
+  .high-contrast {
+    @apply contrast-125;
+  }
+  
+  .high-contrast img {
+    @apply contrast-100;
+  }
+  
+  .high-contrast .text-muted-foreground {
+    @apply text-foreground;
+  }
+  
+  .high-contrast .border {
+    @apply border-foreground;
   }
 }
 
