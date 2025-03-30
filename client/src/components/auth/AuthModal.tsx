@@ -236,16 +236,16 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                         </div>
                       </FormControl>
                       <div className="flex justify-between mt-1">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1.5">
                           <Checkbox 
                             id="remember-me" 
                             checked={rememberMe} 
                             onCheckedChange={(checked) => setRememberMe(checked === true)}
-                            className="h-4 w-4 border-gray-400 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                            className="h-3 w-3 border-gray-400 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                           />
                           <label
                             htmlFor="remember-me"
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-gray-300 cursor-pointer"
+                            className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-gray-300 cursor-pointer"
                           >
                             Remember me
                           </label>
