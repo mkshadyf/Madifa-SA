@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { ContentItem } from "@shared/types";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { Play } from "lucide-react";
 import AuthModal from "../auth/AuthModal";
 import { calculateProgress } from "@/lib/utils";
 import { getImageUrl } from "@/lib/supabase";
+import { ContentTypeIcon, getContentTypeLabel } from "../icons/ContentTypeIcons";
 
 interface VideoCardProps {
   content: ContentItem;
@@ -32,6 +33,7 @@ const VideoCard = ({
   const { user } = useAuth();
   const isMobile = useIsMobile();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   
   if (!content) return null;
   
@@ -63,8 +65,10 @@ const VideoCard = ({
           isMobile 
             ? aspect === "video" ? "w-44" : "w-40" 
             : aspect === "video" ? "w-64" : "w-60"
-        } relative group cursor-pointer`}
+        } relative cursor-pointer`}
         onClick={handleCardClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <div className={`relative overflow-hidden rounded-lg ${
           aspect === "video" ? "aspect-video" : "aspect-[2/3]"
@@ -72,7 +76,7 @@ const VideoCard = ({
           <img 
             src={getImageUrl(content.thumbnailUrl) || '/images/madifa_logo.jpg'} 
             alt={content.title} 
-            className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+            className={`w-full h-full object-cover transition duration-300 ${isHovered ? 'scale-105' : ''}`}
             loading="lazy"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
@@ -91,10 +95,13 @@ const VideoCard = ({
           
           {/* Show content type badge in top-left */}
           <div className="absolute top-2 left-2">
-            <Badge className={`bg-gray-800/80 text-white ${isMobile ? "text-[10px] px-1 py-0.5" : "text-xs px-1.5 py-0.5"} rounded`}>
-              {content.contentType === 'music_video' ? 'MUSIC' : 
-               content.contentType === 'series' ? 'SERIES' : 
-               content.contentType === 'trailer' ? 'TRAILER' : 'MOVIE'}
+            <Badge className={`bg-gray-800/80 text-white ${isMobile ? "text-[10px] px-1 py-0.5" : "text-xs px-1.5 py-0.5"} rounded flex items-center gap-1`}>
+              <ContentTypeIcon 
+                type={(content.contentType || "movie") as any} 
+                size={isMobile ? 10 : 14} 
+                className="text-white" 
+              />
+              {getContentTypeLabel(content.contentType || "movie")}
             </Badge>
           </div>
 
@@ -146,11 +153,18 @@ const VideoCard = ({
           </div>
           
           {aspect === "poster" && !isMobile && (
-            <div className="card-overlay opacity-0 absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent transition duration-300 flex flex-col justify-end p-4 group-hover:opacity-100">
+            <div className={`card-overlay absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent transition duration-300 flex flex-col justify-end p-4 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
               <h3 className="text-white font-medium">{content.title}</h3>
-              <p className="text-muted-foreground text-sm">
-                {content.releaseYear} • {content.category} • {content.duration ? Math.floor(content.duration / 60) : '?'}m
-              </p>
+              <div className="flex items-center gap-2 mt-1">
+                <ContentTypeIcon 
+                  type={(content.contentType || "movie") as any} 
+                  size={14}
+                  className="text-white opacity-80" 
+                />
+                <p className="text-muted-foreground text-sm">
+                  {content.releaseYear} • {content.category} • {content.duration ? Math.floor(content.duration / 60) : '?'}m
+                </p>
+              </div>
               <div className="flex space-x-2 mt-2">
                 <button 
                   className="bg-white text-background rounded-full p-2 hover:bg-primary hover:text-white transition"
