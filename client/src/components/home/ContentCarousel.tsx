@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import VideoCard from "../video/VideoCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { staggerContainerVariants, fadeInVariants, carouselItemVariants } from "@/lib/animations";
 
 interface ContentCarouselProps {
   title: string;
@@ -43,33 +45,57 @@ const ContentCarousel = ({
   }
 
   return (
-    <div className="mb-6 md:mb-8">
-      <div className="flex items-center justify-between mb-3 md:mb-4 px-4 md:px-0">
+    <motion.div 
+      className="mb-6 md:mb-8"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={fadeInVariants}
+    >
+      <motion.div 
+        className="flex items-center justify-between mb-3 md:mb-4 px-4 md:px-0"
+        variants={fadeInVariants}
+      >
         <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-foreground`}>{title}</h2>
         {viewAllLink && (
-          <div className="text-primary text-xs md:text-sm font-medium hover:underline cursor-pointer" onClick={() => window.location.href = viewAllLink}>
+          <motion.div 
+            className="text-primary text-xs md:text-sm font-medium hover:underline cursor-pointer" 
+            onClick={() => window.location.href = viewAllLink}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+          >
             View All
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
       
       <div className="relative group">
-        <div 
+        <motion.div 
           ref={carouselRef}
           className={`flex ${isMobile ? 'space-x-3 pl-4' : 'space-x-4'} overflow-x-auto pb-4 scrollbar-hide scroll-smooth`}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          variants={staggerContainerVariants}
+          initial="hidden"
+          animate="show"
         >
           {items.map((item) => (
-            <VideoCard 
-              key={item.id} 
-              content={item} 
-              aspect={aspect}
-              showProgress={showProgress && item.progress !== undefined}
-              progress={item.progress}
-              onAddToWatchlist={onAddToWatchlist}
-            />
+            <motion.div
+              key={item.id}
+              variants={carouselItemVariants}
+              initial="hidden"
+              animate="visible"
+              layout
+            >
+              <VideoCard 
+                content={item} 
+                aspect={aspect}
+                showProgress={showProgress && item.progress !== undefined}
+                progress={item.progress}
+                onAddToWatchlist={onAddToWatchlist}
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
         
         {/* Only show navigation buttons on desktop or if explicitly on tablet+ */}
         {!isMobile && items.length > 3 && (
@@ -104,7 +130,7 @@ const ContentCarousel = ({
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -9,6 +9,8 @@ import AuthModal from "../auth/AuthModal";
 import { calculateProgress } from "@/lib/utils";
 import { getImageUrl } from "@/lib/supabase";
 import { ContentTypeIcon, getContentTypeLabel } from "../icons/ContentTypeIcons";
+import { motion } from "framer-motion";
+import { scaleOnHoverVariants } from "@/lib/animations";
 
 interface VideoCardProps {
   content: ContentItem;
@@ -60,7 +62,7 @@ const VideoCard = ({
   
   return (
     <>
-      <div 
+      <motion.div 
         className={`movie-card flex-shrink-0 ${
           isMobile 
             ? aspect === "video" ? "w-44" : "w-40" 
@@ -69,20 +71,29 @@ const VideoCard = ({
         onClick={handleCardClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        variants={scaleOnHoverVariants}
+        initial="initial"
+        whileHover="hover"
+        whileTap="tap"
       >
-        <div className={`relative overflow-hidden rounded-lg ${
-          aspect === "video" ? "aspect-video" : "aspect-[2/3]"
-        } bg-muted shadow-lg`}>
-          <img 
+        <motion.div 
+          className={`relative overflow-hidden rounded-lg ${
+            aspect === "video" ? "aspect-video" : "aspect-[2/3]"
+          } bg-muted shadow-lg`}
+          layoutId={`card-container-${content.id}`}
+        >
+          <motion.img 
             src={getImageUrl(content.thumbnailUrl) || '/images/madifa_logo.jpg'} 
             alt={content.title} 
-            className={`w-full h-full object-cover transition duration-300 ${isHovered ? 'scale-105' : ''}`}
+            className="w-full h-full object-cover"
             loading="lazy"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.onerror = null;
               target.src = '/images/madifa_logo.jpg';
             }}
+            animate={{ scale: isHovered ? 1.05 : 1 }}
+            transition={{ duration: 0.3 }}
           />
           
           {showRanking && (
@@ -126,36 +137,68 @@ const VideoCard = ({
             </div>
           )}
           
-          <div className={`absolute bottom-0 left-0 right-0 ${isMobile ? "p-2" : "p-4"} bg-gradient-to-t from-black/80 to-transparent`}>
+          <motion.div 
+            className={`absolute bottom-0 left-0 right-0 ${isMobile ? "p-2" : "p-4"} bg-gradient-to-t from-black/80 to-transparent`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.2 }}
+          >
             <div className="flex justify-between items-end">
               <div className={isMobile ? "max-w-[70%]" : ""}>
                 <h3 className={`text-white font-medium ${isMobile ? "text-xs line-clamp-1" : "text-sm"}`}>
                   {content.title}
                 </h3>
               </div>
-              <div 
-                className={`bg-primary/90 rounded-full ${isMobile ? "p-1" : "p-1.5"} cursor-pointer hover:bg-primary transition`}
+              <motion.div 
+                className={`bg-primary/90 rounded-full ${isMobile ? "p-1" : "p-1.5"} cursor-pointer hover:bg-primary`}
                 onClick={handlePlayClick}
                 data-click-handled="true"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <Play className={isMobile ? "h-4 w-4 text-white" : "h-6 w-6 text-white"} />
-              </div>
+              </motion.div>
             </div>
             
             {showProgress && progress > 0 && (
-              <div className="w-full bg-gray-600 h-1 mt-1 rounded-full overflow-hidden">
-                <div 
+              <motion.div 
+                className="w-full bg-gray-600 h-1 mt-1 rounded-full overflow-hidden"
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+              >
+                <motion.div 
                   className="bg-primary h-full rounded-full" 
                   style={{ width: `${progressPercentage}%` }}
-                ></div>
-              </div>
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercentage}%` }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                />
+              </motion.div>
             )}
-          </div>
+          </motion.div>
           
           {aspect === "poster" && !isMobile && (
-            <div className={`card-overlay absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent transition duration-300 flex flex-col justify-end p-4 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-              <h3 className="text-white font-medium">{content.title}</h3>
-              <div className="flex items-center gap-2 mt-1">
+            <motion.div 
+              className="card-overlay absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex flex-col justify-end p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.h3 
+                className="text-white font-medium"
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: isHovered ? 0 : 10, opacity: isHovered ? 1 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {content.title}
+              </motion.h3>
+              <motion.div 
+                className="flex items-center gap-2 mt-1"
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: isHovered ? 0 : 10, opacity: isHovered ? 1 : 0 }}
+                transition={{ duration: 0.2, delay: 0.05 }}
+              >
                 <ContentTypeIcon 
                   type={(content.contentType || "movie") as any} 
                   size={14}
@@ -164,20 +207,27 @@ const VideoCard = ({
                 <p className="text-muted-foreground text-sm">
                   {content.releaseYear} • {content.category} • {content.duration ? Math.floor(content.duration / 60) : '?'}m
                 </p>
-              </div>
-              <div className="flex space-x-2 mt-2">
-                <button 
-                  className="bg-white text-background rounded-full p-2 hover:bg-primary hover:text-white transition"
+              </motion.div>
+              <motion.div 
+                className="flex space-x-2 mt-2"
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: isHovered ? 0 : 10, opacity: isHovered ? 1 : 0 }}
+                transition={{ duration: 0.2, delay: 0.1 }}
+              >
+                <motion.button 
+                  className="bg-white text-background rounded-full p-2 hover:bg-primary hover:text-white"
                   onClick={handlePlayClick}
                   data-click-handled="true"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <Play className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
+                </motion.button>
+              </motion.div>
+            </motion.div>
           )}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
       
       <AuthModal 
         isOpen={showAuthModal} 
