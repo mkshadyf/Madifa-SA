@@ -186,10 +186,10 @@ const CaptionTrackSelector: React.FC<CaptionTrackSelectorProps> = ({
       {/* Caption Style Dialog */}
       {stylePreferences && (
         <Dialog open={showStyleDialog} onOpenChange={setShowStyleDialog}>
-          <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto" aria-describedby="caption-track-description">
             <DialogHeader>
               <DialogTitle>Caption Style</DialogTitle>
-              <DialogDescription>
+              <DialogDescription id="caption-track-description">
                 Customize how captions appear when playing videos.
               </DialogDescription>
             </DialogHeader>

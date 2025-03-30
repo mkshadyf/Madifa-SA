@@ -47,9 +47,9 @@ const ContentCarousel = ({
       <div className="flex items-center justify-between mb-3 md:mb-4 px-4 md:px-0">
         <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-foreground`}>{title}</h2>
         {viewAllLink && (
-          <Link href={viewAllLink} className="text-primary text-xs md:text-sm font-medium hover:underline">
+          <div className="text-primary text-xs md:text-sm font-medium hover:underline cursor-pointer" onClick={() => window.location.href = viewAllLink}>
             View All
-          </Link>
+          </div>
         )}
       </div>
       

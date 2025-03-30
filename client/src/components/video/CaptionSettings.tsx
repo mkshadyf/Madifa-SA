@@ -67,7 +67,7 @@ export default function CaptionSettings({
   
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto" aria-describedby="caption-settings-description">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             Caption Settings
@@ -75,7 +75,7 @@ export default function CaptionSettings({
               <X className="h-4 w-4" />
             </Button>
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription id="caption-settings-description">
             Customize how captions appear on the video
           </DialogDescription>
         </DialogHeader>

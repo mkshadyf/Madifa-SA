@@ -47,13 +47,13 @@ const PerformanceSettings: React.FC<PerformanceSettingsProps> = ({
   
   return (
     <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" aria-describedby="performance-settings-description">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Gauge className="h-5 w-5" />
             Performance Settings
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription id="performance-settings-description">
             Optimize your viewing experience based on your device and network
           </DialogDescription>
         </DialogHeader>

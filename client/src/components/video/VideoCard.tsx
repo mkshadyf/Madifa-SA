@@ -35,7 +35,11 @@ const VideoCard = ({
   
   if (!content) return null;
   
-  const handleCardClick = () => {
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Make sure we're not clicking on a child element that has its own click handler
+    if ((e.target as HTMLElement).closest('[data-click-handled]')) {
+      return;
+    }
     navigate(`/movie/${content.id}`);
   };
   
@@ -125,6 +129,7 @@ const VideoCard = ({
               <div 
                 className={`bg-primary/90 rounded-full ${isMobile ? "p-1" : "p-1.5"} cursor-pointer hover:bg-primary transition`}
                 onClick={handlePlayClick}
+                data-click-handled="true"
               >
                 <Play className={isMobile ? "h-4 w-4 text-white" : "h-6 w-6 text-white"} />
               </div>
@@ -150,6 +155,7 @@ const VideoCard = ({
                 <button 
                   className="bg-white text-background rounded-full p-2 hover:bg-primary hover:text-white transition"
                   onClick={handlePlayClick}
+                  data-click-handled="true"
                 >
                   <Play className="h-5 w-5" />
                 </button>
