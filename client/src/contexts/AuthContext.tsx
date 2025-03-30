@@ -97,49 +97,67 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkAuthStatus();
     
     // Set up auth state change listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        // User signed in with Supabase
-        try {
-          // Try to get user from our backend
-          const res = await fetch(`/api/auth/supabase-user/${session.user.id}`, {
-            headers: {
-              Authorization: `Bearer ${session.access_token}`,
-            },
-          });
-          
-          if (res.ok) {
-            const userData = await res.json();
-            setUser(userData);
-          } else {
-            // Create new user in our backend
-            const createRes = await fetch("/api/auth/sync-supabase-user", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${session.access_token}`,
-              },
-              body: JSON.stringify({
-                supabaseId: session.user.id,
-                email: session.user.email,
-                username: session.user.email?.split('@')[0] || `user_${Date.now()}`,
-              }),
-            });
-            
-            if (createRes.ok) {
-              const newUserData = await createRes.json();
-              setUser(newUserData);
+    let subscription = { unsubscribe: () => {} };
+    
+    try {
+      // Check if we have Supabase credentials before setting up listener
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (supabaseUrl && supabaseAnonKey) {
+        const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+          if (event === 'SIGNED_IN' && session) {
+            // User signed in with Supabase
+            try {
+              // Try to get user from our backend
+              const res = await fetch(`/api/auth/supabase-user/${session.user.id}`, {
+                headers: {
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+              });
+              
+              if (res.ok) {
+                const userData = await res.json();
+                setUser(userData);
+              } else {
+                // Create new user in our backend
+                const createRes = await fetch("/api/auth/sync-supabase-user", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${session.access_token}`,
+                  },
+                  body: JSON.stringify({
+                    supabaseId: session.user.id,
+                    email: session.user.email,
+                    username: session.user.email?.split('@')[0] || `user_${Date.now()}`,
+                  }),
+                });
+                
+                if (createRes.ok) {
+                  const newUserData = await createRes.json();
+                  setUser(newUserData);
+                }
+              }
+            } catch (error) {
+              console.error("Error syncing user after sign in:", error);
             }
+          } else if (event === 'SIGNED_OUT') {
+            // User signed out from Supabase
+            setUser(null);
+            localStorage.removeItem("auth_token");
           }
-        } catch (error) {
-          console.error("Error syncing user after sign in:", error);
+        });
+        
+        if (data && data.subscription) {
+          subscription = data.subscription;
         }
-      } else if (event === 'SIGNED_OUT') {
-        // User signed out from Supabase
-        setUser(null);
-        localStorage.removeItem("auth_token");
+      } else {
+        console.warn("Supabase auth state change listener not set up due to missing credentials");
       }
-    });
+    } catch (error) {
+      console.error("Failed to set up Supabase auth state change listener:", error);
+    }
     
     return () => {
       subscription.unsubscribe();
@@ -150,78 +168,82 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
       
-      // First try Supabase login
-      const { data: supabaseData, error: supabaseError } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+      // Check if Supabase credentials are available
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const hasSupabaseCredentials = supabaseUrl && supabaseAnonKey;
       
-      if (supabaseError) {
-        console.log("Supabase login failed, trying custom auth:", supabaseError.message);
-        // Fallback to our custom auth
+      // Try Supabase login if credentials are available
+      if (hasSupabaseCredentials && 'signInWithPassword' in supabase.auth) {
         try {
-          const data = await apiRequest("/api/auth/login", "POST", { email, password });
-          
-          if (!data || !data.token || !data.user) {
-            throw new Error("Invalid response from authentication server");
-          }
-          
-          // Store token and set user
-          localStorage.setItem("auth_token", data.token);
-          setUser(data.user);
-          
-          return data;
-        } catch (error) {
-          console.error("Custom auth login failed:", error);
-          if (error instanceof Error) {
-            throw new Error(`Login failed: ${error.message}`);
-          } else {
-            throw new Error("Login failed: Invalid credentials or server error");
-          }
-        }
-      }
-      
-      // Supabase login successful - get user from our backend
-      if (supabaseData.session) {
-        try {
-          const res = await fetch(`/api/auth/supabase-user/${supabaseData.user.id}`, {
-            headers: {
-              Authorization: `Bearer ${supabaseData.session.access_token}`,
-            },
+          const { data: supabaseData, error: supabaseError } = await supabase.auth.signInWithPassword({
+            email,
+            password
           });
           
-          if (res.ok) {
-            const userData = await res.json();
-            setUser(userData);
-            return userData;
-          } else {
-            // User exists in Supabase but not in our backend, create them
-            const createRes = await fetch("/api/auth/sync-supabase-user", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${supabaseData.session.access_token}`,
-              },
-              body: JSON.stringify({
-                supabaseId: supabaseData.user.id,
-                email: supabaseData.user.email,
-                username: supabaseData.user.email?.split('@')[0] || `user_${Date.now()}`,
-              }),
-            });
-            
-            if (createRes.ok) {
-              const newUserData = await createRes.json();
-              setUser(newUserData);
-              return newUserData;
+          if (!supabaseError && supabaseData?.session) {
+            try {
+              const res = await fetch(`/api/auth/supabase-user/${supabaseData.user.id}`, {
+                headers: {
+                  Authorization: `Bearer ${supabaseData.session.access_token}`,
+                },
+              });
+              
+              if (res.ok) {
+                const userData = await res.json();
+                setUser(userData);
+                return userData;
+              } else {
+                // User exists in Supabase but not in our backend, create them
+                const createRes = await fetch("/api/auth/sync-supabase-user", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${supabaseData.session.access_token}`,
+                  },
+                  body: JSON.stringify({
+                    supabaseId: supabaseData.user.id,
+                    email: supabaseData.user.email,
+                    username: supabaseData.user.email?.split('@')[0] || `user_${Date.now()}`,
+                  }),
+                });
+                
+                if (createRes.ok) {
+                  const newUserData = await createRes.json();
+                  setUser(newUserData);
+                  return newUserData;
+                }
+              }
+            } catch (error) {
+              console.error("Error syncing user after login:", error);
             }
           }
         } catch (error) {
-          console.error("Error syncing user after login:", error);
-          throw error;
+          console.log("Supabase login attempt failed:", error);
         }
       }
       
-      throw new Error("Login failed");
+      // Fallback to our custom auth
+      try {
+        const data = await apiRequest("/api/auth/login", "POST", { email, password });
+        
+        if (!data || !data.token || !data.user) {
+          throw new Error("Invalid response from authentication server");
+        }
+        
+        // Store token and set user
+        localStorage.setItem("auth_token", data.token);
+        setUser(data.user);
+        
+        return data;
+      } catch (error) {
+        console.error("Custom auth login failed:", error);
+        if (error instanceof Error) {
+          throw new Error(`Login failed: ${error.message}`);
+        } else {
+          throw new Error("Login failed: Invalid credentials or server error");
+        }
+      }
     } catch (error) {
       console.error("Login failed:", error);
       throw error;
@@ -234,73 +256,77 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
       
-      // First try Supabase signup
-      const { data: supabaseData, error: supabaseError } = await supabase.auth.signUp({
-        email: userData.email,
-        password: userData.password,
-        options: {
-          data: {
-            fullName: userData.fullName || '',
-            username: userData.username,
-          }
-        }
-      });
+      // Check if Supabase credentials are available
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const hasSupabaseCredentials = supabaseUrl && supabaseAnonKey;
       
-      if (supabaseError) {
-        console.log("Supabase registration failed, trying custom auth:", supabaseError.message);
-        // Fallback to our custom auth
+      // Try Supabase sign up if credentials are available
+      if (hasSupabaseCredentials && 'signUp' in supabase.auth) {
         try {
-          const data = await apiRequest("/api/auth/register", "POST", userData);
-          
-          if (!data || !data.token || !data.user) {
-            throw new Error("Invalid response from authentication server");
-          }
-          
-          // Store token and set user
-          localStorage.setItem("auth_token", data.token);
-          setUser(data.user);
-          
-          return data;
-        } catch (error) {
-          console.error("Custom auth registration failed:", error);
-          if (error instanceof Error) {
-            throw new Error(`Registration failed: ${error.message}`);
-          } else {
-            throw new Error("Registration failed: Invalid data or server error");
-          }
-        }
-      }
-      
-      // Supabase registration successful - create user in our backend
-      if (supabaseData.user) {
-        try {
-          const createRes = await fetch("/api/auth/sync-supabase-user", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${supabaseData.session?.access_token || ''}`,
-            },
-            body: JSON.stringify({
-              supabaseId: supabaseData.user.id,
-              email: userData.email,
-              username: userData.username,
-              fullName: userData.fullName,
-              password: userData.password, // Needed for our backend
-            }),
+          const { data: supabaseData, error: supabaseError } = await supabase.auth.signUp({
+            email: userData.email,
+            password: userData.password,
+            options: {
+              data: {
+                fullName: userData.fullName || '',
+                username: userData.username,
+              }
+            }
           });
           
-          if (createRes.ok) {
-            const newUserData = await createRes.json();
-            setUser(newUserData);
-            return newUserData;
+          if (!supabaseError && supabaseData?.user) {
+            try {
+              const createRes = await fetch("/api/auth/sync-supabase-user", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${supabaseData.session?.access_token || ''}`,
+                },
+                body: JSON.stringify({
+                  supabaseId: supabaseData.user.id,
+                  email: userData.email,
+                  username: userData.username,
+                  fullName: userData.fullName,
+                  password: userData.password, // Needed for our backend
+                }),
+              });
+              
+              if (createRes.ok) {
+                const newUserData = await createRes.json();
+                setUser(newUserData);
+                return newUserData;
+              }
+            } catch (error) {
+              console.error("Error creating user in backend after Supabase registration:", error);
+            }
           }
         } catch (error) {
-          console.error("Error creating user in backend after Supabase registration:", error);
-          throw error;
+          console.log("Supabase registration attempt failed:", error);
         }
       }
       
-      throw new Error("Registration failed");
+      // Fallback to our custom auth
+      try {
+        const data = await apiRequest("/api/auth/register", "POST", userData);
+        
+        if (!data || !data.token || !data.user) {
+          throw new Error("Invalid response from authentication server");
+        }
+        
+        // Store token and set user
+        localStorage.setItem("auth_token", data.token);
+        setUser(data.user);
+        
+        return data;
+      } catch (error) {
+        console.error("Custom auth registration failed:", error);
+        if (error instanceof Error) {
+          throw new Error(`Registration failed: ${error.message}`);
+        } else {
+          throw new Error("Registration failed: Invalid data or server error");
+        }
+      }
     } catch (error) {
       console.error("Registration failed:", error);
       throw error;
@@ -340,6 +366,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
       
+      // Check if Supabase credentials are available
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseAnonKey) {
+        toast({
+          title: "Google login unavailable",
+          description: "Supabase configuration is missing. Please contact the administrator.",
+          variant: "destructive",
+        });
+        throw new Error("Supabase credentials not configured. Cannot sign in with Google.");
+      }
+      
       // Use Supabase's Google OAuth
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -377,79 +416,94 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
       
-      // Check for Supabase session first
-      const { data: { session } } = await supabase.auth.getSession();
+      // Check if Supabase credentials are available
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const hasSupabaseCredentials = supabaseUrl && supabaseAnonKey;
+      const hasUpdateUserMethod = 'updateUser' in supabase.auth;
       
-      if (session) {
-        // Update user metadata in Supabase if necessary
-        if (userData.email || userData.fullName) {
-          const updateData: any = {};
-          if (userData.email) {
-            await supabase.auth.updateUser({ email: userData.email });
+      // First try to get session from Supabase if credentials are available
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+          // Try to update user metadata in Supabase if the method is available
+          if (hasSupabaseCredentials && hasUpdateUserMethod && (userData.email || userData.fullName)) {
+            try {
+              if (userData.email) {
+                await (supabase.auth as any).updateUser({ email: userData.email });
+              }
+              
+              if (userData.fullName) {
+                await (supabase.auth as any).updateUser({
+                  data: { fullName: userData.fullName }
+                });
+              }
+            } catch (error) {
+              console.warn("Failed to update user in Supabase:", error);
+              // Continue with the backend update even if Supabase update fails
+            }
           }
           
-          if (userData.fullName) {
-            await supabase.auth.updateUser({
-              data: { fullName: userData.fullName }
-            });
+          // Update user in our backend
+          const res = await fetch("/api/auth/update", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify(userData),
+          });
+          
+          if (!res.ok) {
+            throw new Error("Failed to update user");
           }
+          
+          const updatedUser = await res.json();
+          setUser(updatedUser);
+          
+          toast({
+            title: "Profile updated",
+            description: "Your profile has been successfully updated.",
+          });
+          
+          return updatedUser;
         }
-        
-        // Update user in our backend
-        const res = await fetch("/api/auth/update", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify(userData),
-        });
-        
-        if (!res.ok) {
-          throw new Error("Failed to update user");
-        }
-        
-        const updatedUser = await res.json();
-        setUser(updatedUser);
-        
-        toast({
-          title: "Profile updated",
-          description: "Your profile has been successfully updated.",
-        });
-        
-        return updatedUser;
-      } else {
-        // Fallback to token-based auth
-        const token = localStorage.getItem("auth_token");
-        
-        if (!token) {
-          throw new Error("Not authenticated");
-        }
-        
-        const res = await fetch("/api/auth/update", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(userData),
-          credentials: "include",
-        });
-        
-        if (!res.ok) {
-          throw new Error("Failed to update user");
-        }
-        
-        const updatedUser = await res.json();
-        setUser(updatedUser);
-        
-        toast({
-          title: "Profile updated",
-          description: "Your profile has been successfully updated.",
-        });
-        
-        return updatedUser;
+      } catch (error) {
+        console.warn("Failed to get or update Supabase session:", error);
+        // Continue with fallback authentication
       }
+      
+      // Fallback to token-based auth
+      const token = localStorage.getItem("auth_token");
+      
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      
+      const res = await fetch("/api/auth/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(userData),
+        credentials: "include",
+      });
+      
+      if (!res.ok) {
+        throw new Error("Failed to update user");
+      }
+      
+      const updatedUser = await res.json();
+      setUser(updatedUser);
+      
+      toast({
+        title: "Profile updated",
+        description: "Your profile has been successfully updated.",
+      });
+      
+      return updatedUser;
     } catch (error) {
       console.error("Update failed:", error);
       toast({
