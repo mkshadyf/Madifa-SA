@@ -32,6 +32,19 @@ const AdDisplay = ({
     return null;
   }
   
+  // Check for publisher ID
+  if (!ADSENSE_CONFIG.publisherId) {
+    console.warn('AdSense publisher ID not configured. Set VITE_ADSENSE_PUBLISHER_ID in environment variables.');
+    return null;
+  }
+  
+  // Get slot configuration and check if available
+  const adSlotConfig = getAdSlotConfig(type);
+  if (!adSlotConfig || !adSlotConfig.id) {
+    console.warn(`AdSense slot ID for type "${type}" not configured. Set appropriate environment variable.`);
+    return null;
+  }
+  
   // Check ad frequency unless forced to show
   if (!forceShow && !shouldShowAd(type)) {
     return null;
@@ -103,9 +116,6 @@ const AdDisplay = ({
     return null;
   }
   
-  // Get slot configuration
-  const slotConfig = getAdSlotConfig(type);
-  
   return (
     <Card className={`overflow-hidden ${className}`}>
       <CardContent className="p-0 relative">
@@ -136,9 +146,9 @@ const AdDisplay = ({
               height: adDimensions.height 
             }}
             data-ad-client={ADSENSE_CONFIG.publisherId}
-            data-ad-slot={slotConfig.id}
-            data-ad-format={slotConfig.format}
-            data-full-width-responsive={slotConfig.responsive ? "true" : "false"}
+            data-ad-slot={adSlotConfig.id}
+            data-ad-format={adSlotConfig.format}
+            data-full-width-responsive={adSlotConfig.responsive ? "true" : "false"}
           ></div>
         </div>
         

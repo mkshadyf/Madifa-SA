@@ -13,6 +13,22 @@ interface AdSenseProps {
 const AdSense = ({ type, className = '' }: AdSenseProps) => {
   const adRef = useRef<HTMLDivElement>(null);
   
+  // Early return if publisher ID is not set up
+  if (!ADSENSE_CONFIG.publisherId) {
+    console.warn('AdSense publisher ID not configured. Set VITE_ADSENSE_PUBLISHER_ID in environment variables.');
+    return null;
+  }
+  
+  // Check for required slot ID
+  const slotId = type === 'anywhere' 
+    ? ADSENSE_CONFIG.slots.anywhere.id 
+    : ADSENSE_CONFIG.slots.multiplex.id;
+    
+  if (!slotId) {
+    console.warn(`AdSense slot ID for type "${type}" not configured. Set appropriate environment variable.`);
+    return null;
+  }
+  
   useEffect(() => {
     // Add AdSense script if it doesn't exist
     const existingScript = document.querySelector('script[src*="adsbygoogle"]');

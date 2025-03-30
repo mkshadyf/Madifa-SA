@@ -415,7 +415,7 @@ const Browse = () => {
                       {/* Show ad if this is an ad position and user is not premium */}
                       {showAd && (
                         <div key={`ad-${index}`} className={viewMode === "grid" ? "col-span-full" : ""}>
-                          <InFeedAd index={index} contentLength={filteredContents.length} />
+                          <InFeedAd index={index} />
                         </div>
                       )}
                       

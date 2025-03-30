@@ -15,6 +15,12 @@ export function AdSenseScript() {
   useEffect(() => {
     if (!shouldLoadAdsense || typeof window === 'undefined') return;
     
+    // Check for publisher ID
+    if (!ADSENSE_CONFIG.publisherId) {
+      console.warn('AdSense publisher ID not configured. Set VITE_ADSENSE_PUBLISHER_ID in environment variables.');
+      return;
+    }
+    
     // Early return if the script is already added
     if (document.querySelector('script[src*="adsbygoogle.js"]')) {
       return;
