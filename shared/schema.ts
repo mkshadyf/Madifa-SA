@@ -13,6 +13,8 @@ export const users = pgTable("users", {
   isPremium: boolean("is_premium").default(false),
   isAdmin: boolean("is_admin").default(false),
   createdAt: timestamp("created_at").defaultNow(),
+  supabaseId: text("supabase_id").unique(),
+  provider: text("provider"), // 'email', 'google', 'facebook', etc.
 });
 
 // Content table for movies/videos
@@ -129,6 +131,8 @@ export const insertUserSchema = createInsertSchema(users).pick({
   avatarUrl: true,
   isPremium: true,
   isAdmin: true,
+  supabaseId: true,
+  provider: true,
 });
 
 export const insertContentSchema = createInsertSchema(contents).pick({

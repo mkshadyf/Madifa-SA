@@ -249,8 +249,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         username: userUsername,
         email,
         password: hashedPassword,
-        fullName
-        // Note: supabaseId field would need to be added to schema.ts
+        fullName,
+        supabaseId,
+        provider: 'google' // Assuming Google auth for now, can be expanded later
       });
       
       return res.status(201).json(user);
@@ -340,6 +341,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { password, ...userWithoutPassword } = updatedUser;
       res.json(userWithoutPassword);
     } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+  
+  // Get user by Supabase ID
+  app.get("/api/auth/supabase-user/:supabaseId", async (req, res) => {
+    try {
+      const { supabaseId } = req.params;
+      
+      if (!supabaseId) {
+        return res.status(400).json({ message: "Supabase ID is required" });
+      }
+      
+      const user = await storage.getUserBySupabaseId(supabaseId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Don't return the password
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error fetching user by Supabase ID:", error);
       res.status(500).json({ message: "Server error" });
     }
   });

@@ -31,6 +31,7 @@ import Profile from "@/pages/Profile";
 import Subscription from "@/pages/Subscription";
 import Downloads from "@/pages/Downloads";
 import AccessiblePlayerDemo from "@/pages/AccessiblePlayerDemo";
+import AuthCallback from "@/pages/AuthCallback";
 import NotFound from "@/pages/not-found";
 
 // Admin Pages
@@ -59,6 +60,7 @@ function Router() {
       <Route path="/browse" component={Browse} />
       <Route path="/category/:id" component={Browse} />
       <Route path="/accessible-player/:id" component={AccessiblePlayerDemo} />
+      <Route path="/auth/callback" component={AuthCallback} />
       
       {/* Protected Routes - Require Authentication */}
       <Route path="/my-list">

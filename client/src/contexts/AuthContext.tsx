@@ -9,6 +9,7 @@ type AuthContextType = {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (userData: Omit<InsertUser, "confirmPassword">) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => Promise<void>;
 };
@@ -335,6 +336,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   
+  const loginWithGoogle = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Use Supabase's Google OAuth
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        }
+      });
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      // The user will be redirected to Google for authentication
+      // On return, the Supabase auth state change listener will handle the session
+      
+      toast({
+        title: "Redirecting to Google",
+        description: "Please complete the Google authentication.",
+      });
+      
+    } catch (error) {
+      console.error("Google login failed:", error);
+      toast({
+        title: "Google login failed",
+        description: error instanceof Error ? error.message : "Failed to login with Google",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   const updateUser = async (userData: Partial<User>) => {
     try {
       setIsLoading(true);
@@ -432,6 +470,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         login,
         register,
+        loginWithGoogle,
         logout,
         updateUser,
       }}

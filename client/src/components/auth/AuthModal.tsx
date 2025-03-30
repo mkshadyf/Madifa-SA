@@ -47,7 +47,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) => {
   const [activeTab, setActiveTab] = useState<string>(initialView);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const { login, register } = useAuth();
+  const { login, register, loginWithGoogle } = useAuth();
   const { toast } = useToast();
   
   // Login form
@@ -131,7 +131,7 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
   };
 
   // Handle Google authentication with proper error handling and loading state
-  const handleGoogleAuth = () => {
+  const handleGoogleAuth = async () => {
     setIsGoogleLoading(true);
     
     toast({
@@ -139,21 +139,21 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
       description: "Connecting to Google...",
     });
     
-    // Example of Google Auth - redirect to Google OAuth
-    supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `https://madifa.site/auth/callback`
-      }
-    }).catch(error => {
+    try {
+      // Use the loginWithGoogle method from AuthContext
+      await loginWithGoogle();
+      // Note: this code might not execute immediately as the user will be redirected to Google
+      // The auth state change listener in AuthContext will handle the redirect back
+    } catch (error) {
       console.error('Google auth error:', error);
       toast({
         title: "Authentication failed",
-        description: "Could not connect to Google. Please try again.",
+        description: error instanceof Error ? error.message : "Could not connect to Google. Please try again.",
         variant: "destructive",
       });
+    } finally {
       setIsGoogleLoading(false);
-    });
+    }
   };
 
   return (

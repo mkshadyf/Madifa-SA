@@ -20,6 +20,7 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserBySupabaseId(supabaseId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserSubscription(userId: number, isPremium: boolean): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>; // Added for admin
@@ -137,6 +138,10 @@ export class MemStorage implements IStorage {
   async getUserByUsername(username: string): Promise<User | undefined> {
     return Array.from(this.usersData.values()).find(user => user.username === username);
   }
+  
+  async getUserBySupabaseId(supabaseId: string): Promise<User | undefined> {
+    return Array.from(this.usersData.values()).find(user => user.supabaseId === supabaseId);
+  }
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentId.users++;
@@ -149,7 +154,9 @@ export class MemStorage implements IStorage {
       avatarUrl: insertUser.avatarUrl || null,
       isPremium: insertUser.isPremium || false,
       isAdmin: insertUser.isAdmin || false,
-      createdAt: new Date() 
+      createdAt: new Date(),
+      supabaseId: insertUser.supabaseId || null,
+      provider: insertUser.provider || null
     };
     this.usersData.set(id, user);
     return user;
@@ -678,6 +685,11 @@ export class DatabaseStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+  
+  async getUserBySupabaseId(supabaseId: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.supabaseId, supabaseId));
     return user;
   }
 
