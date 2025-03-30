@@ -1,55 +1,56 @@
 import { useState, useEffect } from 'react';
-import { useAdsense } from '@/hooks/useAdsense';
+import { useAds } from '@/hooks/useAds';
 import AdDisplay from './AdDisplay';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface InFeedAdProps {
-  index: number;
-  contentLength: number;
+  index: number; // Position in the content list
+  frequency?: number; // How often should ads appear (default: every 3 items)
+  type?: 'banner' | 'rectangle' | 'anywhere'; // Type of ad to display
   className?: string;
+  forceShow?: boolean; // Override frequency checks (useful for testing)
 }
 
 /**
- * Component for displaying ads within content feeds
- * It will only display ads at certain indices determined by the ad frequency
+ * Component for displaying ads within content feeds at specified intervals
  */
-export default function InFeedAd({ index, contentLength, className = '' }: InFeedAdProps) {
-  const { canShowAds, getInFeedAdPositions } = useAdsense();
+const InFeedAd = ({ 
+  index, 
+  frequency = 3, 
+  type = 'anywhere',
+  className = '',
+  forceShow = false
+}: InFeedAdProps) => {
+  const { isPremiumUser, canShowAd, isLoadingAd, handleAdLoaded } = useAds();
   const [shouldShow, setShouldShow] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    if (!canShowAds) return;
-    
-    // Get the positions where ads should appear
-    const adPositions = getInFeedAdPositions(contentLength);
-    
-    // Check if current index should display an ad
-    setShouldShow(adPositions.includes(index));
-    
-    // Simulate ad loading delay
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 300);
-    
-    return () => clearTimeout(timer);
-  }, [index, contentLength, canShowAds, getInFeedAdPositions]);
+    // Determine if we should show an ad at this position
+    // Show ads at positions that are multiples of the frequency (e.g., 3, 6, 9, etc.)
+    if (forceShow || (!isPremiumUser && (index + 1) % frequency === 0 && canShowAd(type))) {
+      setShouldShow(true);
+    } else {
+      setShouldShow(false);
+    }
+  }, [index, frequency, isPremiumUser, canShowAd, type, forceShow]);
   
-  if (!canShowAds || !shouldShow) {
+  if (!shouldShow) {
     return null;
   }
   
   return (
-    <div className={`my-4 w-full ${className}`}>
-      {isLoading ? (
-        <Skeleton className="w-full h-[90px] rounded-md" />
+    <div className={`my-4 ${className}`}>
+      {isLoadingAd ? (
+        <Skeleton className="w-full h-[200px] rounded-lg" />
       ) : (
         <AdDisplay 
-          type="banner" 
-          className="w-full"
-          onAdLoaded={() => console.log('In-feed ad loaded')} 
+          type={type} 
+          onAdLoaded={handleAdLoaded}
+          forceShow={forceShow}
         />
       )}
     </div>
   );
-}
+};
+
+export default InFeedAd;

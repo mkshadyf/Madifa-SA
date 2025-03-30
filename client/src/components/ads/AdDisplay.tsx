@@ -6,7 +6,7 @@ import { ADSENSE_CONFIG, shouldShowAd, recordAdImpression, getAdSlotConfig } fro
 import { X, ExternalLink } from "lucide-react";
 
 interface AdDisplayProps {
-  type: "banner" | "interstitial" | "preroll" | "rectangle";
+  type: "banner" | "interstitial" | "preroll" | "rectangle" | "anywhere" | "multiplex";
   className?: string;
   onAdLoaded?: () => void;
   onAdClosed?: () => void;
@@ -55,6 +55,12 @@ const AdDisplay = ({
       break;
     case "preroll":
       adDimensions = { width: "100%", height: "300px" };
+      break;
+    case "anywhere":
+      adDimensions = { width: "100%", height: "280px" };
+      break;
+    case "multiplex":
+      adDimensions = { width: "100%", height: "600px" };
       break;
   }
   
