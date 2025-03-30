@@ -1,36 +1,36 @@
 // AdSense Configuration
 export const ADSENSE_CONFIG = {
-  publisherId: 'ca-pub-1318445400953510', // Actual AdSense Publisher ID
+  publisherId: import.meta.env.VITE_ADSENSE_PUBLISHER_ID || '', // Get from environment
   enabled: true, // Can be toggled for testing
   testMode: process.env.NODE_ENV === 'development', // Use test ads in development
   slots: {
     anywhere: {
-      id: '3300782881', // Anywhere ad responsive slot ID
+      id: import.meta.env.VITE_ADSENSE_ANYWHERE_SLOT || '', // Get from environment
       format: 'auto',
       responsive: true
     },
     multiplex: {
-      id: '1987701211', // Multiplex ad slot ID
+      id: import.meta.env.VITE_ADSENSE_MULTIPLEX_SLOT || '', // Get from environment
       format: 'autorelaxed',
       responsive: true
     },
     banner: {
-      id: '3300782881', // Using the anywhere ad as fallback for banner format
+      id: import.meta.env.VITE_ADSENSE_ANYWHERE_SLOT || '', // Using the anywhere ad as fallback
       format: 'auto',
       responsive: true
     },
     rectangle: {
-      id: '3300782881', // Using the anywhere ad as fallback for rectangle format
+      id: import.meta.env.VITE_ADSENSE_ANYWHERE_SLOT || '', // Using the anywhere ad as fallback
       format: 'auto',
       responsive: true
     },
     preroll: {
-      id: '3300782881', // Using the anywhere ad as fallback for preroll
+      id: import.meta.env.VITE_ADSENSE_ANYWHERE_SLOT || '', // Using the anywhere ad as fallback
       format: 'auto',
       responsive: true
     },
     interstitial: {
-      id: '3300782881', // Using the anywhere ad as fallback for interstitial
+      id: import.meta.env.VITE_ADSENSE_ANYWHERE_SLOT || '', // Using the anywhere ad as fallback
       format: 'auto',
       responsive: true
     }

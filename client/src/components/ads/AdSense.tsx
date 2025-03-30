@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { ADSENSE_CONFIG } from '../../lib/adConfig';
 
 export type GoogleAdType = 'anywhere' | 'multiplex';
 
@@ -7,12 +8,7 @@ interface AdSenseProps {
   className?: string;
 }
 
-const PUBLISHER_ID = 'ca-pub-1318445400953510';
-
-const AD_SLOTS = {
-  anywhere: '3300782881',
-  multiplex: '1987701211'
-};
+// Using environment variables via adConfig
 
 const AdSense = ({ type, className = '' }: AdSenseProps) => {
   const adRef = useRef<HTMLDivElement>(null);
@@ -22,7 +18,7 @@ const AdSense = ({ type, className = '' }: AdSenseProps) => {
     const existingScript = document.querySelector('script[src*="adsbygoogle"]');
     if (!existingScript) {
       const script = document.createElement('script');
-      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${PUBLISHER_ID}`;
+      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CONFIG.publisherId}`;
       script.async = true;
       script.crossOrigin = 'anonymous';
       document.head.appendChild(script);
@@ -46,8 +42,8 @@ const AdSense = ({ type, className = '' }: AdSenseProps) => {
           ref={adRef as any}
           className="adsbygoogle"
           style={{ display: 'block' }}
-          data-ad-client={PUBLISHER_ID}
-          data-ad-slot={AD_SLOTS.anywhere}
+          data-ad-client={ADSENSE_CONFIG.publisherId}
+          data-ad-slot={ADSENSE_CONFIG.slots.anywhere.id}
           data-ad-format="auto"
           data-full-width-responsive="true"
         />
@@ -63,8 +59,8 @@ const AdSense = ({ type, className = '' }: AdSenseProps) => {
           className="adsbygoogle"
           style={{ display: 'block' }}
           data-ad-format="autorelaxed"
-          data-ad-client={PUBLISHER_ID}
-          data-ad-slot={AD_SLOTS.multiplex}
+          data-ad-client={ADSENSE_CONFIG.publisherId}
+          data-ad-slot={ADSENSE_CONFIG.slots.multiplex.id}
         />
       </div>
     );
