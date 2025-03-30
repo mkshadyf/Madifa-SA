@@ -1,0 +1,184 @@
+index-DRGzEPWk.js:48 Missing Supabase environment variables. Authentication features will be disabled.
+overrideMethod @ hook.js:608
+S3 @ index-DRGzEPWk.js:48
+(anonymous) @ index-DRGzEPWk.js:48
+index-DRGzEPWk.js:688 AdSense publisher ID not configured. Set VITE_ADSENSE_PUBLISHER_ID in environment variables.
+overrideMethod @ hook.js:608
+(anonymous) @ index-DRGzEPWk.js:688
+bm @ index-DRGzEPWk.js:40
+pl @ index-DRGzEPWk.js:40
+Qj @ index-DRGzEPWk.js:40
+Na @ index-DRGzEPWk.js:38
+JI @ index-DRGzEPWk.js:40
+Ia @ index-DRGzEPWk.js:40
+u2 @ index-DRGzEPWk.js:40
+N @ index-DRGzEPWk.js:25
+P @ index-DRGzEPWk.js:25
+index-DRGzEPWk.js:48 Supabase auth state change listener not set up due to missing credentials
+overrideMethod @ hook.js:608
+(anonymous) @ index-DRGzEPWk.js:48
+bm @ index-DRGzEPWk.js:40
+pl @ index-DRGzEPWk.js:40
+Qj @ index-DRGzEPWk.js:40
+Na @ index-DRGzEPWk.js:38
+JI @ index-DRGzEPWk.js:40
+Ia @ index-DRGzEPWk.js:40
+u2 @ index-DRGzEPWk.js:40
+N @ index-DRGzEPWk.js:25
+P @ index-DRGzEPWk.js:25
+madifa.site/:1 Error while trying to use the following icon from the Manifest: https://madifa.site/logo192.png (Download error or resource isn't a valid image)
+madifa.site/:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+madifa.site/:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+madifa.site/:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+hook.js:608 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+overrideMethod @ hook.js:608
+hook.js:608 Failed to sync watch history: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/sync' is not a valid HTTP method.
+    at Oe (index-DRGzEPWk.js:48:43166)
+    at E9 (index-DRGzEPWk.js:688:256474)
+    at index-DRGzEPWk.js:688:257548
+    at index-DRGzEPWk.js:688:258238
+    at bm (index-DRGzEPWk.js:40:24283)
+    at pl (index-DRGzEPWk.js:40:42409)
+    at Qj (index-DRGzEPWk.js:40:36625)
+    at Na (index-DRGzEPWk.js:38:3279)
+    at JI (index-DRGzEPWk.js:40:41286)
+    at Ia (index-DRGzEPWk.js:40:40278)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to get continue watching: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/continue-watching' is not a valid HTTP method.
+    at Oe (index-DRGzEPWk.js:48:43166)
+    at R9 (index-DRGzEPWk.js:688:256984)
+    at index-DRGzEPWk.js:688:257830
+    at index-DRGzEPWk.js:688:258242
+    at bm (index-DRGzEPWk.js:40:24283)
+    at pl (index-DRGzEPWk.js:40:42409)
+    at Qj (index-DRGzEPWk.js:40:36625)
+    at Na (index-DRGzEPWk.js:38:3279)
+    at JI (index-DRGzEPWk.js:40:41286)
+    at Ia (index-DRGzEPWk.js:40:40278)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to get continue watching: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/continue-watching' is not a valid HTTP method.
+    at Oe (index-DRGzEPWk.js:48:43166)
+    at R9 (index-DRGzEPWk.js:688:256984)
+    at index-DRGzEPWk.js:688:257830
+    at index-DRGzEPWk.js:688:338042
+    at bm (index-DRGzEPWk.js:40:24283)
+    at pl (index-DRGzEPWk.js:40:42409)
+    at Qj (index-DRGzEPWk.js:40:36625)
+    at Na (index-DRGzEPWk.js:38:3279)
+    at JI (index-DRGzEPWk.js:40:41286)
+    at Ia (index-DRGzEPWk.js:40:40278)
+overrideMethod @ hook.js:608
+api/:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+hook.js:608 Failed to sync watch history: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/sync' is not a valid HTTP method.
+    at Oe (index-DRGzEPWk.js:48:43166)
+    at E9 (index-DRGzEPWk.js:688:256474)
+    at index-DRGzEPWk.js:688:257548
+    at index-DRGzEPWk.js:688:258238
+    at bm (index-DRGzEPWk.js:40:24283)
+    at pl (index-DRGzEPWk.js:40:42409)
+    at JI (index-DRGzEPWk.js:40:41231)
+    at Ia (index-DRGzEPWk.js:40:40278)
+    at Qj (index-DRGzEPWk.js:40:36886)
+    at Na (index-DRGzEPWk.js:38:3279)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to get continue watching: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/continue-watching' is not a valid HTTP method.
+    at Oe (index-DRGzEPWk.js:48:43166)
+    at R9 (index-DRGzEPWk.js:688:256984)
+    at index-DRGzEPWk.js:688:257830
+    at index-DRGzEPWk.js:688:258242
+    at bm (index-DRGzEPWk.js:40:24283)
+    at pl (index-DRGzEPWk.js:40:42409)
+    at JI (index-DRGzEPWk.js:40:41231)
+    at Ia (index-DRGzEPWk.js:40:40278)
+    at Qj (index-DRGzEPWk.js:40:36886)
+    at Na (index-DRGzEPWk.js:38:3279)
+overrideMethod @ hook.js:608
+hook.js:608 Ad loading error: TagError: adsbygoogle.push() error: All 'ins' elements in the DOM with class=adsbygoogle already have ads in them.
+    at ir (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:235:255)
+    at $q (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:231:446)
+    at Vq.e.client (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:225:43)
+    at hk.g (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:92:729)
+    at ok (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:93:682)
+    at Vq (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:225:31)
+    at Object.push (adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx:241:142)
+    at gN (index-DRGzEPWk.js:688:267273)
+    at ge (index-DRGzEPWk.js:698:5457)
+    at index-DRGzEPWk.js:698:4760
+overrideMethod @ hook.js:608
+hook.js:608 Failed to sync watch history: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/sync' is not a valid HTTP method.
+    at Oe (index-DRGzEPWk.js:48:43166)
+    at E9 (index-DRGzEPWk.js:688:256474)
+    at index-DRGzEPWk.js:688:257548
+    at index-DRGzEPWk.js:688:258238
+    at bm (index-DRGzEPWk.js:40:24283)
+    at pl (index-DRGzEPWk.js:40:42409)
+    at Qj (index-DRGzEPWk.js:40:36625)
+    at Na (index-DRGzEPWk.js:38:3279)
+    at JI (index-DRGzEPWk.js:40:41286)
+    at Ia (index-DRGzEPWk.js:40:40278)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to get continue watching: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/continue-watching' is not a valid HTTP method.
+    at Oe (index-DRGzEPWk.js:48:43166)
+    at R9 (index-DRGzEPWk.js:688:256984)
+    at index-DRGzEPWk.js:688:257830
+    at index-DRGzEPWk.js:688:258242
+    at bm (index-DRGzEPWk.js:40:24283)
+    at pl (index-DRGzEPWk.js:40:42409)
+    at Qj (index-DRGzEPWk.js:40:36625)
+    at Na (index-DRGzEPWk.js:38:3279)
+    at JI (index-DRGzEPWk.js:40:41286)
+    at Ia (index-DRGzEPWk.js:40:40278)
+overrideMethod @ hook.js:608
+hook.js:608 Failed to get watch progress: TypeError: Failed to execute 'fetch' on 'Window': '/api/history/29' is not a valid HTTP method.
+    at Oe (index-DRGzEPWk.js:48:43166)
+    at T9 (index-DRGzEPWk.js:688:256620)
+    at index-DRGzEPWk.js:688:258108
+    at index-DRGzEPWk.js:698:3755
+    at index-DRGzEPWk.js:698:4068
+    at bm (index-DRGzEPWk.js:40:24283)
+    at pl (index-DRGzEPWk.js:40:42409)
+    at Qj (index-DRGzEPWk.js:40:36625)
+    at Na (index-DRGzEPWk.js:38:3279)
+    at JI (index-DRGzEPWk.js:40:41286)
+overrideMethod @ hook.js:608
+index-DRGzEPWk.js:33 Allow attribute will take precedence over 'allowfullscreen'.
+oy @ index-DRGzEPWk.js:33
+hook.js:608 Error fetching average rating: TypeError: (intermediate value).json is not a function
+    at S (index-DRGzEPWk.js:698:12959)
+overrideMethod @ hook.js:608
+hook.js:608 Error fetching ratings: TypeError: (intermediate value).json is not a function
+    at k (index-DRGzEPWk.js:698:13101)
+overrideMethod @ hook.js:608
+/api/ratings/29/user:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+index-DRGzEPWk.js:698 No user rating found
+/api/reviews/29/user:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+index-DRGzEPWk.js:698 No user review found
+hook.js:608 Failed to fetch reviews
+overrideMethod @ hook.js:608
+hook.js:608 Error fetching average rating: TypeError: (intermediate value).json is not a function
+    at S (index-DRGzEPWk.js:698:12959)
+overrideMethod @ hook.js:608
+hook.js:608 Error fetching ratings: TypeError: (intermediate value).json is not a function
+    at k (index-DRGzEPWk.js:698:13101)
+overrideMethod @ hook.js:608
+/api/ratings/29/user:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+index-DRGzEPWk.js:698 No user rating found
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.
+Node cannot be found in the current page.

@@ -16,6 +16,8 @@ import {
   SkipForward, SkipBack, Settings, Loader, Subtitles 
 } from "lucide-react";
 import Player from "@vimeo/player";
+import { motion } from "framer-motion";
+import { spinnerAnimation, pulse } from "@/lib/animations";
 import AuthModal from "../auth/AuthModal";
 import CaptionTrackSelector from "./CaptionTrackSelector";
 import MobileVideoPlayer from "./MobileVideoPlayer";
@@ -784,8 +786,27 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
         }}
       >
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-10">
-            <Loader className="h-12 w-12 text-primary animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/60">
+            <motion.div
+              className="flex flex-col items-center gap-3"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                animate="animate"
+                variants={spinnerAnimation}
+              >
+                <Loader className="h-14 w-14 text-primary" />
+              </motion.div>
+              <motion.p 
+                className="text-sm font-medium text-white"
+                variants={pulse}
+                animate="animate"
+              >
+                Loading video...
+              </motion.p>
+            </motion.div>
           </div>
         )}
         
