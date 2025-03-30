@@ -1,128 +1,100 @@
-# Google Play Store Deployment Guide for Madifa
+# Deploying Madifa to Google Play Store
 
-This guide explains how to deploy the Madifa video streaming platform as a Progressive Web App (PWA) to the Google Play Store using Trusted Web Activities (TWA).
+This guide outlines the steps to bundle and deploy the Madifa app to the Google Play Store.
 
 ## Prerequisites
 
-1. A Google Play Developer account (requires a one-time $25 registration fee)
-2. Android Studio installed on your development machine
-3. Your PWA must be fully functional and meet the following requirements:
-   - A valid Web App Manifest
-   - Service worker for offline functionality
-   - HTTPS-enabled domain
-   - Responsive design for mobile devices
+Before you begin, ensure you have:
 
-## Step 1: Verify Your PWA
+1. A Google Play Developer account ($25 one-time fee)
+2. Node.js and npm installed
+3. JDK 11 or higher installed
+4. Android Studio installed (optional, but recommended)
+5. Android SDK installed and configured
 
-Before proceeding, ensure your PWA meets all requirements using Lighthouse:
+## Build Setup
 
-1. Open Chrome DevTools
-2. Go to the Lighthouse tab
-3. Select "Mobile" device and "Progressive Web App" category
-4. Run the audit and ensure you have a high score
+This project uses Capacitor to package the web app as an Android application.
 
-## Step 2: Set Up Digital Asset Links
+## Generating the App Bundle
 
-1. Create a `.well-known` directory in your `client/public` folder
-2. Create an `assetlinks.json` file with the following content:
-
-```json
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.madifa.app",
-    "sha256_cert_fingerprints": ["YOUR_SHA256_FINGERPRINT"]
-  }
-}]
-```
-
-3. Deploy your application with this file accessible at `https://yourdomain.com/.well-known/assetlinks.json`
-
-## Step 3: Create a TWA Android Project
-
-1. Generate a TWA project using [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap):
+1. Make sure the web app is working correctly locally
+2. Run the build script:
 
 ```bash
-npm install -g @bubblewrap/cli
-bubblewrap init --manifest https://yourdomain.com/manifest.json
+chmod +x build-android.sh
+./build-android.sh
 ```
 
-2. Follow the prompts to configure your TWA app
-3. Generate the Android app:
+This will:
+- Build the web app
+- Initialize Capacitor (if not already done)
+- Sync the web content to the Android project
+- Build a release App Bundle (AAB) file
+
+The AAB file will be generated at:
+```
+android/app/build/outputs/bundle/release/app-release.aab
+```
+
+## Signing the App
+
+For security, the app needs to be signed with a keystore file. The build script uses a keystore file defined in `capacitor.config.ts`.
+
+To create a new keystore:
 
 ```bash
-bubblewrap build
+keytool -genkey -v -keystore android/madifa.keystore -alias madifa -keyalg RSA -keysize 2048 -validity 10000
 ```
 
-## Step 4: Customize the Android App
+**IMPORTANT:** Keep your keystore file safe and remember your passwords. If you lose them, you won't be able to update your app.
 
-1. Open the generated project in Android Studio
-2. Update app icons in the `res` directory
-3. Configure app signing:
-   - Go to Build → Generate Signed Bundle/APK
-   - Create a new keystore or use an existing one
-   - Generate a signed App Bundle
+## Publishing to Play Store
 
-## Step 5: Create Your Play Store Listing
-
-1. Log in to the [Google Play Console](https://play.google.com/console)
+1. Login to the [Google Play Console](https://play.google.com/console)
 2. Create a new application
-3. Complete all required information:
-   - App details
-   - Store listing (screenshots, descriptions)
-   - Content rating
-   - Pricing & distribution
+3. Fill out the required information:
+   - App name: Madifa
+   - Default language
+   - App or game: App
+   - Free or paid: Choose appropriate option
 
-## Step 6: Upload Your App Bundle
+4. Complete the store listing:
+   - Provide short and full descriptions
+   - Upload screenshots for different device types
+   - Upload a high-resolution icon (512x512 px)
+   - Add a feature graphic (1024x500 px)
 
-1. Go to the "App releases" section
-2. Create a new release (internal test, closed testing, or production)
-3. Upload your signed App Bundle (.aab file)
-4. Review the release
+5. Set up your app's content rating by completing the questionnaire
 
-## Step 7: Submit for Review
+6. Navigate to "Production" > "Create new release"
+7. Upload the AAB file generated earlier
+8. Add release notes
+9. Roll out the release
 
-1. Complete any remaining requirements in the Play Console
-2. Submit your app for review
-3. Once approved, your app will be published on the Play Store
+## App Updates
 
-## Additional Considerations
+For future updates:
 
-### App Updates
-
-When updating your PWA:
-
-1. Your web app will update automatically
-2. For significant changes to the TWA configuration:
-   - Update the version code in your Android project
-   - Generate a new App Bundle
-   - Create a new release in the Play Console
-
-### Monetization
-
-For subscription-based features:
-
-1. Set up Google Play Billing if you want to use in-app purchases
-2. Or continue using your web-based payment system (PayFast)
-
-### Analytics
-
-1. Ensure Google Analytics or your preferred analytics solution tracks both web and Android app usage
-2. Consider implementing Firebase Analytics for mobile-specific metrics
+1. Make your changes to the web app
+2. Update the version number in `package.json`
+3. Run the build script again to generate a new AAB
+4. Create a new release in the Play Console
+5. Upload the new AAB file
+6. Add release notes describing the changes
+7. Roll out the update
 
 ## Troubleshooting
 
-### Common Issues
+If you encounter issues:
 
-1. **Digital Asset Links Verification Failure**
-   - Ensure your `assetlinks.json` file is accessible
-   - Verify the SHA-256 fingerprint matches your signing key
+1. Check that all environment paths are set correctly
+2. Ensure the app works correctly on the web before bundling
+3. If you get signing errors, verify your keystore information
+4. If the app crashes on Android, check browser compatibility
 
-2. **App Not Installing**
-   - Check that your domain meets all the PWA requirements
-   - Verify the Web App Manifest is properly configured
+## Additional Resources
 
-3. **App Rejected by Google Play**
-   - Review the rejection reason and make necessary adjustments
-   - Common reasons: insufficient functionality, policy violations, or poor performance
+- [Capacitor Android Documentation](https://capacitorjs.com/docs/android)
+- [Google Play Console Help](https://support.google.com/googleplay/android-developer/)
+- [App Signing by Google Play](https://developer.android.com/studio/publish/app-signing#app-signing-google-play)
