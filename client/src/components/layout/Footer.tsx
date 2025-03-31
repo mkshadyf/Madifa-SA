@@ -15,18 +15,18 @@ const Footer = () => {
             <div>
               <h4 className="text-foreground font-medium mb-3">Company</h4>
               <ul className="space-y-2">
-                <li><Link href="#" className="text-muted-foreground text-sm hover:text-primary transition">About Us</Link></li>
+                <li><Link href="/about-us" className="text-muted-foreground text-sm hover:text-primary transition">About Us</Link></li>
                 <li><Link href="#" className="text-muted-foreground text-sm hover:text-primary transition">Careers</Link></li>
-                <li><Link href="#" className="text-muted-foreground text-sm hover:text-primary transition">Contact</Link></li>
+                <li><Link href="/contact" className="text-muted-foreground text-sm hover:text-primary transition">Contact</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="text-foreground font-medium mb-3">Support</h4>
               <ul className="space-y-2">
-                <li><Link href="#" className="text-muted-foreground text-sm hover:text-primary transition">Help Center</Link></li>
-                <li><Link href="#" className="text-muted-foreground text-sm hover:text-primary transition">Terms of Use</Link></li>
-                <li><Link href="#" className="text-muted-foreground text-sm hover:text-primary transition">Privacy Policy</Link></li>
+                <li><Link href="/help-center" className="text-muted-foreground text-sm hover:text-primary transition">Help Center</Link></li>
+                <li><Link href="/terms" className="text-muted-foreground text-sm hover:text-primary transition">Terms of Use</Link></li>
+                <li><Link href="/privacy" className="text-muted-foreground text-sm hover:text-primary transition">Privacy Policy</Link></li>
               </ul>
             </div>
             
@@ -68,9 +68,9 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-muted-foreground text-sm">© {new Date().getFullYear()} Madifa. All rights reserved.</p>
           <div className="mt-4 md:mt-0">
-            <Link href="#" className="text-muted-foreground text-sm hover:text-primary transition mr-4">Terms</Link>
-            <Link href="#" className="text-muted-foreground text-sm hover:text-primary transition mr-4">Privacy</Link>
-            <Link href="#" className="text-muted-foreground text-sm hover:text-primary transition">Cookies</Link>
+            <Link href="/terms" className="text-muted-foreground text-sm hover:text-primary transition mr-4">Terms</Link>
+            <Link href="/privacy" className="text-muted-foreground text-sm hover:text-primary transition mr-4">Privacy</Link>
+            <Link href="/cookies" className="text-muted-foreground text-sm hover:text-primary transition">Cookies</Link>
           </div>
         </div>
       </div>
