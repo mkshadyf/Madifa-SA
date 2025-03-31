@@ -72,7 +72,7 @@ const ContentCarousel = ({
       <div className="relative group">
         <motion.div 
           ref={carouselRef}
-          className={`flex ${isMobile ? 'space-x-3 pl-4' : 'space-x-4'} overflow-x-auto pb-4 scrollbar-hide scroll-smooth`}
+          className={`flex ${isMobile ? 'gap-3 pl-4' : 'gap-4'} overflow-x-auto pb-4 scrollbar-hide scroll-smooth`}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           variants={staggeredFadeIn}
           initial="hidden"
