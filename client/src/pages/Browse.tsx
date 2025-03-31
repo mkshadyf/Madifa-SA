@@ -399,7 +399,7 @@ const Browse = () => {
             </div>
           ) : filteredContents.length > 0 ? (
             <div className={viewMode === "grid" 
-              ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" 
+              ? "grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4" 
               : "space-y-4"
             }>
               {/* Calculate ad positions */}
@@ -421,7 +421,7 @@ const Browse = () => {
                       
                       {/* Display content item */}
                       {viewMode === "grid" ? (
-                        <div key={`content-${content.id}`} className="hover:scale-105 transition duration-200">
+                        <div key={`content-${content.id}`} className="hover:scale-105 transition duration-200 overflow-hidden">
                           <VideoCard
                             content={content}
                             aspect="poster"

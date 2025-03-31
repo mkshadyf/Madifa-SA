@@ -65,9 +65,7 @@ const Navbar = () => {
   const navLinks = [
     { name: "Home", path: "/", icon: <Home className="h-5 w-5" /> },
     { name: "Movies", path: "/browse?type=movie", icon: <Film className="h-5 w-5" /> },
-    { name: "Short Films", path: "/browse?type=short_film", icon: <Video className="h-5 w-5" /> },
     { name: "Music Videos", path: "/browse?type=music_video", icon: <Music className="h-5 w-5" /> },
-    { name: "Trailers", path: "/browse?type=trailer", icon: <Play className="h-5 w-5" /> },
     { name: "My List", path: "/my-list", icon: <Bookmark className="h-5 w-5" /> },
     { name: "Downloads", path: "/downloads", icon: <Download className="h-5 w-5" />, requiresAuth: true },
   ];
@@ -89,19 +87,61 @@ const Navbar = () => {
             </Link>
             
             <div className="hidden md:flex space-x-6">
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  href={link.path}
-                  className={`${
-                    location === link.path 
-                      ? "text-primary" 
-                      : "text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
-                  } transition`}
-                >
-                  {link.name}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                // Special handling for Movies with dropdown
+                if (link.name === "Movies") {
+                  return (
+                    <DropdownMenu key={link.name}>
+                      <DropdownMenuTrigger asChild>
+                        <button 
+                          className={`flex items-center ${
+                            location === link.path 
+                              ? "text-primary" 
+                              : "text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
+                          } transition`}
+                        >
+                          {link.name}
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            className="h-4 w-4 ml-1" 
+                            fill="none" 
+                            viewBox="0 0 24 24" 
+                            stroke="currentColor"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-48">
+                        <DropdownMenuItem asChild>
+                          <Link href="/browse?type=movie" className="flex w-full">Movies</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link href="/browse?type=short_film" className="flex w-full">Short Films</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link href="/browse?type=trailer" className="flex w-full">Trailers</Link>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  );
+                }
+                
+                // Regular link for other items
+                return (
+                  <Link 
+                    key={link.name} 
+                    href={link.path}
+                    className={`${
+                      location === link.path 
+                        ? "text-primary" 
+                        : "text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
+                    } transition`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
             </div>
           </div>
           
@@ -181,20 +221,61 @@ const Navbar = () => {
                 </SheetHeader>
                 <div className="py-4">
                   <nav className="flex flex-col space-y-4">
-                    {navLinks.map((link) => (
-                      <Link 
-                        key={link.name} 
-                        href={link.path}
-                        className={`flex items-center space-x-3 p-2 rounded-md ${
-                          location === link.path 
-                            ? "bg-primary/10 text-primary" 
-                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary"
-                        } transition`}
-                      >
-                        {link.icon}
-                        <span>{link.name}</span>
-                      </Link>
-                    ))}
+                    {navLinks.map((link) => {
+                      // Special handling for Movies menu item
+                      if (link.name === "Movies") {
+                        return (
+                          <div key={link.name} className="space-y-2">
+                            <Link 
+                              href={link.path}
+                              className={`flex items-center space-x-3 p-2 rounded-md ${
+                                location === link.path 
+                                  ? "bg-primary/10 text-primary" 
+                                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary"
+                              } transition`}
+                            >
+                              {link.icon}
+                              <span>{link.name}</span>
+                            </Link>
+                            
+                            {/* Submenu items */}
+                            <div className="ml-8 space-y-1">
+                              <Link 
+                                href="/browse?type=short_film"
+                                className="flex items-center space-x-3 p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary transition text-sm"
+                              >
+                                <Video className="h-4 w-4" />
+                                <span>Short Films</span>
+                              </Link>
+                              <Link 
+                                href="/browse?type=trailer"
+                                className="flex items-center space-x-3 p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary transition text-sm"
+                              >
+                                <Play className="h-4 w-4" />
+                                <span>Trailers</span>
+                              </Link>
+                            </div>
+                          </div>
+                        );
+                      }
+                      
+                      // Regular link for other items
+                      return (
+                        <Link 
+                          key={link.name} 
+                          href={link.path}
+                          className={`flex items-center space-x-3 p-2 rounded-md ${
+                            location === link.path 
+                              ? "bg-primary/10 text-primary" 
+                              : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary"
+                          } transition`}
+                        >
+                          {link.icon}
+                          <span>{link.name}</span>
+                        </Link>
+                      );
+                    })}
+                    
                     {user && (
                       <>
                         <Link 

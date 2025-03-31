@@ -63,11 +63,7 @@ const VideoCard = ({
   return (
     <>
       <motion.div 
-        className={`movie-card flex-shrink-0 ${
-          isMobile 
-            ? aspect === "video" ? "w-44" : "w-40" 
-            : aspect === "video" ? "w-64" : "w-60"
-        } relative cursor-pointer`}
+        className={`movie-card flex-shrink-0 w-full relative cursor-pointer`}
         onClick={handleCardClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
