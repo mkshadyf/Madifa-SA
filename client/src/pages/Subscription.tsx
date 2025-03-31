@@ -80,19 +80,8 @@ const Subscription = () => {
     setIsProcessing(true);
     
     try {
-      const res = await apiRequest("/api/subscription/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
-        },
-        body: JSON.stringify({
-          planId: selectedPlan.id,
-          amount: selectedPlan.price * 100, // Convert to cents
-          name: `${selectedPlan.name} Plan`,
-          returnUrl: `${window.location.origin}/subscription?status=success`,
-          cancelUrl: `${window.location.origin}/subscription?status=cancelled`,
-        }),
+      const res = await apiRequest("/api/subscription/create", "POST", {
+        plan: selectedPlan.id, // Changed from planId to plan as expected by the server
       });
       
       if (res.ok) {
@@ -124,13 +113,7 @@ const Subscription = () => {
     setIsProcessing(true);
     
     try {
-      const res = await apiRequest("/api/subscription/cancel", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
-        },
-      });
+      const res = await apiRequest("/api/subscription/cancel", "POST");
       
       if (res.ok) {
         const data = await res.json();
@@ -200,28 +183,20 @@ const Subscription = () => {
     // Define subscription status fetching function
     const fetchSubscription = async () => {
       try {
-        const token = localStorage.getItem("auth_token");
-        if (!token) return;
+        const response = await apiRequest("/api/subscription/status");
         
-        const response = await fetch("/api/subscription/status", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
+        if (response && response.subscription) {
           
           // Update subscription state
-          setCurrentSubscription(data.subscription);
+          setCurrentSubscription(response.subscription);
           
           // Detect status transitions from pending to active/failed
-          if (previousStatus === "pending" && data.subscription?.status === "active") {
+          if (previousStatus === "pending" && response.subscription?.status === "active") {
             toast({
               title: "Subscription Active",
               description: "Your premium subscription is now active! Enjoy ad-free content.",
             });
-          } else if (previousStatus === "pending" && data.subscription?.status === "failed") {
+          } else if (previousStatus === "pending" && response.subscription?.status === "failed") {
             toast({
               title: "Payment Failed",
               description: "There was a problem with your payment. Please try again.",
@@ -230,7 +205,7 @@ const Subscription = () => {
           }
           
           // Update previous status for next check
-          previousStatus = data.subscription?.status;
+          previousStatus = response.subscription?.status;
         }
       } catch (error) {
         console.error("Error fetching subscription:", error);

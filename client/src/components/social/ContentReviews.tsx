@@ -14,7 +14,10 @@ interface Review {
   userId: number;
   contentId: number;
   rating: number;
-  review: string;
+  review?: string; // For backward compatibility
+  content?: string; // New field used by server
+  title?: string;   // New field used by server
+  isVisible?: boolean;
   createdAt: string;
   updatedAt: string;
   user: {
@@ -78,7 +81,8 @@ export default function ContentReviews({
           if (response.ok) {
             const data = await response.json();
             setUserReview(data);
-            setReviewText(data.review);
+            // Handle both old and new API response formats
+            setReviewText(data.content || data.review || "");
             setUserRating(data.rating);
           }
         } catch (error) {
@@ -127,15 +131,19 @@ export default function ContentReviews({
       if (userReview) {
         // Update existing review
         response = await apiRequest("PUT", `/api/reviews/${userReview.id}`, {
-          review: reviewText,
-          rating: userRating
+          title: userReview.title || `Review for content ${contentId}`,
+          content: reviewText, // Server expects 'content' not 'review'
+          rating: userRating,
+          isVisible: userReview.isVisible !== undefined ? userReview.isVisible : true
         });
       } else {
         // Create new review
         response = await apiRequest("POST", "/api/reviews", {
           contentId,
-          review: reviewText,
-          rating: userRating
+          title: `Review for content ${contentId}`, // Add title as required by server
+          content: reviewText, // Server expects 'content' not 'review'
+          rating: userRating,
+          isVisible: true // Default to visible
         });
       }
 
@@ -255,7 +263,7 @@ export default function ContentReviews({
                     onClick={() => {
                       setIsEditing(false);
                       if (userReview) {
-                        setReviewText(userReview.review);
+                        setReviewText(userReview.content || userReview.review || "");
                       }
                     }}
                   >
@@ -313,7 +321,7 @@ export default function ContentReviews({
                 </div>
               </div>
               
-              <p className="text-gray-300">{userReview.review}</p>
+              <p className="text-gray-300">{userReview.content || userReview.review}</p>
             </div>
           )}
         </div>
@@ -353,7 +361,7 @@ export default function ContentReviews({
                   </div>
                 </div>
                 
-                <p className="mt-2 text-gray-300">{review.review}</p>
+                <p className="mt-2 text-gray-300">{review.content || review.review}</p>
               </div>
             ))}
             
