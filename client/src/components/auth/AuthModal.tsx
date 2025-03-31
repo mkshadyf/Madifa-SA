@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,15 +16,18 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWatchProgress } from "@/contexts/WatchProgressContext";
 import { X, CheckIcon, Loader2, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
+import { useLocation } from "wouter";
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialView?: "login" | "register" | "upgrade";
+  returnToContent?: boolean;
 }
 
 const loginSchema = z.object({
@@ -46,7 +49,7 @@ const registerSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) => {
+const AuthModal = ({ isOpen, onClose, initialView = "login", returnToContent = false }: AuthModalProps) => {
   const [activeTab, setActiveTab] = useState<string>(initialView);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -54,7 +57,9 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const { login, register, loginWithGoogle } = useAuth();
+  const { pendingPosition, clearPendingPosition } = useWatchProgress();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   
   // Login form
   const loginForm = useForm<LoginFormValues>({
@@ -90,7 +95,17 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
       
       // Add small delay to show success message
       setTimeout(() => {
-        onClose();
+        // Check if we need to redirect back to content after login
+        if (pendingPosition) {
+          // Close modal first
+          onClose();
+          // Then navigate to the content
+          setLocation(pendingPosition.url);
+          // Clear the pending position since we've handled it
+          clearPendingPosition();
+        } else {
+          onClose();
+        }
       }, 1500);
     } catch (error) {
       console.error('Login error:', error);
@@ -120,7 +135,17 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
       
       // Add small delay to show success message
       setTimeout(() => {
-        onClose();
+        // Check if we need to redirect back to content after registration
+        if (pendingPosition) {
+          // Close modal first
+          onClose();
+          // Then navigate to the content
+          setLocation(pendingPosition.url);
+          // Clear the pending position since we've handled it
+          clearPendingPosition();
+        } else {
+          onClose();
+        }
       }, 1500);
     } catch (error) {
       console.error('Registration error:', error);
@@ -150,6 +175,10 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
       await loginWithGoogle();
       // Note: this code might not execute immediately as the user will be redirected to Google
       // The auth state change listener in AuthContext will handle the redirect back
+      
+      // When the user returns after Google auth, check if we need to redirect back to content
+      // This is handled by the auth state change listener in AuthContext
+      // which will check pendingPosition and redirect accordingly
     } catch (error) {
       console.error('Google auth error:', error);
       toast({

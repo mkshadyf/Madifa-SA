@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useWatchProgress } from "@/contexts/WatchProgressContext";
 import { 
   Form, 
   FormControl, 
@@ -30,8 +31,9 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const [, navigate] = useLocation();
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const { toast } = useToast();
+  const { pendingPosition, clearPendingPosition } = useWatchProgress();
   const [isLoading, setIsLoading] = useState(false);
   
   const form = useForm<LoginFormValues>({
@@ -59,10 +61,22 @@ const Login = () => {
         description: "Welcome back to Madifa!",
       });
       
-      // Redirect after successful login
-      setTimeout(() => {
-        navigate("/");
-      }, 500); // Short delay to ensure toast is visible
+      // Check if there's a pending video position
+      if (pendingPosition) {
+        // Redirect back to the content with position
+        const redirectUrl = pendingPosition.url || `/movie/${pendingPosition.contentId}`;
+        setTimeout(() => {
+          // Clear the pending position from the context
+          clearPendingPosition();
+          // Redirect back to the content
+          navigate(redirectUrl);
+        }, 500);
+      } else {
+        // Regular redirect to home
+        setTimeout(() => {
+          navigate("/");
+        }, 500); // Short delay to ensure toast is visible
+      }
     } catch (error) {
       console.error("Login error:", error);
       toast({
@@ -155,7 +169,23 @@ const Login = () => {
             </div>
             
             <div className="flex justify-center">
-              <Button variant="outline" className="border-gray-700 w-full">
+              <Button variant="outline" className="border-gray-700 w-full" 
+                onClick={async () => {
+                  try {
+                    // Call the Google login function
+                    await loginWithGoogle();
+                    // Note: No need for success handling here as Google login redirects to Google's auth page
+                    // When the user returns, the auth state listener will handle the login
+                  } catch (error) {
+                    console.error("Google login error:", error);
+                    toast({
+                      title: "Google login failed",
+                      description: error instanceof Error ? error.message : "Failed to login with Google",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                   <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />

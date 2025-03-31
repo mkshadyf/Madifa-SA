@@ -6,6 +6,7 @@ import { setAppHeight, enableSafeAreas } from "./lib/viewport";
 import { AuthProvider } from "./contexts/AuthContext";
 import { DataSourceProvider } from "./contexts/DataSourceContext";
 import { PerformanceProvider } from "./contexts/PerformanceContext";
+import { WatchProgressProvider } from "./contexts/WatchProgressContext";
 
 // Auth components
 import { ProtectedRoute, AdminRoute } from "@/components/auth/ProtectedRoute";
@@ -189,33 +190,36 @@ function App() {
   
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <DataSourceProvider>
-          <PerformanceProvider>
-            {/* Initialize AdSense */}
-            <AdSenseScript />
-            
-            {/* Main App Router */}
-            <Router />
-            
-            {/* PWA Components */}
-            <InstallPrompt />
-            <OfflineIndicator />
-            
-            {/* Performance Settings Modal */}
-            <PerformanceSettings 
-              isOpen={showPerformanceSettings} 
-              onClose={() => setShowPerformanceSettings(false)}
-            />
-            
-            {/* Mobile Navigation */}
-            <MobileNav />
-            
-            {/* Add padding bottom for mobile to avoid content being hidden behind the nav bar */}
-            <div className="md:hidden h-16 safe-area-bottom"></div>
-          </PerformanceProvider>
-        </DataSourceProvider>
-      </AuthProvider>
+      {/* We need to place WatchProgressProvider outside AuthProvider to resolve the circular dependency */}
+      <WatchProgressProvider>
+        <AuthProvider>
+          <DataSourceProvider>
+            <PerformanceProvider>
+              {/* Initialize AdSense */}
+              <AdSenseScript />
+              
+              {/* Main App Router */}
+              <Router />
+              
+              {/* PWA Components */}
+              <InstallPrompt />
+              <OfflineIndicator />
+              
+              {/* Performance Settings Modal */}
+              <PerformanceSettings 
+                isOpen={showPerformanceSettings} 
+                onClose={() => setShowPerformanceSettings(false)}
+              />
+              
+              {/* Mobile Navigation */}
+              <MobileNav />
+              
+              {/* Add padding bottom for mobile to avoid content being hidden behind the nav bar */}
+              <div className="md:hidden h-16 safe-area-bottom"></div>
+            </PerformanceProvider>
+          </DataSourceProvider>
+        </AuthProvider>
+      </WatchProgressProvider>
     </QueryClientProvider>
   );
 }

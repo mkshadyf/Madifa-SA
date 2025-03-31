@@ -3,6 +3,7 @@ import { ChevronLeft, Volume2, VolumeX, Maximize, SkipBack, SkipForward, Play, P
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { useWatchProgress } from '@/contexts/WatchProgressContext';
 import { ContentItem } from '@shared/types';
 import { formatDuration, getVideoMimeType } from '@/lib/utils';
 import { useCaptions, Track } from '@/hooks/useCaptions';
@@ -39,6 +40,7 @@ const MobileVideoPlayer = ({
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { setPendingPosition } = useWatchProgress();
   
   // Authentication modal
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -190,6 +192,14 @@ const MobileVideoPlayer = ({
 
     // If premium content and user is not logged in, show auth modal
     if (content.isPremium && !user) {
+      // Save position for after login
+      const currentUrl = window.location.pathname;
+      setPendingPosition({
+        contentId: String(content.id),
+        position: currentTime,
+        url: currentUrl
+      });
+      
       setInitialView("login");
       setShowAuthModal(true);
       return;
@@ -472,6 +482,7 @@ const MobileVideoPlayer = ({
         isOpen={showAuthModal} 
         onClose={() => setShowAuthModal(false)}
         initialView={initialView}
+        returnToContent={true}
       />
     </>
   );

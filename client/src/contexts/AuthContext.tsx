@@ -3,6 +3,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { User, InsertUser } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import { useLocation } from "wouter";
+import { useWatchProgress } from "./WatchProgressContext";
 
 type AuthContextType = {
   user: User | null;
@@ -28,8 +30,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
+  // We'll need to handle pending watch position in the auth state change listener
   
   // Check if user is logged in on initial load
+  // Handle watch progress context
+  const { pendingPosition, clearPendingPosition } = useWatchProgress();
+  
+  // Handle redirect to content after successful login
+  useEffect(() => {
+    if (user && pendingPosition) {
+      // If the user is logged in and there's a pending position, redirect to the content
+      const redirectUrl = pendingPosition.url || `/movie/${pendingPosition.contentId}`;
+      
+      // Small delay to ensure everything is synced
+      setTimeout(() => {
+        // Clear pending position before redirect
+        clearPendingPosition();
+        // Navigate to the content
+        setLocation(redirectUrl);
+      }, 300);
+    }
+  }, [user, pendingPosition, clearPendingPosition, setLocation]);
+  
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {

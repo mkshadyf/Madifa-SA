@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { ContentItem } from "@shared/types";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWatchProgress } from "@/contexts/WatchProgressContext";
 import { useDataSource } from "@/contexts/DataSourceContext";
 import { useToast } from "@/hooks/use-toast";
 import { useCaptions } from "@/hooks/useCaptions";
@@ -33,6 +34,7 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
   const { user } = useAuth();
   const { toast } = useToast();
   const { dataSource } = useDataSource();
+  const { setPendingPosition } = useWatchProgress();
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const vimeoPlayerRef = useRef<Player | null>(null);
@@ -420,7 +422,16 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
     
     // For non-trailer content, check authentication
     if (!user) {
+      // Save the current position and URL for after login
+      const currentUrl = window.location.pathname;
+      setPendingPosition({
+        contentId: String(content.id),
+        position: currentTime,
+        url: currentUrl
+      });
+      
       // Not logged in - show auth modal with login/register view
+      setActiveTab("login");
       setShowAuthModal(true);
       return;
     }
@@ -885,6 +896,7 @@ const VideoPlayer = ({ content, autoPlay = false, onProgressUpdate, onVideoCompl
         isOpen={showAuthModal} 
         onClose={() => setShowAuthModal(false)}
         initialView={activeTab}
+        returnToContent={true}
       />
     </>
   );
