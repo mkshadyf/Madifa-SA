@@ -36,6 +36,14 @@ import AuthCallback from "@/pages/AuthCallback";
 import NotFound from "@/pages/not-found";
 import AdDemo from "@/pages/AdDemo";
 
+// Footer Pages
+import Terms from "@/pages/Terms";
+import Privacy from "@/pages/Privacy";
+import Cookies from "@/pages/Cookies";
+import AboutUs from "@/pages/AboutUs";
+import Contact from "@/pages/Contact";
+import HelpCenter from "@/pages/HelpCenter";
+
 // Admin Pages
 import AdminDashboard from "@/pages/admin/Dashboard";
 import VimeoManagement from "@/pages/admin/VimeoManagement";
@@ -64,6 +72,14 @@ function Router() {
       <Route path="/accessible-player/:id" component={AccessiblePlayerDemo} />
       <Route path="/auth/callback" component={AuthCallback} />
       <Route path="/ad-demo" component={AdDemo} />
+      
+      {/* Footer Pages */}
+      <Route path="/terms" component={Terms} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/cookies" component={Cookies} />
+      <Route path="/about-us" component={AboutUs} />
+      <Route path="/contact" component={Contact} />
+      <Route path="/help-center" component={HelpCenter} />
       
       {/* Protected Routes - Require Authentication */}
       <Route path="/my-list">
