@@ -1278,38 +1278,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin Dashboard Stats
   app.get("/api/admin/stats", authenticateAdmin, async (req, res) => {
     try {
-      // Get all necessary data for statistics
+      // Get basic data counts
       const users = await storage.getAllUsers();
       const contents = await storage.getAllContents();
       const categories = await storage.getAllCategories();
       
-      // Calculate stats
+      // Calculate basic stats
       const totalUsers = users.length;
       const premiumUsers = users.filter(user => user.isPremium).length;
       const totalContent = contents.length;
       const premiumContent = contents.filter(content => content.isPremium).length;
       const totalCategories = categories.length;
+
+      // Get advanced statistics
+      const activeSubscriptions = await storage.getActiveSubscriptionsCount();
+      const pendingSubscriptions = await storage.getPendingSubscriptionsCount();
+      const moviesCount = await storage.getContentTypeCount('movie');
+      const seriesCount = await storage.getContentTypeCount('series');
+      const musicVideosCount = await storage.getContentTypeCount('music_video');
+      const trailersCount = await storage.getContentTypeCount('trailer');
+      const shortFilmsCount = await storage.getContentTypeCount('short_film');
+      const recentRegistrations = await storage.getRecentRegistrations(7); // Last 7 days
+      const recentWatchCount = await storage.getRecentWatchCount(7); // Last 7 days
+      const topContent = await storage.getMostWatchedContents(5); // Top 5 most watched
       
-      // Return all statistics
+      // Return comprehensive statistics
       res.json({
         users: {
           total: totalUsers,
           premium: premiumUsers,
           free: totalUsers - premiumUsers,
-          premiumPercentage: totalUsers > 0 ? Math.round((premiumUsers / totalUsers) * 100) : 0
+          premiumPercentage: totalUsers > 0 ? Math.round((premiumUsers / totalUsers) * 100) : 0,
+          recentRegistrations
         },
         content: {
           total: totalContent,
           premium: premiumContent,
           free: totalContent - premiumContent,
-          premiumPercentage: totalContent > 0 ? Math.round((premiumContent / totalContent) * 100) : 0
+          premiumPercentage: totalContent > 0 ? Math.round((premiumContent / totalContent) * 100) : 0,
+          byType: {
+            movies: moviesCount,
+            series: seriesCount,
+            musicVideos: musicVideosCount,
+            trailers: trailersCount,
+            shortFilms: shortFilmsCount
+          }
         },
         categories: {
           total: totalCategories
+        },
+        subscriptions: {
+          active: activeSubscriptions,
+          pending: pendingSubscriptions,
+          total: activeSubscriptions + pendingSubscriptions
+        },
+        engagement: {
+          recentWatchCount,
+          topContent: topContent.map(item => ({
+            id: item.content.id,
+            title: item.content.title,
+            thumbnailUrl: item.content.thumbnailUrl,
+            contentType: item.content.contentType,
+            watchCount: item.watchCount
+          }))
         }
       });
     } catch (error) {
-      res.status(500).json({ message: "Server error" });
+      console.error("Admin stats error:", error);
+      res.status(500).json({ message: "Server error", error: String(error) });
     }
   });
 

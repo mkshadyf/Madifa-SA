@@ -26,6 +26,14 @@ export interface IStorage {
   getAllUsers(): Promise<User[]>; // Added for admin
   updateUser(id: number, userData: Partial<User>): Promise<User | undefined>; // Added for admin
   
+  // Statistics methods (for admin dashboard)
+  getActiveSubscriptionsCount(): Promise<number>;
+  getPendingSubscriptionsCount(): Promise<number>;
+  getContentTypeCount(type: string): Promise<number>;
+  getRecentRegistrations(days: number): Promise<number>;
+  getRecentWatchCount(days: number): Promise<number>;
+  getMostWatchedContents(limit: number): Promise<{content: Content, watchCount: number}[]>;
+  
   // Content methods
   getContent(id: number): Promise<Content | undefined>;
   getAllContents(): Promise<Content[]>;
@@ -185,6 +193,76 @@ export class MemStorage implements IStorage {
     const updatedUser: User = { ...user, ...updateData };
     this.usersData.set(id, updatedUser);
     return updatedUser;
+  }
+
+  // Statistics methods
+  async getActiveSubscriptionsCount(): Promise<number> {
+    return Array.from(this.subscriptionsData.values()).filter(
+      sub => sub.status === 'active'
+    ).length;
+  }
+
+  async getPendingSubscriptionsCount(): Promise<number> {
+    return Array.from(this.subscriptionsData.values()).filter(
+      sub => sub.status === 'pending'
+    ).length;
+  }
+
+  async getContentTypeCount(type: string): Promise<number> {
+    return Array.from(this.contentsData.values()).filter(
+      content => content.contentType === type
+    ).length;
+  }
+
+  async getRecentRegistrations(days: number): Promise<number> {
+    const now = new Date();
+    const cutoffDate = new Date(now.setDate(now.getDate() - days));
+    
+    return Array.from(this.usersData.values()).filter(
+      user => user.createdAt && new Date(user.createdAt) >= cutoffDate
+    ).length;
+  }
+
+  async getRecentWatchCount(days: number): Promise<number> {
+    const now = new Date();
+    const cutoffDate = new Date(now.setDate(now.getDate() - days));
+    
+    return Array.from(this.watchHistoryData.values()).filter(
+      history => history.lastWatched && new Date(history.lastWatched) >= cutoffDate
+    ).length;
+  }
+
+  async getMostWatchedContents(limit: number): Promise<{content: Content, watchCount: number}[]> {
+    // Count watches per content
+    const watchCounts: Record<number, number> = {};
+    Array.from(this.watchHistoryData.values()).forEach(history => {
+      watchCounts[history.contentId] = (watchCounts[history.contentId] || 0) + 1;
+    });
+    
+    // Convert to array and sort by count
+    const contentWatchCounts = Object.entries(watchCounts).map(([contentId, count]) => ({
+      contentId: parseInt(contentId),
+      count
+    }));
+    
+    // Sort by count descending
+    contentWatchCounts.sort((a, b) => b.count - a.count);
+    
+    // Get top content
+    const result: {content: Content, watchCount: number}[] = [];
+    
+    for (const item of contentWatchCounts.slice(0, limit)) {
+      const content = this.contentsData.get(item.contentId);
+      if (content) {
+        result.push({
+          content,
+          watchCount: item.count
+        });
+      }
+      if (result.length >= limit) break;
+    }
+    
+    return result;
   }
 
   // Content methods
@@ -721,6 +799,83 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, id))
       .returning();
     return updatedUser;
+  }
+
+  // Statistics methods for admin dashboard
+  async getActiveSubscriptionsCount(): Promise<number> {
+    const result = await db
+      .select({ count: count() })
+      .from(subscriptions)
+      .where(eq(subscriptions.status, 'active'));
+    return result[0]?.count || 0;
+  }
+
+  async getPendingSubscriptionsCount(): Promise<number> {
+    const result = await db
+      .select({ count: count() })
+      .from(subscriptions)
+      .where(eq(subscriptions.status, 'pending'));
+    return result[0]?.count || 0;
+  }
+
+  async getContentTypeCount(type: string): Promise<number> {
+    const result = await db
+      .select({ count: count() })
+      .from(contents)
+      .where(eq(contents.contentType, type));
+    return result[0]?.count || 0;
+  }
+
+  async getRecentRegistrations(days: number): Promise<number> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    const result = await db
+      .select({ count: count() })
+      .from(users)
+      .where(sql`${users.createdAt} >= ${cutoffDate}`);
+    
+    return result[0]?.count || 0;
+  }
+
+  async getRecentWatchCount(days: number): Promise<number> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    const result = await db
+      .select({ count: count() })
+      .from(watchHistory)
+      .where(sql`${watchHistory.lastWatched} >= ${cutoffDate}`);
+    
+    return result[0]?.count || 0;
+  }
+
+  async getMostWatchedContents(limit: number): Promise<{content: Content, watchCount: number}[]> {
+    // Get watch counts for each content
+    const watchCounts = await db
+      .select({
+        contentId: watchHistory.contentId,
+        count: count()
+      })
+      .from(watchHistory)
+      .groupBy(watchHistory.contentId)
+      .orderBy(sql`count DESC`)
+      .limit(limit);
+    
+    // Fetch content details for each result
+    const result: {content: Content, watchCount: number}[] = [];
+    
+    for (const item of watchCounts) {
+      const content = await this.getContent(item.contentId);
+      if (content) {
+        result.push({
+          content,
+          watchCount: Number(item.count)
+        });
+      }
+    }
+    
+    return result;
   }
 
   // Content methods
