@@ -1040,63 +1040,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/subscription/notify", async (req, res) => {
-    try {
-      const { m_payment_id, pf_payment_id, payment_status, custom_str1 } = req.body;
-      
-      // Validate signature (would require data from PayFast to be properly implemented)
-      // For now, just acknowledge the request
-      
-      if (!custom_str1 || !payment_status) {
-        return res.status(400).json({ message: "Invalid notification data" });
-      }
-      
-      const userId = parseInt(custom_str1);
-      if (isNaN(userId)) {
-        return res.status(400).json({ message: "Invalid user ID" });
-      }
-      
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      
-      // Check payment status
-      if (payment_status === "COMPLETE") {
-        // Calculate subscription end date (1 month from now)
-        const endDate = new Date();
-        endDate.setMonth(endDate.getMonth() + 1);
-        
-        // Check if user already has a subscription
-        const existingSubscription = await storage.getSubscription(userId);
-        
-        if (existingSubscription) {
-          // Update existing subscription
-          await storage.updateSubscription(existingSubscription.id, "active", endDate);
-        } else {
-          // Create new subscription
-          const subscriptionData = insertSubscriptionSchema.parse({
-            userId,
-            planId: "premium",
-            status: "active",
-            startDate: new Date(),
-            endDate,
-            paymentReference: pf_payment_id
-          });
-          
-          await storage.createSubscription(subscriptionData);
-        }
-        
-        // Update user premium status
-        await storage.updateUserSubscription(userId, true);
-      }
-      
-      // Acknowledge the notification
-      res.status(200).send("OK");
-    } catch (error) {
-      res.status(500).json({ message: "Server error" });
-    }
-  });
+  // PayFast webhook handler endpoint removed (duplicate) - using more comprehensive implementation below
 
   app.post("/api/subscription/cancel", authenticate, async (req, res) => {
     try {
@@ -1841,6 +1785,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         case 'CANCELLED':
           newStatus = status.toLowerCase();
           await storage.updateSubscription(subscription.id, newStatus);
+          
+          // Update premium status if necessary - only remove premium if they don't have another active subscription
+          await syncUserPremiumStatus(userId);
+          
           console.log(`Subscription status updated to ${newStatus} for user ${userId}`);
           break;
           
@@ -1852,6 +1800,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             undefined, // Use undefined instead of null for Date type parameter
             pfPaymentId // Save PayFast payment reference
           );
+          
+          // Ensure user has premium access while payment is pending
+          await storage.updateUserSubscription(userId, true);
+          
           console.log(`Payment still pending for user ${userId}, updated with PayFast reference: ${pfPaymentId}`);
           break;
           

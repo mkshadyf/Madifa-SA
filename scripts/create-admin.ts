@@ -9,9 +9,9 @@ async function createAdminUser() {
     console.log('Creating admin user...');
     
     // Admin user details - you can use these credentials to log in
-    const username = 'superadmin';
-    const email = 'superadmin@madifa.com';
-    const password = 'SuperAdmin@123'; // Strong password with special chars
+    const username = 'admin2023';
+    const email = 'admin2023@madifa.com';
+    const password = 'Admin2023@Madifa'; // Strong password with special chars
     
     // Check if user already exists
     const existingUserByEmail = await storage.getUserByEmail(email);
