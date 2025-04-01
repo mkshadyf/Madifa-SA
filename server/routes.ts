@@ -58,11 +58,11 @@ const syncUserPremiumStatus = async (userId: number) => {
   // Get current subscription
   const subscription = await storage.getSubscription(userId);
   
-  // User has premium if they have an active subscription that hasn't expired
+  // User has premium if they have an active or pending subscription that hasn't expired
   const isPremium = subscription && 
-                    subscription.status === "active" && 
-                    subscription.endDate && 
-                    new Date(subscription.endDate) > new Date();
+                    (subscription.status === "active" || subscription.status === "pending") && 
+                    (subscription.status === "pending" || // Pending subscriptions always considered valid
+                     (subscription.endDate && new Date(subscription.endDate) > new Date()));
   
   // Update user premium status if needed
   const user = await storage.getUser(userId);
@@ -1879,10 +1879,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json({ status: 'none' });
       }
       
-      // Check if subscription is active and not expired
-      const isActive = subscription.status === 'active' && 
-                      subscription.endDate && 
-                      new Date(subscription.endDate) > new Date();
+      // Check if subscription is active/pending and not expired
+      const isActive = (subscription.status === 'active' || subscription.status === 'pending') && 
+                      (subscription.status === 'pending' || // Pending subscriptions are always considered active
+                       (subscription.endDate && new Date(subscription.endDate) > new Date()));
       
       // If subscription is expired but still marked as active, update it
       if (subscription.status === 'active' && 
